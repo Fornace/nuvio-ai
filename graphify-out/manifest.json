@@ -1,0 +1,1772 @@
+{
+  "app/src/full/java/com/nuvio/tv/core/plugin/FetchResponseHeaders.kt": {
+    "mtime": 1788029445.4690766,
+    "ast_hash": "621e7dd712b6e8d01e2c4e681bd76297",
+    "semantic_hash": "621e7dd712b6e8d01e2c4e681bd76297"
+  },
+  "app/src/full/java/com/nuvio/tv/core/plugin/PluginManager.kt": {
+    "mtime": 1788029445.468758,
+    "ast_hash": "12da0c83748dea766ad8ae7cd38b1fe0",
+    "semantic_hash": "12da0c83748dea766ad8ae7cd38b1fe0"
+  },
+  "app/src/full/java/com/nuvio/tv/core/plugin/PluginRuntime.kt": {
+    "mtime": 1788029445.4692793,
+    "ast_hash": "8c7dd5f88be7f39e92f5290a1800167c",
+    "semantic_hash": "8c7dd5f88be7f39e92f5290a1800167c"
+  },
+  "app/src/full/java/com/nuvio/tv/core/plugin/cloudstream/ExternalExtensionLoader.kt": {
+    "mtime": 1788029445.4696112,
+    "ast_hash": "b0601774146bf038cdf2d0d232c6321f",
+    "semantic_hash": "b0601774146bf038cdf2d0d232c6321f"
+  },
+  "app/src/full/java/com/nuvio/tv/core/plugin/cloudstream/ExternalExtensionRunner.kt": {
+    "mtime": 1788029445.4705398,
+    "ast_hash": "333b52610a164d1315957be58a6966cf",
+    "semantic_hash": "333b52610a164d1315957be58a6966cf"
+  },
+  "app/src/full/java/com/nuvio/tv/core/plugin/cloudstream/ExternalExtractorRegistry.kt": {
+    "mtime": 1788029445.4701865,
+    "ast_hash": "f8b6eb39d8d586d9f570f690295c727c",
+    "semantic_hash": "f8b6eb39d8d586d9f570f690295c727c"
+  },
+  "app/src/full/java/com/nuvio/tv/core/plugin/cloudstream/ExternalRepoParser.kt": {
+    "mtime": 1788029445.4700005,
+    "ast_hash": "c528832423d87bf4c83a3a012e843b69",
+    "semantic_hash": "c528832423d87bf4c83a3a012e843b69"
+  },
+  "app/src/full/java/com/nuvio/tv/core/plugin/cloudstream/TvTypeExtensions.kt": {
+    "mtime": 1788029445.470364,
+    "ast_hash": "91d20add785439744d0f7b07c850eeaa",
+    "semantic_hash": "91d20add785439744d0f7b07c850eeaa"
+  },
+  "app/src/main/java/com/nuvio/tv/core/player/BitrateAwareLoadControl.kt": {
+    "mtime": 1788029445.3623984,
+    "ast_hash": "1b8359f3c8ca0fceb5caf7861f3aa88c",
+    "semantic_hash": "1b8359f3c8ca0fceb5caf7861f3aa88c"
+  },
+  "app/src/main/java/com/nuvio/tv/core/player/DisplayCapabilities.kt": {
+    "mtime": 1788029445.3607397,
+    "ast_hash": "f44c0e713281b35f97b353cc0ca1b0ee",
+    "semantic_hash": "f44c0e713281b35f97b353cc0ca1b0ee"
+  },
+  "app/src/main/java/com/nuvio/tv/core/player/DolbyVisionExtractorsFactory.kt": {
+    "mtime": 1788029445.3616219,
+    "ast_hash": "18ef5012fc7d54ba789ea9ed3191d8ce",
+    "semantic_hash": "18ef5012fc7d54ba789ea9ed3191d8ce"
+  },
+  "app/src/main/java/com/nuvio/tv/core/player/DolbyVisionMatroskaTransformer.kt": {
+    "mtime": 1788029445.35988,
+    "ast_hash": "fab9865924034e6a94309a0f60bb8457",
+    "semantic_hash": "fab9865924034e6a94309a0f60bb8457"
+  },
+  "app/src/main/java/com/nuvio/tv/core/player/DoviBridge.kt": {
+    "mtime": 1788029445.3669765,
+    "ast_hash": "023606efa24a9d26c3aaeabc9890ec57",
+    "semantic_hash": "023606efa24a9d26c3aaeabc9890ec57"
+  },
+  "app/src/main/java/com/nuvio/tv/core/player/ExternalAutoNextNavigationEvents.kt": {
+    "mtime": 1788029445.362151,
+    "ast_hash": "2aaf40a3fa551032bcfe8d630e1d1a14",
+    "semantic_hash": "2aaf40a3fa551032bcfe8d630e1d1a14"
+  },
+  "app/src/main/java/com/nuvio/tv/core/player/ExternalAutoNextPolicy.kt": {
+    "mtime": 1788029445.3685966,
+    "ast_hash": "e51069261f2900803603adb79b47582b",
+    "semantic_hash": "e51069261f2900803603adb79b47582b"
+  },
+  "app/src/main/java/com/nuvio/tv/core/player/ExternalPlaybackKeepAliveService.kt": {
+    "mtime": 1788029445.3703387,
+    "ast_hash": "e0111cda5cf184fc0e8ac1c4fbc0f549",
+    "semantic_hash": "e0111cda5cf184fc0e8ac1c4fbc0f549"
+  },
+  "app/src/main/java/com/nuvio/tv/core/player/ExternalPlaybackTracker.kt": {
+    "mtime": 1788029445.3700187,
+    "ast_hash": "d7deebaa38126e78a2a5864d5d67564d",
+    "semantic_hash": "d7deebaa38126e78a2a5864d5d67564d"
+  },
+  "app/src/main/java/com/nuvio/tv/core/player/ExternalPlayerLauncher.kt": {
+    "mtime": 1788029445.3695989,
+    "ast_hash": "e9f3685d4e4e7908a6b019eab75915b0",
+    "semantic_hash": "e9f3685d4e4e7908a6b019eab75915b0"
+  },
+  "app/src/main/java/com/nuvio/tv/core/player/ExternalPlayerResultContract.kt": {
+    "mtime": 1788029445.3626838,
+    "ast_hash": "d63d039ce1db23cf1d40c9088ee05b78",
+    "semantic_hash": "d63d039ce1db23cf1d40c9088ee05b78"
+  },
+  "app/src/main/java/com/nuvio/tv/core/player/FrameRateUtils.kt": {
+    "mtime": 1788029445.3673606,
+    "ast_hash": "dd034890e9eed83c8c8ab3b2c76b7600",
+    "semantic_hash": "dd034890e9eed83c8c8ab3b2c76b7600"
+  },
+  "app/src/main/java/com/nuvio/tv/core/player/HevcDvRpuStripper.kt": {
+    "mtime": 1788029445.369329,
+    "ast_hash": "992d7eaee2da346686eae131af79066f",
+    "semantic_hash": "992d7eaee2da346686eae131af79066f"
+  },
+  "app/src/main/java/com/nuvio/tv/core/player/HevcHdr10PlusStripper.kt": {
+    "mtime": 1788029445.3610446,
+    "ast_hash": "478a1227a0f2901c71d16e496face436",
+    "semantic_hash": "478a1227a0f2901c71d16e496face436"
+  },
+  "app/src/main/java/com/nuvio/tv/core/player/LocalTrailerPlayerPool.kt": {
+    "mtime": 1788029445.3612726,
+    "ast_hash": "123df6403892916118b244e04a8ea3ed",
+    "semantic_hash": "123df6403892916118b244e04a8ea3ed"
+  },
+  "app/src/main/java/com/nuvio/tv/core/player/MatroskaAfrProbe.kt": {
+    "mtime": 1788029445.3677058,
+    "ast_hash": "0476887512c26ee49c3d0dc094c87c62",
+    "semantic_hash": "0476887512c26ee49c3d0dc094c87c62"
+  },
+  "app/src/main/java/com/nuvio/tv/core/player/OpenSubtitlesHasher.kt": {
+    "mtime": 1788029445.3683333,
+    "ast_hash": "c97414c94cee90354b9ee4e8a0a529d3",
+    "semantic_hash": "c97414c94cee90354b9ee4e8a0a529d3"
+  },
+  "app/src/main/java/com/nuvio/tv/core/player/StreamAutoPlayPolicy.kt": {
+    "mtime": 1788029445.3604743,
+    "ast_hash": "d5cd86d6ff6a6a5451cebb16c1374ec3",
+    "semantic_hash": "d5cd86d6ff6a6a5451cebb16c1374ec3"
+  },
+  "app/src/main/java/com/nuvio/tv/core/player/StreamAutoPlaySelector.kt": {
+    "mtime": 1788029445.3601842,
+    "ast_hash": "e9cf00adb0c3d2e42a044ee3ef75f080",
+    "semantic_hash": "e9cf00adb0c3d2e42a044ee3ef75f080"
+  },
+  "app/src/main/java/com/nuvio/tv/core/player/SubtitleCharsetDetector.kt": {
+    "mtime": 1788029445.368068,
+    "ast_hash": "5df5a4cb8b7c0dd69b833d77a64cdd6e",
+    "semantic_hash": "5df5a4cb8b7c0dd69b833d77a64cdd6e"
+  },
+  "app/src/main/java/com/nuvio/tv/core/player/SubtitleFileCache.kt": {
+    "mtime": 1788029445.362939,
+    "ast_hash": "26be900d936439e8fb13e582293f1ba6",
+    "semantic_hash": "26be900d936439e8fb13e582293f1ba6"
+  },
+  "app/src/main/java/com/nuvio/tv/core/player/TrailerPlayerPool.kt": {
+    "mtime": 1788029445.3619123,
+    "ast_hash": "1776398f60af292a35ec536ae4713573",
+    "semantic_hash": "1776398f60af292a35ec536ae4713573"
+  },
+  "app/src/main/java/com/nuvio/tv/core/player/ZidooPlayerMonitor.kt": {
+    "mtime": 1788029445.3689792,
+    "ast_hash": "f2af38c9753aecec3842b3bf1657d88c",
+    "semantic_hash": "f2af38c9753aecec3842b3bf1657d88c"
+  },
+  "app/src/main/java/com/nuvio/tv/core/player/dvmkv/ChunkIndexProvider.java": {
+    "mtime": 1788029445.366015,
+    "ast_hash": "cbbba71641675e404b6a35b3bb1ad682",
+    "semantic_hash": "cbbba71641675e404b6a35b3bb1ad682"
+  },
+  "app/src/main/java/com/nuvio/tv/core/player/dvmkv/DefaultEbmlReader.java": {
+    "mtime": 1788029445.363982,
+    "ast_hash": "4254640a6724004d2c9090ae1fe84d86",
+    "semantic_hash": "4254640a6724004d2c9090ae1fe84d86"
+  },
+  "app/src/main/java/com/nuvio/tv/core/player/dvmkv/DolbyVisionCompatibility.java": {
+    "mtime": 1788029445.3636847,
+    "ast_hash": "e5fc0449f20de24865d699509a3cbafe",
+    "semantic_hash": "e5fc0449f20de24865d699509a3cbafe"
+  },
+  "app/src/main/java/com/nuvio/tv/core/player/dvmkv/DtsUtil.java": {
+    "mtime": 1788029445.3644598,
+    "ast_hash": "dc09b47a6516673435f0a48b6da08e3a",
+    "semantic_hash": "dc09b47a6516673435f0a48b6da08e3a"
+  },
+  "app/src/main/java/com/nuvio/tv/core/player/dvmkv/EbmlProcessor.java": {
+    "mtime": 1788029445.3654692,
+    "ast_hash": "39fc68bcb67709891a995c942ca372d2",
+    "semantic_hash": "39fc68bcb67709891a995c942ca372d2"
+  },
+  "app/src/main/java/com/nuvio/tv/core/player/dvmkv/EbmlReader.java": {
+    "mtime": 1788029445.3642325,
+    "ast_hash": "d91e1389fadd9f8b30dd6c0a82dbd9a3",
+    "semantic_hash": "d91e1389fadd9f8b30dd6c0a82dbd9a3"
+  },
+  "app/src/main/java/com/nuvio/tv/core/player/dvmkv/MatroskaExtractor.java": {
+    "mtime": 1788029445.3664227,
+    "ast_hash": "2910090ae2219a1f3ec2316890ebcd88",
+    "semantic_hash": "2910090ae2219a1f3ec2316890ebcd88"
+  },
+  "app/src/main/java/com/nuvio/tv/core/player/dvmkv/MatroskaZlibSampleDecompressor.java": {
+    "mtime": 1788029445.3649607,
+    "ast_hash": "a9255b4c745ed1816bce3f5b4b86a272",
+    "semantic_hash": "a9255b4c745ed1816bce3f5b4b86a272"
+  },
+  "app/src/main/java/com/nuvio/tv/core/player/dvmkv/Sniffer.java": {
+    "mtime": 1788029445.3657181,
+    "ast_hash": "9c1586e3a072b9913b5856c7d17403f5",
+    "semantic_hash": "9c1586e3a072b9913b5856c7d17403f5"
+  },
+  "app/src/main/java/com/nuvio/tv/core/player/dvmkv/ThumbnailMetadata.java": {
+    "mtime": 1788029445.364711,
+    "ast_hash": "0d313f8126dd01dede54267436b26031",
+    "semantic_hash": "0d313f8126dd01dede54267436b26031"
+  },
+  "app/src/main/java/com/nuvio/tv/core/player/dvmkv/TrackAwareSeekMap.java": {
+    "mtime": 1788029445.3634324,
+    "ast_hash": "d306752e9cd45004620d3b9583972edc",
+    "semantic_hash": "d306752e9cd45004620d3b9583972edc"
+  },
+  "app/src/main/java/com/nuvio/tv/core/player/dvmkv/VarintReader.java": {
+    "mtime": 1788029445.365221,
+    "ast_hash": "7aaa500ef36b1755528f74507ecff7a3",
+    "semantic_hash": "7aaa500ef36b1755528f74507ecff7a3"
+  },
+  "app/src/main/java/com/nuvio/tv/core/player/dvmkv/package-info.java": {
+    "mtime": 1788029445.3666837,
+    "ast_hash": "5a367343bde2a76fb274fc7b397330c3",
+    "semantic_hash": "5a367343bde2a76fb274fc7b397330c3"
+  },
+  "app/src/main/java/com/nuvio/tv/core/server/AddonConfigChangeSanitizer.kt": {
+    "mtime": 1788029445.3818853,
+    "ast_hash": "ae3412166f2b3007811b216edcb2f02d",
+    "semantic_hash": "ae3412166f2b3007811b216edcb2f02d"
+  },
+  "app/src/main/java/com/nuvio/tv/core/server/AddonConfigServer.kt": {
+    "mtime": 1788029445.382164,
+    "ast_hash": "092c70bff8b450c3a1785bc14ace5a90",
+    "semantic_hash": "092c70bff8b450c3a1785bc14ace5a90"
+  },
+  "app/src/main/java/com/nuvio/tv/core/server/AddonConfigServerModels.kt": {
+    "mtime": 1788029445.3804078,
+    "ast_hash": "2ccd093178a2b5cf06072948d2592cf6",
+    "semantic_hash": "2ccd093178a2b5cf06072948d2592cf6"
+  },
+  "app/src/main/java/com/nuvio/tv/core/server/AddonWebPage.kt": {
+    "mtime": 1788029445.3808136,
+    "ast_hash": "75e41054db8fbece2e261a1179855030",
+    "semantic_hash": "75e41054db8fbece2e261a1179855030"
+  },
+  "app/src/main/java/com/nuvio/tv/core/server/DebridFormatterConfigServer.kt": {
+    "mtime": 1788029445.3816583,
+    "ast_hash": "1db3f760e967487677ad13954870e294",
+    "semantic_hash": "1db3f760e967487677ad13954870e294"
+  },
+  "app/src/main/java/com/nuvio/tv/core/server/DebridFormatterWebPage.kt": {
+    "mtime": 1788029445.379768,
+    "ast_hash": "fdf5e6269a9f1976b657f125fcff8c8e",
+    "semantic_hash": "fdf5e6269a9f1976b657f125fcff8c8e"
+  },
+  "app/src/main/java/com/nuvio/tv/core/server/DeviceIpAddress.kt": {
+    "mtime": 1788029445.3800993,
+    "ast_hash": "6f3ff4121542e787ab983c09c1edb78c",
+    "semantic_hash": "6f3ff4121542e787ab983c09c1edb78c"
+  },
+  "app/src/main/java/com/nuvio/tv/core/server/RepositoryConfigServer.kt": {
+    "mtime": 1788029445.3814068,
+    "ast_hash": "f6d99a86bd90b1470abd09810911a6ab",
+    "semantic_hash": "f6d99a86bd90b1470abd09810911a6ab"
+  },
+  "app/src/main/java/com/nuvio/tv/core/server/RepositoryWebPage.kt": {
+    "mtime": 1788029445.3825033,
+    "ast_hash": "ed54c687d5de933934791750664bf3a0",
+    "semantic_hash": "ed54c687d5de933934791750664bf3a0"
+  },
+  "app/src/main/java/com/nuvio/tv/core/server/StreamBadgeConfigServer.kt": {
+    "mtime": 1788029445.3827708,
+    "ast_hash": "e713b01b03d1948951b9d05b99c33bbe",
+    "semantic_hash": "e713b01b03d1948951b9d05b99c33bbe"
+  },
+  "app/src/main/java/com/nuvio/tv/core/server/StreamBadgeWebPage.kt": {
+    "mtime": 1788029445.381141,
+    "ast_hash": "d706965b02c377ad9d7593b1bd7499ee",
+    "semantic_hash": "d706965b02c377ad9d7593b1bd7499ee"
+  },
+  "app/src/main/java/com/nuvio/tv/data/local/AddonPreferences.kt": {
+    "mtime": 1788029445.3482852,
+    "ast_hash": "494ffec58c8dd52521b525b239a52624",
+    "semantic_hash": "494ffec58c8dd52521b525b239a52624"
+  },
+  "app/src/main/java/com/nuvio/tv/data/local/AnimeSkipSettingsDataStore.kt": {
+    "mtime": 1788029445.344322,
+    "ast_hash": "cc773383e86f0a81c41de7880daea9eb",
+    "semantic_hash": "cc773383e86f0a81c41de7880daea9eb"
+  },
+  "app/src/main/java/com/nuvio/tv/data/local/AppOnboardingDataStore.kt": {
+    "mtime": 1788029445.3440547,
+    "ast_hash": "a7e11a588a0650aed8b3e43bec9bcdcd",
+    "semantic_hash": "a7e11a588a0650aed8b3e43bec9bcdcd"
+  },
+  "app/src/main/java/com/nuvio/tv/data/local/AudioDelayRouteDataStore.kt": {
+    "mtime": 1788029445.3496335,
+    "ast_hash": "a688badc9fd4b2fd74ab48a52303a76d",
+    "semantic_hash": "a688badc9fd4b2fd74ab48a52303a76d"
+  },
+  "app/src/main/java/com/nuvio/tv/data/local/AuthSessionNoticeDataStore.kt": {
+    "mtime": 1788029445.342014,
+    "ast_hash": "300f126025ff5529ad1dcc483dad9d51",
+    "semantic_hash": "300f126025ff5529ad1dcc483dad9d51"
+  },
+  "app/src/main/java/com/nuvio/tv/data/local/BingeGroupCacheDataStore.kt": {
+    "mtime": 1788029445.345574,
+    "ast_hash": "4d9a65e4d3ce011bf2d8c49355de786f",
+    "semantic_hash": "4d9a65e4d3ce011bf2d8c49355de786f"
+  },
+  "app/src/main/java/com/nuvio/tv/data/local/CollectionsDataStore.kt": {
+    "mtime": 1788029445.3412526,
+    "ast_hash": "5fb6aef99d2f9a53c854ffc341bd5fe0",
+    "semantic_hash": "5fb6aef99d2f9a53c854ffc341bd5fe0"
+  },
+  "app/src/main/java/com/nuvio/tv/data/local/ContinueWatchingEnrichmentCache.kt": {
+    "mtime": 1788029445.3435004,
+    "ast_hash": "916bbdae7b302d8b82cdab8248132c11",
+    "semantic_hash": "916bbdae7b302d8b82cdab8248132c11"
+  },
+  "app/src/main/java/com/nuvio/tv/data/local/DebridSettingsDataStore.kt": {
+    "mtime": 1788029445.3417056,
+    "ast_hash": "f8856ef82ac48fa1e04af1f156fe894a",
+    "semantic_hash": "f8856ef82ac48fa1e04af1f156fe894a"
+  },
+  "app/src/main/java/com/nuvio/tv/data/local/DebugSettingsDataStore.kt": {
+    "mtime": 1788029445.3446562,
+    "ast_hash": "d10d694118b2f9c8c1c986266bc7d54f",
+    "semantic_hash": "d10d694118b2f9c8c1c986266bc7d54f"
+  },
+  "app/src/main/java/com/nuvio/tv/data/local/DeviceLocalPlayerPreferences.kt": {
+    "mtime": 1788029445.3426147,
+    "ast_hash": "4353baf837c2339967c51ecc13e10cf0",
+    "semantic_hash": "4353baf837c2339967c51ecc13e10cf0"
+  },
+  "app/src/main/java/com/nuvio/tv/data/local/DiscoverSelectionDataStore.kt": {
+    "mtime": 1788029445.348829,
+    "ast_hash": "237dcd3cd5d5f59e7c06c0e8e6894f80",
+    "semantic_hash": "237dcd3cd5d5f59e7c06c0e8e6894f80"
+  },
+  "app/src/main/java/com/nuvio/tv/data/local/ExperienceModeDataStore.kt": {
+    "mtime": 1788029445.346711,
+    "ast_hash": "c62d6c0f7f054191f270efecc7d94269",
+    "semantic_hash": "c62d6c0f7f054191f270efecc7d94269"
+  },
+  "app/src/main/java/com/nuvio/tv/data/local/LayoutPreferenceDataStore.kt": {
+    "mtime": 1788029445.3450146,
+    "ast_hash": "4f75112a3bb66b8d659d3c66a5bbd088",
+    "semantic_hash": "4f75112a3bb66b8d659d3c66a5bbd088"
+  },
+  "app/src/main/java/com/nuvio/tv/data/local/LibraryPreferences.kt": {
+    "mtime": 1788029445.34082,
+    "ast_hash": "0c6873c9d0c8728cc82abcda0a81fbfa",
+    "semantic_hash": "0c6873c9d0c8728cc82abcda0a81fbfa"
+  },
+  "app/src/main/java/com/nuvio/tv/data/local/MDBListSettingsDataStore.kt": {
+    "mtime": 1788029445.346938,
+    "ast_hash": "d1b9ccaba936a6b3c5dad0f5d7d04852",
+    "semantic_hash": "d1b9ccaba936a6b3c5dad0f5d7d04852"
+  },
+  "app/src/main/java/com/nuvio/tv/data/local/MemberAccessDataStore.kt": {
+    "mtime": 1788029445.349102,
+    "ast_hash": "54c9f620a6ca43bc78aaae22329b543c",
+    "semantic_hash": "54c9f620a6ca43bc78aaae22329b543c"
+  },
+  "app/src/main/java/com/nuvio/tv/data/local/MemberCatalogStorage.kt": {
+    "mtime": 1788029445.3401423,
+    "ast_hash": "5c4330834770ded07fb4b28145b3f9e6",
+    "semantic_hash": "5c4330834770ded07fb4b28145b3f9e6"
+  },
+  "app/src/main/java/com/nuvio/tv/data/local/PlayerSettingsDataStore.kt": {
+    "mtime": 1788029445.3473155,
+    "ast_hash": "945b2a016b17563e952591e09b8ed234",
+    "semantic_hash": "945b2a016b17563e952591e09b8ed234"
+  },
+  "app/src/main/java/com/nuvio/tv/data/local/PluginDataStore.kt": {
+    "mtime": 1788029445.3404636,
+    "ast_hash": "ac7d9c6c10a63795e5ac31ae5bc90eed",
+    "semantic_hash": "ac7d9c6c10a63795e5ac31ae5bc90eed"
+  },
+  "app/src/main/java/com/nuvio/tv/data/local/ProfileDataStore.kt": {
+    "mtime": 1788029445.3498986,
+    "ast_hash": "eb932f9f2c7fb4b29c40ffff215bb73f",
+    "semantic_hash": "eb932f9f2c7fb4b29c40ffff215bb73f"
+  },
+  "app/src/main/java/com/nuvio/tv/data/local/ProfileDataStoreFactory.kt": {
+    "mtime": 1788029445.350452,
+    "ast_hash": "640923b248a2fb40b99ea77a12c6de6d",
+    "semantic_hash": "640923b248a2fb40b99ea77a12c6de6d"
+  },
+  "app/src/main/java/com/nuvio/tv/data/local/ProfileLockStateDataStore.kt": {
+    "mtime": 1788029445.3428936,
+    "ast_hash": "59f2ef291c0dc88e14cc3f33c4c02713",
+    "semantic_hash": "59f2ef291c0dc88e14cc3f33c4c02713"
+  },
+  "app/src/main/java/com/nuvio/tv/data/local/SearchHistoryDataStore.kt": {
+    "mtime": 1788029445.3423405,
+    "ast_hash": "00178d00948ade8355f368ad3e351c4e",
+    "semantic_hash": "00178d00948ade8355f368ad3e351c4e"
+  },
+  "app/src/main/java/com/nuvio/tv/data/local/SentrySettingsDataStore.kt": {
+    "mtime": 1788029445.3493626,
+    "ast_hash": "2961fa744be560e664397379f559cf8c",
+    "semantic_hash": "2961fa744be560e664397379f559cf8c"
+  },
+  "app/src/main/java/com/nuvio/tv/data/local/ServerConfigurationStore.kt": {
+    "mtime": 1788029445.3431702,
+    "ast_hash": "377f226bc2daf337b123ca295d8ed609",
+    "semantic_hash": "377f226bc2daf337b123ca295d8ed609"
+  },
+  "app/src/main/java/com/nuvio/tv/data/local/StartupSyncPreferences.kt": {
+    "mtime": 1788029445.3453035,
+    "ast_hash": "5e6f61287197a5a328949cb8f404c6d2",
+    "semantic_hash": "5e6f61287197a5a328949cb8f404c6d2"
+  },
+  "app/src/main/java/com/nuvio/tv/data/local/StreamBadgeSettingsDataStore.kt": {
+    "mtime": 1788029445.3506906,
+    "ast_hash": "3d713b7246ea5da46893b5022df38f3b",
+    "semantic_hash": "3d713b7246ea5da46893b5022df38f3b"
+  },
+  "app/src/main/java/com/nuvio/tv/data/local/StreamLinkCacheDataStore.kt": {
+    "mtime": 1788029445.3463748,
+    "ast_hash": "7088bb7f37a5231d863af19dfa6de0d4",
+    "semantic_hash": "7088bb7f37a5231d863af19dfa6de0d4"
+  },
+  "app/src/main/java/com/nuvio/tv/data/local/ThemeDataStore.kt": {
+    "mtime": 1788029445.3398755,
+    "ast_hash": "06d9ce28b0f93be157b0d1bfeabe8486",
+    "semantic_hash": "06d9ce28b0f93be157b0d1bfeabe8486"
+  },
+  "app/src/main/java/com/nuvio/tv/data/local/TmdbSettingsDataStore.kt": {
+    "mtime": 1788029445.3479764,
+    "ast_hash": "95f027954085a0e0409322c6086dc643",
+    "semantic_hash": "95f027954085a0e0409322c6086dc643"
+  },
+  "app/src/main/java/com/nuvio/tv/data/local/TrackPreferenceDataStore.kt": {
+    "mtime": 1788029445.3485708,
+    "ast_hash": "d66f45d015dbdf7786f1fdefbad95e85",
+    "semantic_hash": "d66f45d015dbdf7786f1fdefbad95e85"
+  },
+  "app/src/main/java/com/nuvio/tv/data/local/TrailerSettingsDataStore.kt": {
+    "mtime": 1788029445.346107,
+    "ast_hash": "6721de6cc258ec758a18ca6c36ce3200",
+    "semantic_hash": "6721de6cc258ec758a18ca6c36ce3200"
+  },
+  "app/src/main/java/com/nuvio/tv/data/local/TraktAuthDataStore.kt": {
+    "mtime": 1788029445.3458698,
+    "ast_hash": "f01a24177ece43b4ec87db7a6e4660d6",
+    "semantic_hash": "f01a24177ece43b4ec87db7a6e4660d6"
+  },
+  "app/src/main/java/com/nuvio/tv/data/local/TraktSettingsDataStore.kt": {
+    "mtime": 1788029445.3501778,
+    "ast_hash": "0d901e27527073c1045f48b5a7ce4d20",
+    "semantic_hash": "0d901e27527073c1045f48b5a7ce4d20"
+  },
+  "app/src/main/java/com/nuvio/tv/data/local/WatchProgressBuckets.kt": {
+    "mtime": 1788029445.3392632,
+    "ast_hash": "5f46d03487f883e0109414e2d5460004",
+    "semantic_hash": "5f46d03487f883e0109414e2d5460004"
+  },
+  "app/src/main/java/com/nuvio/tv/data/local/WatchProgressPreferences.kt": {
+    "mtime": 1788029445.3476853,
+    "ast_hash": "f1ea47a19137b179caccf3249812e5ab",
+    "semantic_hash": "f1ea47a19137b179caccf3249812e5ab"
+  },
+  "app/src/main/java/com/nuvio/tv/data/local/WatchedItemsPreferences.kt": {
+    "mtime": 1788029445.3395815,
+    "ast_hash": "c562bba1626926b0dde02c7f17079874",
+    "semantic_hash": "c562bba1626926b0dde02c7f17079874"
+  },
+  "app/src/main/java/com/nuvio/tv/data/local/WatchedSeriesStateHolder.kt": {
+    "mtime": 1788029445.3437843,
+    "ast_hash": "cd2559b93fdba49185005a52e1f9fbdb",
+    "semantic_hash": "cd2559b93fdba49185005a52e1f9fbdb"
+  },
+  "app/src/main/java/com/nuvio/tv/data/mapper/AddonMapper.kt": {
+    "mtime": 1788029445.3053594,
+    "ast_hash": "20f363c19fd04b79ac7b17f316739b2e",
+    "semantic_hash": "20f363c19fd04b79ac7b17f316739b2e"
+  },
+  "app/src/main/java/com/nuvio/tv/data/mapper/CatalogMapper.kt": {
+    "mtime": 1788029445.3063786,
+    "ast_hash": "e162662967c68d689a0ffe104f92668b",
+    "semantic_hash": "e162662967c68d689a0ffe104f92668b"
+  },
+  "app/src/main/java/com/nuvio/tv/data/mapper/MetaMapper.kt": {
+    "mtime": 1788029445.3050435,
+    "ast_hash": "7b11961077ee8d90b17fbf7911c8d7c4",
+    "semantic_hash": "7b11961077ee8d90b17fbf7911c8d7c4"
+  },
+  "app/src/main/java/com/nuvio/tv/data/mapper/MetadataFieldMappers.kt": {
+    "mtime": 1788029445.3060305,
+    "ast_hash": "9dbc662be2fc8cc8b41688488a451634",
+    "semantic_hash": "9dbc662be2fc8cc8b41688488a451634"
+  },
+  "app/src/main/java/com/nuvio/tv/data/mapper/StreamMapper.kt": {
+    "mtime": 1788029445.3057754,
+    "ast_hash": "b0ecc9635ecc90412f3578b301dd909c",
+    "semantic_hash": "b0ecc9635ecc90412f3578b301dd909c"
+  },
+  "app/src/main/java/com/nuvio/tv/data/remote/dto/AddonManifestDto.kt": {
+    "mtime": 1788029445.2951715,
+    "ast_hash": "6768e2e7313e9a37aeb9602ebddaad43",
+    "semantic_hash": "6768e2e7313e9a37aeb9602ebddaad43"
+  },
+  "app/src/main/java/com/nuvio/tv/data/remote/dto/AuthDiagnosticReportDto.kt": {
+    "mtime": 1788029445.2940898,
+    "ast_hash": "93d96b2861b1ce6757c6532b6a822eac",
+    "semantic_hash": "93d96b2861b1ce6757c6532b6a822eac"
+  },
+  "app/src/main/java/com/nuvio/tv/data/remote/dto/CatalogResponseDto.kt": {
+    "mtime": 1788029445.2953966,
+    "ast_hash": "e72396ef1441036daae62781c40e86c7",
+    "semantic_hash": "e72396ef1441036daae62781c40e86c7"
+  },
+  "app/src/main/java/com/nuvio/tv/data/remote/dto/GitHubContributorDto.kt": {
+    "mtime": 1788029445.2928245,
+    "ast_hash": "eca468c3e7354f624c75a8017d7ca4c5",
+    "semantic_hash": "eca468c3e7354f624c75a8017d7ca4c5"
+  },
+  "app/src/main/java/com/nuvio/tv/data/remote/dto/GitHubReleaseDto.kt": {
+    "mtime": 1788029445.293809,
+    "ast_hash": "396ea3cdfd21e63de9d49b18c4c7e8cc",
+    "semantic_hash": "396ea3cdfd21e63de9d49b18c4c7e8cc"
+  },
+  "app/src/main/java/com/nuvio/tv/data/remote/dto/MetaResponseDto.kt": {
+    "mtime": 1788029445.2930882,
+    "ast_hash": "3d132628477eb9c0fb35f59d46062dfd",
+    "semantic_hash": "3d132628477eb9c0fb35f59d46062dfd"
+  },
+  "app/src/main/java/com/nuvio/tv/data/remote/dto/PlaybackIssueReportDto.kt": {
+    "mtime": 1788029445.2949076,
+    "ast_hash": "e2a4ab9fb66840e1e20cc88207e6e9f6",
+    "semantic_hash": "e2a4ab9fb66840e1e20cc88207e6e9f6"
+  },
+  "app/src/main/java/com/nuvio/tv/data/remote/dto/PremiumizeDto.kt": {
+    "mtime": 1788029445.2925367,
+    "ast_hash": "811b51067288178a263bfb018e991658",
+    "semantic_hash": "811b51067288178a263bfb018e991658"
+  },
+  "app/src/main/java/com/nuvio/tv/data/remote/dto/RealDebridDto.kt": {
+    "mtime": 1788029445.2943249,
+    "ast_hash": "4f585788bfaa1bf50d3ad1a0e5d3ddca",
+    "semantic_hash": "4f585788bfaa1bf50d3ad1a0e5d3ddca"
+  },
+  "app/src/main/java/com/nuvio/tv/data/remote/dto/StreamResponseDto.kt": {
+    "mtime": 1788029445.2933245,
+    "ast_hash": "7196e84fc0656c270f38ca7e1d6267e5",
+    "semantic_hash": "7196e84fc0656c270f38ca7e1d6267e5"
+  },
+  "app/src/main/java/com/nuvio/tv/data/remote/dto/SubtitleResponseDto.kt": {
+    "mtime": 1788029445.2945914,
+    "ast_hash": "fa0a9f089546f50b42aef3d3dd3dda63",
+    "semantic_hash": "fa0a9f089546f50b42aef3d3dd3dda63"
+  },
+  "app/src/main/java/com/nuvio/tv/data/remote/dto/SupportersWallDto.kt": {
+    "mtime": 1788029445.2935746,
+    "ast_hash": "56ceefdb220b675e27549fdba9b2f214",
+    "semantic_hash": "56ceefdb220b675e27549fdba9b2f214"
+  },
+  "app/src/main/java/com/nuvio/tv/data/remote/dto/TorboxDto.kt": {
+    "mtime": 1788029445.2956488,
+    "ast_hash": "59323a7febd5820bdb1361cbb1ac4e0b",
+    "semantic_hash": "59323a7febd5820bdb1361cbb1ac4e0b"
+  },
+  "app/src/main/java/com/nuvio/tv/data/remote/dto/mdblist/MDBListRatingDtos.kt": {
+    "mtime": 1788029445.2903438,
+    "ast_hash": "fa6036a9e3726d216dc83446572ba124",
+    "semantic_hash": "fa6036a9e3726d216dc83446572ba124"
+  },
+  "app/src/main/java/com/nuvio/tv/data/remote/dto/trakt/TraktAuthDtos.kt": {
+    "mtime": 1788029445.2907732,
+    "ast_hash": "522ef4d2bab64892d1b4fbb68f7e25d5",
+    "semantic_hash": "522ef4d2bab64892d1b4fbb68f7e25d5"
+  },
+  "app/src/main/java/com/nuvio/tv/data/remote/dto/trakt/TraktCommentsDtos.kt": {
+    "mtime": 1788029445.2922246,
+    "ast_hash": "979d08854e77a310940c48ab1d336992",
+    "semantic_hash": "979d08854e77a310940c48ab1d336992"
+  },
+  "app/src/main/java/com/nuvio/tv/data/remote/dto/trakt/TraktListsDtos.kt": {
+    "mtime": 1788029445.2911255,
+    "ast_hash": "15e3404597bfcafbae830a6c98ba3313",
+    "semantic_hash": "15e3404597bfcafbae830a6c98ba3313"
+  },
+  "app/src/main/java/com/nuvio/tv/data/remote/dto/trakt/TraktMediaDtos.kt": {
+    "mtime": 1788029445.291492,
+    "ast_hash": "c85079f2e9ddbdb59d22db5b4daed29b",
+    "semantic_hash": "c85079f2e9ddbdb59d22db5b4daed29b"
+  },
+  "app/src/main/java/com/nuvio/tv/data/remote/dto/trakt/TraktScrobbleDtos.kt": {
+    "mtime": 1788029445.2919948,
+    "ast_hash": "5df88b6b053c3394045a2c78ae846fd8",
+    "semantic_hash": "5df88b6b053c3394045a2c78ae846fd8"
+  },
+  "app/src/main/java/com/nuvio/tv/data/remote/dto/trakt/TraktSyncDtos.kt": {
+    "mtime": 1788029445.2917657,
+    "ast_hash": "07d6570daabd6ca27e82522233355114",
+    "semantic_hash": "07d6570daabd6ca27e82522233355114"
+  },
+  "app/src/main/java/com/nuvio/tv/data/repository/AddonRepositoryImpl.kt": {
+    "mtime": 1788029445.325302,
+    "ast_hash": "b9f2c1d0316d97f337c9630d2bc3f98d",
+    "semantic_hash": "b9f2c1d0316d97f337c9630d2bc3f98d"
+  },
+  "app/src/main/java/com/nuvio/tv/data/repository/AuthDiagnosticReportRepository.kt": {
+    "mtime": 1788029445.3238704,
+    "ast_hash": "ce484844b5926c25613c6cfb91b73b7d",
+    "semantic_hash": "ce484844b5926c25613c6cfb91b73b7d"
+  },
+  "app/src/main/java/com/nuvio/tv/data/repository/CatalogRepositoryImpl.kt": {
+    "mtime": 1788029445.3223705,
+    "ast_hash": "19498cd33847c38f78f4efd825d22034",
+    "semantic_hash": "19498cd33847c38f78f4efd825d22034"
+  },
+  "app/src/main/java/com/nuvio/tv/data/repository/GitHubContributorsRepository.kt": {
+    "mtime": 1788029445.328779,
+    "ast_hash": "d933731a8484bc60cabbb2fb85d195dc",
+    "semantic_hash": "d933731a8484bc60cabbb2fb85d195dc"
+  },
+  "app/src/main/java/com/nuvio/tv/data/repository/ImdbEpisodeRatingsRepository.kt": {
+    "mtime": 1788029445.329361,
+    "ast_hash": "c867eb26febeb733611e4d7e5737b722",
+    "semantic_hash": "c867eb26febeb733611e4d7e5737b722"
+  },
+  "app/src/main/java/com/nuvio/tv/data/repository/LibraryRepositoryImpl.kt": {
+    "mtime": 1788029445.3242486,
+    "ast_hash": "4a8d6a3aaae2f3efd77e07ccdef844dd",
+    "semantic_hash": "4a8d6a3aaae2f3efd77e07ccdef844dd"
+  },
+  "app/src/main/java/com/nuvio/tv/data/repository/MDBListRepository.kt": {
+    "mtime": 1788029445.3182335,
+    "ast_hash": "2ff65dd19ff26910f123a27fc9a5b30b",
+    "semantic_hash": "2ff65dd19ff26910f123a27fc9a5b30b"
+  },
+  "app/src/main/java/com/nuvio/tv/data/repository/MemberAccessRepository.kt": {
+    "mtime": 1788029445.3175082,
+    "ast_hash": "30b27e54cdd69c9a9da1443c1e36bb22",
+    "semantic_hash": "30b27e54cdd69c9a9da1443c1e36bb22"
+  },
+  "app/src/main/java/com/nuvio/tv/data/repository/MembershipOverviewRepository.kt": {
+    "mtime": 1788029445.319751,
+    "ast_hash": "d9fa7d27eff97073b104178c06c2e9e3",
+    "semantic_hash": "d9fa7d27eff97073b104178c06c2e9e3"
+  },
+  "app/src/main/java/com/nuvio/tv/data/repository/MetaRepositoryImpl.kt": {
+    "mtime": 1788029445.3189487,
+    "ast_hash": "ae640151460ed79abf2be9ff16613ed8",
+    "semantic_hash": "ae640151460ed79abf2be9ff16613ed8"
+  },
+  "app/src/main/java/com/nuvio/tv/data/repository/ParentalGuideRepository.kt": {
+    "mtime": 1788029445.318534,
+    "ast_hash": "af0da021119e1c551e23d63b2df9c30c",
+    "semantic_hash": "af0da021119e1c551e23d63b2df9c30c"
+  },
+  "app/src/main/java/com/nuvio/tv/data/repository/PlaybackIssuePlaybackAnalyticsInput.kt": {
+    "mtime": 1788029445.3235514,
+    "ast_hash": "4ce2b28b5293e6fe81722aa6e3cd121a",
+    "semantic_hash": "4ce2b28b5293e6fe81722aa6e3cd121a"
+  },
+  "app/src/main/java/com/nuvio/tv/data/repository/PlaybackIssueReportRepository.kt": {
+    "mtime": 1788029445.3272388,
+    "ast_hash": "7eb7d6d291951e3836c3b029bc61dd07",
+    "semantic_hash": "7eb7d6d291951e3836c3b029bc61dd07"
+  },
+  "app/src/main/java/com/nuvio/tv/data/repository/SkipIntroRepository.kt": {
+    "mtime": 1788029445.3209186,
+    "ast_hash": "c1e05cb90a76469aac94d06984f1f9a4",
+    "semantic_hash": "c1e05cb90a76469aac94d06984f1f9a4"
+  },
+  "app/src/main/java/com/nuvio/tv/data/repository/SponsorsRepository.kt": {
+    "mtime": 1788029445.3178818,
+    "ast_hash": "0d28df9408fa7b43103df6ff05e2a608",
+    "semantic_hash": "0d28df9408fa7b43103df6ff05e2a608"
+  },
+  "app/src/main/java/com/nuvio/tv/data/repository/StreamRepositoryImpl.kt": {
+    "mtime": 1788029445.3194091,
+    "ast_hash": "d0a5d20e4eb2830280aef31626731df8",
+    "semantic_hash": "d0a5d20e4eb2830280aef31626731df8"
+  },
+  "app/src/main/java/com/nuvio/tv/data/repository/StreamSearchSessionCache.kt": {
+    "mtime": 1788029445.329055,
+    "ast_hash": "5fee44665fce31bbb22c58d168fe4b2f",
+    "semantic_hash": "5fee44665fce31bbb22c58d168fe4b2f"
+  },
+  "app/src/main/java/com/nuvio/tv/data/repository/SubtitleRepositoryImpl.kt": {
+    "mtime": 1788029445.3212476,
+    "ast_hash": "7de74ddc2bb60a57fa106da3f479b6e1",
+    "semantic_hash": "7de74ddc2bb60a57fa106da3f479b6e1"
+  },
+  "app/src/main/java/com/nuvio/tv/data/repository/SupportersRepository.kt": {
+    "mtime": 1788029445.329628,
+    "ast_hash": "93c9f24fa7253113d4896a71e65b1b43",
+    "semantic_hash": "93c9f24fa7253113d4896a71e65b1b43"
+  },
+  "app/src/main/java/com/nuvio/tv/data/repository/SyncRepositoryImpl.kt": {
+    "mtime": 1788029445.3260634,
+    "ast_hash": "7019d093cb04f3fce4f0b3f9d95b76fc",
+    "semantic_hash": "7019d093cb04f3fce4f0b3f9d95b76fc"
+  },
+  "app/src/main/java/com/nuvio/tv/data/repository/TraktAuthService.kt": {
+    "mtime": 1788029445.320161,
+    "ast_hash": "69e9a56ee7586f68e878d3655878a939",
+    "semantic_hash": "69e9a56ee7586f68e878d3655878a939"
+  },
+  "app/src/main/java/com/nuvio/tv/data/repository/TraktCommentsService.kt": {
+    "mtime": 1788029445.3216221,
+    "ast_hash": "2f6114f1a488de7a7961776b259865cf",
+    "semantic_hash": "2f6114f1a488de7a7961776b259865cf"
+  },
+  "app/src/main/java/com/nuvio/tv/data/repository/TraktEpisodeMapping.kt": {
+    "mtime": 1788029445.3278613,
+    "ast_hash": "0868bdda3ba71f73622ed09e3018c511",
+    "semantic_hash": "0868bdda3ba71f73622ed09e3018c511"
+  },
+  "app/src/main/java/com/nuvio/tv/data/repository/TraktEpisodeMappingService.kt": {
+    "mtime": 1788029445.3228045,
+    "ast_hash": "5e46429d3a5519c93cffa7a020ea9dc1",
+    "semantic_hash": "5e46429d3a5519c93cffa7a020ea9dc1"
+  },
+  "app/src/main/java/com/nuvio/tv/data/repository/TraktIdUtils.kt": {
+    "mtime": 1788029445.3231819,
+    "ast_hash": "6e5cb92eb1f40aaab8e74ce0347617b6",
+    "semantic_hash": "6e5cb92eb1f40aaab8e74ce0347617b6"
+  },
+  "app/src/main/java/com/nuvio/tv/data/repository/TraktLibraryService.kt": {
+    "mtime": 1788029445.322005,
+    "ast_hash": "95c634d122a059911facc52e6c66e709",
+    "semantic_hash": "95c634d122a059911facc52e6c66e709"
+  },
+  "app/src/main/java/com/nuvio/tv/data/repository/TraktProgressService.kt": {
+    "mtime": 1788029445.3248224,
+    "ast_hash": "622050f656dc13bf6986529e37b9cbe7",
+    "semantic_hash": "622050f656dc13bf6986529e37b9cbe7"
+  },
+  "app/src/main/java/com/nuvio/tv/data/repository/TraktRelatedService.kt": {
+    "mtime": 1788029445.3256931,
+    "ast_hash": "57ea7863002736e034e0ed86ce9f1039",
+    "semantic_hash": "57ea7863002736e034e0ed86ce9f1039"
+  },
+  "app/src/main/java/com/nuvio/tv/data/repository/TraktScrobbleService.kt": {
+    "mtime": 1788029445.3275747,
+    "ast_hash": "1b785d81a6004207a44e6acd00003285",
+    "semantic_hash": "1b785d81a6004207a44e6acd00003285"
+  },
+  "app/src/main/java/com/nuvio/tv/data/repository/TraktTrackingHistoryWriter.kt": {
+    "mtime": 1788029445.3285072,
+    "ast_hash": "c80cbf63802451509852655ca0013103",
+    "semantic_hash": "c80cbf63802451509852655ca0013103"
+  },
+  "app/src/main/java/com/nuvio/tv/data/repository/TraktTrackingLibraryProvider.kt": {
+    "mtime": 1788029445.3263807,
+    "ast_hash": "4a085060c5587effbdb820742ac2d7f6",
+    "semantic_hash": "4a085060c5587effbdb820742ac2d7f6"
+  },
+  "app/src/main/java/com/nuvio/tv/data/repository/TraktTrackingProgressProvider.kt": {
+    "mtime": 1788029445.326768,
+    "ast_hash": "0ab5345f52b831f6306008c83ca984b2",
+    "semantic_hash": "0ab5345f52b831f6306008c83ca984b2"
+  },
+  "app/src/main/java/com/nuvio/tv/data/repository/TraktTrackingProvider.kt": {
+    "mtime": 1788029445.3282094,
+    "ast_hash": "3dc42f91d986252c2ca2e55c4a11ef17",
+    "semantic_hash": "3dc42f91d986252c2ca2e55c4a11ef17"
+  },
+  "app/src/main/java/com/nuvio/tv/data/repository/TraktTrackingScrobbler.kt": {
+    "mtime": 1788029445.3170877,
+    "ast_hash": "0fd2e0cd3ae6b2d97d295da2ab062fc6",
+    "semantic_hash": "0fd2e0cd3ae6b2d97d295da2ab062fc6"
+  },
+  "app/src/main/java/com/nuvio/tv/data/repository/WatchProgressRepositoryImpl.kt": {
+    "mtime": 1788029445.3205707,
+    "ast_hash": "832de87ab20ccedcbf3bb3cc7b18d18b",
+    "semantic_hash": "832de87ab20ccedcbf3bb3cc7b18d18b"
+  },
+  "app/src/main/java/com/nuvio/tv/domain/model/Addon.kt": {
+    "mtime": 1788029445.2752707,
+    "ast_hash": "72e8945c4a3ece6bed314b871210fcb0",
+    "semantic_hash": "72e8945c4a3ece6bed314b871210fcb0"
+  },
+  "app/src/main/java/com/nuvio/tv/domain/model/AppFont.kt": {
+    "mtime": 1788029445.271625,
+    "ast_hash": "93c488e06124e9f522791ffad1954a01",
+    "semantic_hash": "93c488e06124e9f522791ffad1954a01"
+  },
+  "app/src/main/java/com/nuvio/tv/domain/model/AppTheme.kt": {
+    "mtime": 1788029445.271104,
+    "ast_hash": "ccd5c57f1d57be73f902b984abc68e46",
+    "semantic_hash": "ccd5c57f1d57be73f902b984abc68e46"
+  },
+  "app/src/main/java/com/nuvio/tv/domain/model/AuthState.kt": {
+    "mtime": 1788029445.279082,
+    "ast_hash": "9219c85e3cf884c73dec41cae39905b0",
+    "semantic_hash": "9219c85e3cf884c73dec41cae39905b0"
+  },
+  "app/src/main/java/com/nuvio/tv/domain/model/CardDepthStyle.kt": {
+    "mtime": 1788029445.2686439,
+    "ast_hash": "c7d28abfe9ed7665c1c6655b1821b722",
+    "semantic_hash": "c7d28abfe9ed7665c1c6655b1821b722"
+  },
+  "app/src/main/java/com/nuvio/tv/domain/model/CatalogDescriptorExtensions.kt": {
+    "mtime": 1788029445.2680495,
+    "ast_hash": "c4886a0b746ec64483c213e5363dd14f",
+    "semantic_hash": "c4886a0b746ec64483c213e5363dd14f"
+  },
+  "app/src/main/java/com/nuvio/tv/domain/model/CatalogRow.kt": {
+    "mtime": 1788029445.2764184,
+    "ast_hash": "9eef24d32265aa256214808c334c3138",
+    "semantic_hash": "9eef24d32265aa256214808c334c3138"
+  },
+  "app/src/main/java/com/nuvio/tv/domain/model/Collection.kt": {
+    "mtime": 1788029445.2697713,
+    "ast_hash": "383d8d4cc198be71972297e5c29ee4f5",
+    "semantic_hash": "383d8d4cc198be71972297e5c29ee4f5"
+  },
+  "app/src/main/java/com/nuvio/tv/domain/model/ContentType.kt": {
+    "mtime": 1788029445.2802901,
+    "ast_hash": "1c824ca64692f990b3250cb2aa230650",
+    "semantic_hash": "1c824ca64692f990b3250cb2aa230650"
+  },
+  "app/src/main/java/com/nuvio/tv/domain/model/ContinueWatchingCardStyle.kt": {
+    "mtime": 1788029445.2776737,
+    "ast_hash": "26ee2b4d94080257823f2994517f34d5",
+    "semantic_hash": "26ee2b4d94080257823f2994517f34d5"
+  },
+  "app/src/main/java/com/nuvio/tv/domain/model/ContinueWatchingSortMode.kt": {
+    "mtime": 1788029445.267462,
+    "ast_hash": "07dc891c4609fbf14987119632926652",
+    "semantic_hash": "07dc891c4609fbf14987119632926652"
+  },
+  "app/src/main/java/com/nuvio/tv/domain/model/CosmeticEntitlements.kt": {
+    "mtime": 1788029445.278519,
+    "ast_hash": "1eeba36998565d1c1292793157dee96d",
+    "semantic_hash": "1eeba36998565d1c1292793157dee96d"
+  },
+  "app/src/main/java/com/nuvio/tv/domain/model/DebridSettings.kt": {
+    "mtime": 1788029445.2743871,
+    "ast_hash": "063ea90f9c7528d595fea4ebfcf37b5a",
+    "semantic_hash": "063ea90f9c7528d595fea4ebfcf37b5a"
+  },
+  "app/src/main/java/com/nuvio/tv/domain/model/DiscoverLocation.kt": {
+    "mtime": 1788029445.2713308,
+    "ast_hash": "911170cd43f330fef47fff26764c6233",
+    "semantic_hash": "911170cd43f330fef47fff26764c6233"
+  },
+  "app/src/main/java/com/nuvio/tv/domain/model/EpisodeOptionsOverlayStyle.kt": {
+    "mtime": 1788029445.2779803,
+    "ast_hash": "906f2d687f069a494641d25d040b64f7",
+    "semantic_hash": "906f2d687f069a494641d25d040b64f7"
+  },
+  "app/src/main/java/com/nuvio/tv/domain/model/ExperienceMode.kt": {
+    "mtime": 1788029445.2692044,
+    "ast_hash": "48b2525babc80a871b0b917c6a6de7a3",
+    "semantic_hash": "48b2525babc80a871b0b917c6a6de7a3"
+  },
+  "app/src/main/java/com/nuvio/tv/domain/model/FocusedPosterTrailerPlaybackTarget.kt": {
+    "mtime": 1788029445.2689345,
+    "ast_hash": "532406e2293e28522b62079dddf1edff",
+    "semantic_hash": "532406e2293e28522b62079dddf1edff"
+  },
+  "app/src/main/java/com/nuvio/tv/domain/model/FolderViewMode.kt": {
+    "mtime": 1788029445.273048,
+    "ast_hash": "c93e96484017df62bfa8d1d264fecade",
+    "semantic_hash": "c93e96484017df62bfa8d1d264fecade"
+  },
+  "app/src/main/java/com/nuvio/tv/domain/model/HomeLayout.kt": {
+    "mtime": 1788029445.2782674,
+    "ast_hash": "aa4146f6349e3447dc668c35d79a561b",
+    "semantic_hash": "aa4146f6349e3447dc668c35d79a561b"
+  },
+  "app/src/main/java/com/nuvio/tv/domain/model/ImdbRatingVisibility.kt": {
+    "mtime": 1788029445.2724736,
+    "ast_hash": "676143ee6e3b38325f12fe8dd748c2d3",
+    "semantic_hash": "676143ee6e3b38325f12fe8dd748c2d3"
+  },
+  "app/src/main/java/com/nuvio/tv/domain/model/LibraryListTabLocalization.kt": {
+    "mtime": 1788029445.2708354,
+    "ast_hash": "0c4778316b7d8720db4e5648f19c28a1",
+    "semantic_hash": "0c4778316b7d8720db4e5648f19c28a1"
+  },
+  "app/src/main/java/com/nuvio/tv/domain/model/LibraryModels.kt": {
+    "mtime": 1788029445.2732935,
+    "ast_hash": "ecfe4505050813b72c2b3ed9b96ba437",
+    "semantic_hash": "ecfe4505050813b72c2b3ed9b96ba437"
+  },
+  "app/src/main/java/com/nuvio/tv/domain/model/LibrarySyncModels.kt": {
+    "mtime": 1788029445.2805483,
+    "ast_hash": "6894346cfcf7c03ee5111988ea2e0200",
+    "semantic_hash": "6894346cfcf7c03ee5111988ea2e0200"
+  },
+  "app/src/main/java/com/nuvio/tv/domain/model/LibrarySyncReducer.kt": {
+    "mtime": 1788029445.2738073,
+    "ast_hash": "9054672a60568c57f26c10336e88269c",
+    "semantic_hash": "9054672a60568c57f26c10336e88269c"
+  },
+  "app/src/main/java/com/nuvio/tv/domain/model/MDBListRatings.kt": {
+    "mtime": 1788029445.2767565,
+    "ast_hash": "58eb775e9a5a847112fdd27b8d064cb4",
+    "semantic_hash": "58eb775e9a5a847112fdd27b8d064cb4"
+  },
+  "app/src/main/java/com/nuvio/tv/domain/model/MDBListSettings.kt": {
+    "mtime": 1788029445.275857,
+    "ast_hash": "a2bc916f2f0cb57cd6ed0b74b538a7e2",
+    "semantic_hash": "a2bc916f2f0cb57cd6ed0b74b538a7e2"
+  },
+  "app/src/main/java/com/nuvio/tv/domain/model/MemberAccess.kt": {
+    "mtime": 1788029445.2722058,
+    "ast_hash": "022e90110b203f1d0230892c8664526d",
+    "semantic_hash": "022e90110b203f1d0230892c8664526d"
+  },
+  "app/src/main/java/com/nuvio/tv/domain/model/MembershipOverview.kt": {
+    "mtime": 1788029445.2793372,
+    "ast_hash": "394821dc0d1157e5890fa511fad16e39",
+    "semantic_hash": "394821dc0d1157e5890fa511fad16e39"
+  },
+  "app/src/main/java/com/nuvio/tv/domain/model/Meta.kt": {
+    "mtime": 1788029445.2727761,
+    "ast_hash": "e9bf3a1f5162371a22cbad9f7ff45d69",
+    "semantic_hash": "e9bf3a1f5162371a22cbad9f7ff45d69"
+  },
+  "app/src/main/java/com/nuvio/tv/domain/model/MetaPreview.kt": {
+    "mtime": 1788029445.274689,
+    "ast_hash": "84366979753d5f05832c9db663c27bb8",
+    "semantic_hash": "84366979753d5f05832c9db663c27bb8"
+  },
+  "app/src/main/java/com/nuvio/tv/domain/model/PersonDetail.kt": {
+    "mtime": 1788029445.2749772,
+    "ast_hash": "6dddb74d8aed8ac425526ad6f6dab31b",
+    "semantic_hash": "6dddb74d8aed8ac425526ad6f6dab31b"
+  },
+  "app/src/main/java/com/nuvio/tv/domain/model/Placeholder.kt": {
+    "mtime": 1788029445.2761354,
+    "ast_hash": "e8f3729704bf4df06ad6cde51b86f767",
+    "semantic_hash": "e8f3729704bf4df06ad6cde51b86f767"
+  },
+  "app/src/main/java/com/nuvio/tv/domain/model/Plugin.kt": {
+    "mtime": 1788029445.2700267,
+    "ast_hash": "b8a24b9fd1f0530acaf17a6d3eb439dd",
+    "semantic_hash": "b8a24b9fd1f0530acaf17a6d3eb439dd"
+  },
+  "app/src/main/java/com/nuvio/tv/domain/model/PosterShape.kt": {
+    "mtime": 1788029445.2798166,
+    "ast_hash": "406e506174d166551c2c070e37b31165",
+    "semantic_hash": "406e506174d166551c2c070e37b31165"
+  },
+  "app/src/main/java/com/nuvio/tv/domain/model/ProfileAvatarColors.kt": {
+    "mtime": 1788029445.2683294,
+    "ast_hash": "2ee9c1a9cf36877fc58dfd1bf893ef98",
+    "semantic_hash": "2ee9c1a9cf36877fc58dfd1bf893ef98"
+  },
+  "app/src/main/java/com/nuvio/tv/domain/model/ProfileBackground.kt": {
+    "mtime": 1788029445.273521,
+    "ast_hash": "54bd14ecaafe1c6fdcb8f4493b1da8ae",
+    "semantic_hash": "54bd14ecaafe1c6fdcb8f4493b1da8ae"
+  },
+  "app/src/main/java/com/nuvio/tv/domain/model/SavedLibraryItem.kt": {
+    "mtime": 1788029445.277369,
+    "ast_hash": "c761b11487a84d8504fc62a22325112c",
+    "semantic_hash": "c761b11487a84d8504fc62a22325112c"
+  },
+  "app/src/main/java/com/nuvio/tv/domain/model/ServerConfiguration.kt": {
+    "mtime": 1788029445.2740939,
+    "ast_hash": "3bff53d80450d94a65c8471b33b3706d",
+    "semantic_hash": "3bff53d80450d94a65c8471b33b3706d"
+  },
+  "app/src/main/java/com/nuvio/tv/domain/model/SettingsUiStyle.kt": {
+    "mtime": 1788029445.2800338,
+    "ast_hash": "6714aed16e0cc357b31e166debc24194",
+    "semantic_hash": "6714aed16e0cc357b31e166debc24194"
+  },
+  "app/src/main/java/com/nuvio/tv/domain/model/Stream.kt": {
+    "mtime": 1788029445.2788546,
+    "ast_hash": "66c0b458632ac473fa186b0084b60061",
+    "semantic_hash": "66c0b458632ac473fa186b0084b60061"
+  },
+  "app/src/main/java/com/nuvio/tv/domain/model/Subtitle.kt": {
+    "mtime": 1788029445.2795575,
+    "ast_hash": "07d3f6168263f6e88603b27b07206b53",
+    "semantic_hash": "07d3f6168263f6e88603b27b07206b53"
+  },
+  "app/src/main/java/com/nuvio/tv/domain/model/ThemeAccess.kt": {
+    "mtime": 1788029445.2677712,
+    "ast_hash": "ac2c9592eb74b1be67c8619f1f552df2",
+    "semantic_hash": "ac2c9592eb74b1be67c8619f1f552df2"
+  },
+  "app/src/main/java/com/nuvio/tv/domain/model/TmdbSettings.kt": {
+    "mtime": 1788029445.270559,
+    "ast_hash": "b8156208c17e7a684a1b6ab92e3cca84",
+    "semantic_hash": "b8156208c17e7a684a1b6ab92e3cca84"
+  },
+  "app/src/main/java/com/nuvio/tv/domain/model/TrackingAttribution.kt": {
+    "mtime": 1788029445.271933,
+    "ast_hash": "bdbea9b6e6c25a603eb3cf8357316609",
+    "semantic_hash": "bdbea9b6e6c25a603eb3cf8357316609"
+  },
+  "app/src/main/java/com/nuvio/tv/domain/model/TraktCommentReview.kt": {
+    "mtime": 1788029445.270293,
+    "ast_hash": "5d67948a2d4b8d62804514fa4ab7affe",
+    "semantic_hash": "5d67948a2d4b8d62804514fa4ab7affe"
+  },
+  "app/src/main/java/com/nuvio/tv/domain/model/UserProfile.kt": {
+    "mtime": 1788029445.2770085,
+    "ast_hash": "8092b9863b8391baf562deec64449ed2",
+    "semantic_hash": "8092b9863b8391baf562deec64449ed2"
+  },
+  "app/src/main/java/com/nuvio/tv/domain/model/WatchProgress.kt": {
+    "mtime": 1788029445.269499,
+    "ast_hash": "d56bc7da7290ae2477a06625080e5e62",
+    "semantic_hash": "d56bc7da7290ae2477a06625080e5e62"
+  },
+  "app/src/main/java/com/nuvio/tv/domain/model/WatchedItem.kt": {
+    "mtime": 1788029445.2755544,
+    "ast_hash": "f3875f42d512c0f3edd2d2ccf06d1e74",
+    "semantic_hash": "f3875f42d512c0f3edd2d2ccf06d1e74"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/AudioDelayMediaSource.kt": {
+    "mtime": 1788029445.402089,
+    "ast_hash": "0bdec0b218fee4adb1656bee3c6c2557",
+    "semantic_hash": "0bdec0b218fee4adb1656bee3c6c2557"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/AudioOutputRouteDetector.kt": {
+    "mtime": 1788029445.420558,
+    "ast_hash": "fe5cd4c448dc8c06282336459a7d3032",
+    "semantic_hash": "fe5cd4c448dc8c06282336459a7d3032"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/AudioSelectionOverlay.kt": {
+    "mtime": 1788029445.4158795,
+    "ast_hash": "f9485ca708498c898325d6f015750758",
+    "semantic_hash": "f9485ca708498c898325d6f015750758"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/CustomDefaultTrackNameProvider.kt": {
+    "mtime": 1788029445.4136288,
+    "ast_hash": "7db611bb0ef8231e750ee1ae77a78712",
+    "semantic_hash": "7db611bb0ef8231e750ee1ae77a78712"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/DisplayModeOverlay.kt": {
+    "mtime": 1788029445.3925145,
+    "ast_hash": "7685185405fdcca5aa54b3d6f93d2072",
+    "semantic_hash": "7685185405fdcca5aa54b3d6f93d2072"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/DolbyVisionBaseLayerPolicy.kt": {
+    "mtime": 1788029445.3929121,
+    "ast_hash": "2ca237eb3a016f210e6b247427bbb222",
+    "semantic_hash": "2ca237eb3a016f210e6b247427bbb222"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/DolbyVisionCodecFallback.kt": {
+    "mtime": 1788029445.3949006,
+    "ast_hash": "928ffe18f113c67fdd79c55a53798ba7",
+    "semantic_hash": "928ffe18f113c67fdd79c55a53798ba7"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/EpisodesSidePanel.kt": {
+    "mtime": 1788029445.39217,
+    "ast_hash": "d603db38800144199a0d9620ee9f7247",
+    "semantic_hash": "d603db38800144199a0d9620ee9f7247"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/GainAudioProcessor.kt": {
+    "mtime": 1788029445.3936286,
+    "ast_hash": "fc3644129849d974f7d682990cecc5e2",
+    "semantic_hash": "fc3644129849d974f7d682990cecc5e2"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/LastPlaybackDiagnostics.kt": {
+    "mtime": 1788029445.418633,
+    "ast_hash": "db95bdb5b579974d9b147212980a284b",
+    "semantic_hash": "db95bdb5b579974d9b147212980a284b"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/LivePlaybackUiPolicy.kt": {
+    "mtime": 1788029445.4041882,
+    "ast_hash": "569ab3a4de76996bd462754925d8e120",
+    "semantic_hash": "569ab3a4de76996bd462754925d8e120"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/LoadingOverlay.kt": {
+    "mtime": 1788029445.403031,
+    "ast_hash": "456cb3c17f0ca3c614e793a2c2f1a02e",
+    "semantic_hash": "456cb3c17f0ca3c614e793a2c2f1a02e"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/LoggingDataSource.kt": {
+    "mtime": 1788029445.3955162,
+    "ast_hash": "28efecf2f587721458433f54f8657ba8",
+    "semantic_hash": "28efecf2f587721458433f54f8657ba8"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/NextEpisodeEndPromptOverlay.kt": {
+    "mtime": 1788029445.3997428,
+    "ast_hash": "dd2161c399a404747859bad1ca443270",
+    "semantic_hash": "dd2161c399a404747859bad1ca443270"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/NuvioAssMatroskaExtractor.kt": {
+    "mtime": 1788029445.4194357,
+    "ast_hash": "a67ef21bebdca085da65ef2cd368783a",
+    "semantic_hash": "a67ef21bebdca085da65ef2cd368783a"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/NuvioExoPlayerPerformanceHelper.kt": {
+    "mtime": 1788029445.4142377,
+    "ast_hash": "d914d253093b2e155b86296bd655aded",
+    "semantic_hash": "d914d253093b2e155b86296bd655aded"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/NuvioMpvSurfaceView.kt": {
+    "mtime": 1788029445.4222019,
+    "ast_hash": "b5f9d212ebc8fe1adb72838eda5d7883",
+    "semantic_hash": "b5f9d212ebc8fe1adb72838eda5d7883"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/ParallelRangeDataSource.kt": {
+    "mtime": 1788029445.4024718,
+    "ast_hash": "6abb724d45884c2b784f283f354ba324",
+    "semantic_hash": "6abb724d45884c2b784f283f354ba324"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/ParallelRangeRetryAfter.kt": {
+    "mtime": 1788029445.3975017,
+    "ast_hash": "86ff9f7372de60e5848d490e45027bd8",
+    "semantic_hash": "86ff9f7372de60e5848d490e45027bd8"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/ParentalGuideOverlay.kt": {
+    "mtime": 1788029445.3963757,
+    "ast_hash": "1da878d00627a0e612c5577865d93f96",
+    "semantic_hash": "1da878d00627a0e612c5577865d93f96"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/PauseOverlay.kt": {
+    "mtime": 1788029445.4008334,
+    "ast_hash": "a844ec9cff54a07412e49be80dd29aa9",
+    "semantic_hash": "a844ec9cff54a07412e49be80dd29aa9"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/PlaybackConnectionEvents.kt": {
+    "mtime": 1788029445.3957975,
+    "ast_hash": "d1541518467c21f045be09a0138bfcb9",
+    "semantic_hash": "d1541518467c21f045be09a0138bfcb9"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/PlaybackSpeedAwareAudioRenderer.kt": {
+    "mtime": 1788029445.403677,
+    "ast_hash": "e08592ccd4587cd9886ec1d8888a7eb9",
+    "semantic_hash": "e08592ccd4587cd9886ec1d8888a7eb9"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/PlaybackSpeedAwareAudioSink.kt": {
+    "mtime": 1788029445.4058414,
+    "ast_hash": "b86c349630270e180a37412b811c6ca9",
+    "semantic_hash": "b86c349630270e180a37412b811c6ca9"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerAspectScaleUtils.kt": {
+    "mtime": 1788029445.3966832,
+    "ast_hash": "dba99543e89d3c62f63314a218e49250",
+    "semantic_hash": "dba99543e89d3c62f63314a218e49250"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerAutoplaySessionRules.kt": {
+    "mtime": 1788029445.3969593,
+    "ast_hash": "856d565a761902f4c4e9a9c0bdd81dc5",
+    "semantic_hash": "856d565a761902f4c4e9a9c0bdd81dc5"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerBitrateEstimator.kt": {
+    "mtime": 1788029445.4113839,
+    "ast_hash": "58900b2fec59feb6ca0205152adaf099",
+    "semantic_hash": "58900b2fec59feb6ca0205152adaf099"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerDebugStatsOverlay.kt": {
+    "mtime": 1788029445.4227488,
+    "ast_hash": "d7449f4e6af447f22fbabe8322743153",
+    "semantic_hash": "d7449f4e6af447f22fbabe8322743153"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerDisplayModeUtils.kt": {
+    "mtime": 1788029445.398694,
+    "ast_hash": "01203d7f78bcc0f61ad05bed59190efb",
+    "semantic_hash": "01203d7f78bcc0f61ad05bed59190efb"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerFirstFrameCodecRecoveryPolicy.kt": {
+    "mtime": 1788029445.3984256,
+    "ast_hash": "2e18d9dc2f748d6466a73431b14394f9",
+    "semantic_hash": "2e18d9dc2f748d6466a73431b14394f9"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerFirstFrameWatchdogPolicy.kt": {
+    "mtime": 1788029445.4131124,
+    "ast_hash": "8f32d025101037c65ebd3461c08d2d34",
+    "semantic_hash": "8f32d025101037c65ebd3461c08d2d34"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerFrameRateHeuristics.kt": {
+    "mtime": 1788029445.4183068,
+    "ast_hash": "10f7fbbd97dca022f6727f7ad89672ab",
+    "semantic_hash": "10f7fbbd97dca022f6727f7ad89672ab"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerLibassCompat.kt": {
+    "mtime": 1788029445.421866,
+    "ast_hash": "9d3363d7a8cb1c04eb111a1a5b70116f",
+    "semantic_hash": "9d3363d7a8cb1c04eb111a1a5b70116f"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerLibassExtensions.kt": {
+    "mtime": 1788029445.4196625,
+    "ast_hash": "f88a26dae84ee4de4e3a203b140666fc",
+    "semantic_hash": "f88a26dae84ee4de4e3a203b140666fc"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerLoadingDiagnostics.kt": {
+    "mtime": 1788029445.396069,
+    "ast_hash": "ee0ef9bf7ad2015ab63568def8f431e0",
+    "semantic_hash": "ee0ef9bf7ad2015ab63568def8f431e0"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerMediaSessionMetadata.kt": {
+    "mtime": 1788029445.410865,
+    "ast_hash": "fe0d343dda36c47e933719a4d9481875",
+    "semantic_hash": "fe0d343dda36c47e933719a4d9481875"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerMediaSourceFactory.kt": {
+    "mtime": 1788029445.421241,
+    "ast_hash": "18577ce15eb5edf56099d54f284d24bc",
+    "semantic_hash": "18577ce15eb5edf56099d54f284d24bc"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerNavigationArgs.kt": {
+    "mtime": 1788029445.4123466,
+    "ast_hash": "a2a6fd14738acbffc69f9ed40f2e8637",
+    "semantic_hash": "a2a6fd14738acbffc69f9ed40f2e8637"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerNextEpisodeRules.kt": {
+    "mtime": 1788029445.4180381,
+    "ast_hash": "8aef4f905462bdfbb2c8cd18797ed59d",
+    "semantic_hash": "8aef4f905462bdfbb2c8cd18797ed59d"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerOverlayScaffold.kt": {
+    "mtime": 1788029445.4126186,
+    "ast_hash": "54faed80c990445f153b95630373edae",
+    "semantic_hash": "54faed80c990445f153b95630373edae"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerPlaybackAnalyticsDiagnostics.kt": {
+    "mtime": 1788029445.4090135,
+    "ast_hash": "c5df3694be25529502c13c8654b9e5e0",
+    "semantic_hash": "c5df3694be25529502c13c8654b9e5e0"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerPlaybackNetworking.kt": {
+    "mtime": 1788029445.3952224,
+    "ast_hash": "0adcfd701de3b8ccfa4c8f142e13ba15",
+    "semantic_hash": "0adcfd701de3b8ccfa4c8f142e13ba15"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerRuntimeController.kt": {
+    "mtime": 1788029445.4080644,
+    "ast_hash": "29103bb6b476c8c28a07542032fd1eca",
+    "semantic_hash": "29103bb6b476c8c28a07542032fd1eca"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerRuntimeControllerAfrPreflight.kt": {
+    "mtime": 1788029445.4097517,
+    "ast_hash": "95d63a1792f408149d0410e2489fa13a",
+    "semantic_hash": "95d63a1792f408149d0410e2489fa13a"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerRuntimeControllerAudioDelayRoutes.kt": {
+    "mtime": 1788029445.3990562,
+    "ast_hash": "7dd148737861e6c04cca97f67f290b1a",
+    "semantic_hash": "7dd148737861e6c04cca97f67f290b1a"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerRuntimeControllerEngineFailover.kt": {
+    "mtime": 1788029445.4199994,
+    "ast_hash": "8abb228c70f490e1f23bc3087566ebf5",
+    "semantic_hash": "8abb228c70f490e1f23bc3087566ebf5"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerRuntimeControllerErrorRecovery.kt": {
+    "mtime": 1788029445.401811,
+    "ast_hash": "508f833c49a247bbb4ece0d95e467cb0",
+    "semantic_hash": "508f833c49a247bbb4ece0d95e467cb0"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerRuntimeControllerInitialization.kt": {
+    "mtime": 1788029445.4190383,
+    "ast_hash": "64f89de149e6854afba6ea330ccd600a",
+    "semantic_hash": "64f89de149e6854afba6ea330ccd600a"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerRuntimeControllerLifecycle.kt": {
+    "mtime": 1788029445.4039357,
+    "ast_hash": "621fc5fc280e7396044b348cd0532a5a",
+    "semantic_hash": "621fc5fc280e7396044b348cd0532a5a"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerRuntimeControllerMetadata.kt": {
+    "mtime": 1788029445.4070625,
+    "ast_hash": "e314d554c697852bc2804bc7c158fc4a",
+    "semantic_hash": "e314d554c697852bc2804bc7c158fc4a"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerRuntimeControllerMpv.kt": {
+    "mtime": 1788029445.4117346,
+    "ast_hash": "63b2eb7c35bee99815ddf9540b6e628e",
+    "semantic_hash": "63b2eb7c35bee99815ddf9540b6e628e"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerRuntimeControllerObservers.kt": {
+    "mtime": 1788029445.4005492,
+    "ast_hash": "a4a3ea19a8a2013a8d3f41ae24b6e9e9",
+    "semantic_hash": "a4a3ea19a8a2013a8d3f41ae24b6e9e9"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerRuntimeControllerPlaybackEvents.kt": {
+    "mtime": 1788029445.4151084,
+    "ast_hash": "5e8460d091ae78c6128408542d1adaa1",
+    "semantic_hash": "5e8460d091ae78c6128408542d1adaa1"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerRuntimeControllerScrobble.kt": {
+    "mtime": 1788029445.4106004,
+    "ast_hash": "ab6254a8dd3b0c66d769fa876d29ed92",
+    "semantic_hash": "ab6254a8dd3b0c66d769fa876d29ed92"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerRuntimeControllerStartup.kt": {
+    "mtime": 1788029445.3943036,
+    "ast_hash": "92b03931bb2c25f39fc722e4b41f9209",
+    "semantic_hash": "92b03931bb2c25f39fc722e4b41f9209"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerRuntimeControllerStillWatching.kt": {
+    "mtime": 1788029445.4224584,
+    "ast_hash": "71702bf6811f787d1effe8f1f5766012",
+    "semantic_hash": "71702bf6811f787d1effe8f1f5766012"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerRuntimeControllerStreams.kt": {
+    "mtime": 1788029445.39946,
+    "ast_hash": "909d2afa5ab8ea22768fbdccb256e2e4",
+    "semantic_hash": "909d2afa5ab8ea22768fbdccb256e2e4"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerRuntimeControllerSubtitleTiming.kt": {
+    "mtime": 1788029445.4045258,
+    "ast_hash": "15225a9ef22db9259480e06d5deb2420",
+    "semantic_hash": "15225a9ef22db9259480e06d5deb2420"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerRuntimeControllerTorrent.kt": {
+    "mtime": 1788029445.4049375,
+    "ast_hash": "a759fdbb41adfe9bcb79df231963675c",
+    "semantic_hash": "a759fdbb41adfe9bcb79df231963675c"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerRuntimeControllerTrackSelection.kt": {
+    "mtime": 1788029445.403392,
+    "ast_hash": "6c7cc320f7123241c1da6a485f1e40ab",
+    "semantic_hash": "6c7cc320f7123241c1da6a485f1e40ab"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerRuntimeControllerTracks.kt": {
+    "mtime": 1788029445.4148834,
+    "ast_hash": "983d8e69933b0f85c6b66a0f759bcd41",
+    "semantic_hash": "983d8e69933b0f85c6b66a0f759bcd41"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerScreen.kt": {
+    "mtime": 1788029445.4011972,
+    "ast_hash": "e3b74db82ce011c782244eeb59d56982",
+    "semantic_hash": "e3b74db82ce011c782244eeb59d56982"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerScrobblePolicy.kt": {
+    "mtime": 1788029445.4133644,
+    "ast_hash": "30a90e1af4a27b5f5c46ea18751b44c5",
+    "semantic_hash": "30a90e1af4a27b5f5c46ea18751b44c5"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerScrubRates.kt": {
+    "mtime": 1788029445.3939528,
+    "ast_hash": "eca02f2a897352c4dceb85886a2e5dfa",
+    "semantic_hash": "eca02f2a897352c4dceb85886a2e5dfa"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerSidecarSubtitles.kt": {
+    "mtime": 1788029445.4139082,
+    "ast_hash": "40136822ec657929d321f40425b86737",
+    "semantic_hash": "40136822ec657929d321f40425b86737"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerStallWatchdogPolicy.kt": {
+    "mtime": 1788029445.409307,
+    "ast_hash": "5270b29dc51d65bb1c7d254c321adcd5",
+    "semantic_hash": "5270b29dc51d65bb1c7d254c321adcd5"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerStartupLoadingPolicy.kt": {
+    "mtime": 1788029445.4128466,
+    "ast_hash": "6589522f74b0c87537637a59e174a89f",
+    "semantic_hash": "6589522f74b0c87537637a59e174a89f"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerStartupPlaybackPolicy.kt": {
+    "mtime": 1788029445.4052017,
+    "ast_hash": "d57c9f3d41e2718e4c730e19799b09a6",
+    "semantic_hash": "d57c9f3d41e2718e4c730e19799b09a6"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerSubtitleCueParser.kt": {
+    "mtime": 1788029445.4153726,
+    "ast_hash": "3dd839ce4cefe16c1a729bf0bf15bc39",
+    "semantic_hash": "3dd839ce4cefe16c1a729bf0bf15bc39"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerSubtitleRtlFix.kt": {
+    "mtime": 1788029445.3932867,
+    "ast_hash": "a2489ac6c28a1234e4388206387bb20b",
+    "semantic_hash": "a2489ac6c28a1234e4388206387bb20b"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerSubtitleUtils.kt": {
+    "mtime": 1788029445.4172256,
+    "ast_hash": "63d3a4c3c2445c1a21ee4983a6410076",
+    "semantic_hash": "63d3a4c3c2445c1a21ee4983a6410076"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerUiState.kt": {
+    "mtime": 1788029445.4120903,
+    "ast_hash": "41131723ced7cd3e8550c80ebc14a52f",
+    "semantic_hash": "41131723ced7cd3e8550c80ebc14a52f"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerViewModel.kt": {
+    "mtime": 1788029445.3981576,
+    "ast_hash": "c605a551763e263e7a3b4aa22e5c7056",
+    "semantic_hash": "c605a551763e263e7a3b4aa22e5c7056"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/PostPlayOverlay.kt": {
+    "mtime": 1788029445.4156919,
+    "ast_hash": "827e22b62186a0202d6deb86edef6be8",
+    "semantic_hash": "827e22b62186a0202d6deb86edef6be8"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/PostPlayRecommendationController.kt": {
+    "mtime": 1788029445.4001212,
+    "ast_hash": "7c1216206e41932bdc97cc61568818bc",
+    "semantic_hash": "7c1216206e41932bdc97cc61568818bc"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/PostPlayRecommendationMetadata.kt": {
+    "mtime": 1788029445.4027517,
+    "ast_hash": "e9971a50a885a7ec8cf3f0a4b9c08c85",
+    "semantic_hash": "e9971a50a885a7ec8cf3f0a4b9c08c85"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/PostPlayRecommendationOverlay.kt": {
+    "mtime": 1788029445.4075637,
+    "ast_hash": "309c67bc0983b7194986f019d079aadc",
+    "semantic_hash": "309c67bc0983b7194986f019d079aadc"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/PostPlayRecommendationPlayerWindow.kt": {
+    "mtime": 1788029445.417509,
+    "ast_hash": "3c4ad24f2706c549705f85b58b5c1070",
+    "semantic_hash": "3c4ad24f2706c549705f85b58b5c1070"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/PostPlayRecommendationState.kt": {
+    "mtime": 1788029445.4177747,
+    "ast_hash": "5cd594a8d6734ec2bbe13c750c2d0a9d",
+    "semantic_hash": "5cd594a8d6734ec2bbe13c750c2d0a9d"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/PostPlayRecommendationTiming.kt": {
+    "mtime": 1788029445.3946025,
+    "ast_hash": "e9a0660c87222c029492709a5c8abd90",
+    "semantic_hash": "e9a0660c87222c029492709a5c8abd90"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/SkipIntroButton.kt": {
+    "mtime": 1788029445.411129,
+    "ast_hash": "bef9367fb8f274ffbe8c373438e73429",
+    "semantic_hash": "bef9367fb8f274ffbe8c373438e73429"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/SkipIntroVisibilityRules.kt": {
+    "mtime": 1788029445.4161317,
+    "ast_hash": "f788b32075296fd75cc2a8a47410d3cd",
+    "semantic_hash": "f788b32075296fd75cc2a8a47410d3cd"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/StreamComponents.kt": {
+    "mtime": 1788029445.397868,
+    "ast_hash": "f06683a549c7fe9e70d53d6781b5b570",
+    "semantic_hash": "f06683a549c7fe9e70d53d6781b5b570"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/StreamInfoOverlay.kt": {
+    "mtime": 1788029445.4202905,
+    "ast_hash": "99ec3bba25cd41e97c577733756115ba",
+    "semantic_hash": "99ec3bba25cd41e97c577733756115ba"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/StreamSourcesSidePanel.kt": {
+    "mtime": 1788029445.4085677,
+    "ast_hash": "f40459d1b2e3e5a0f4405ca471d9fddf",
+    "semantic_hash": "f40459d1b2e3e5a0f4405ca471d9fddf"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/SubtitleDelayConfig.kt": {
+    "mtime": 1788029445.401471,
+    "ast_hash": "e6be15ea41a4470bc919d0808ea6b3a1",
+    "semantic_hash": "e6be15ea41a4470bc919d0808ea6b3a1"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/SubtitleMojibakeSanitizer.kt": {
+    "mtime": 1788029445.414475,
+    "ast_hash": "f134b6a08af79e56991b3634f9e308fc",
+    "semantic_hash": "f134b6a08af79e56991b3634f9e308fc"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/SubtitleSdhFilter.kt": {
+    "mtime": 1788029445.4100292,
+    "ast_hash": "7b16a9bab61156ac395e0bfc2be1acff",
+    "semantic_hash": "7b16a9bab61156ac395e0bfc2be1acff"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/SubtitleSelectionOverlay.kt": {
+    "mtime": 1788029445.4055672,
+    "ast_hash": "790aa3c488bf1005841e419f12027371",
+    "semantic_hash": "790aa3c488bf1005841e419f12027371"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/SubtitleStyleSidePanel.kt": {
+    "mtime": 1788029445.4215882,
+    "ast_hash": "a8e78f7a04890096fb252d0e535f2f85",
+    "semantic_hash": "a8e78f7a04890096fb252d0e535f2f85"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/SubtitleTimingDialog.kt": {
+    "mtime": 1788029445.397272,
+    "ast_hash": "dbeddb4413a8be3676e2feaded6b8c05",
+    "semantic_hash": "dbeddb4413a8be3676e2feaded6b8c05"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/TorrentOverlay.kt": {
+    "mtime": 1788029445.4208925,
+    "ast_hash": "18b62e91b9f1bdbc7024ad6b0679be8e",
+    "semantic_hash": "18b62e91b9f1bdbc7024ad6b0679be8e"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/player/Vc1VideoFormatHeuristics.kt": {
+    "mtime": 1788029445.4103196,
+    "ast_hash": "59faa4c266a1acf9a648003916d9e8c8",
+    "semantic_hash": "59faa4c266a1acf9a648003916d9e8c8"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/plugin/PluginScreen.kt": {
+    "mtime": 1788029445.4321024,
+    "ast_hash": "4783f5eb05b7644134dd33f7f213455c",
+    "semantic_hash": "4783f5eb05b7644134dd33f7f213455c"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/plugin/PluginUiState.kt": {
+    "mtime": 1788029445.4327276,
+    "ast_hash": "6606e87eaea6cb6f81db586e4f5ab773",
+    "semantic_hash": "6606e87eaea6cb6f81db586e4f5ab773"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/plugin/PluginViewModel.kt": {
+    "mtime": 1788029445.4324617,
+    "ast_hash": "35d2120b31331e20a2e197a09667be8a",
+    "semantic_hash": "35d2120b31331e20a2e197a09667be8a"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/settings/AboutScreen.kt": {
+    "mtime": 1788029445.4569771,
+    "ast_hash": "ceeed11cc02cc902fc5e8da94fb874e5",
+    "semantic_hash": "ceeed11cc02cc902fc5e8da94fb874e5"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/settings/AdvancedSettingsViewModel.kt": {
+    "mtime": 1788029445.4581609,
+    "ast_hash": "f635f56a6644117f89efd0850642df1f",
+    "semantic_hash": "f635f56a6644117f89efd0850642df1f"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/settings/AnimeSkipSettingsScreen.kt": {
+    "mtime": 1788029445.4547384,
+    "ast_hash": "08c762f0ffb275ffe15508bc8cf0e4f3",
+    "semantic_hash": "08c762f0ffb275ffe15508bc8cf0e4f3"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/settings/AnimeSkipSettingsViewModel.kt": {
+    "mtime": 1788029445.4446971,
+    "ast_hash": "bfa979f8b10990a6bd68b3d172b42620",
+    "semantic_hash": "bfa979f8b10990a6bd68b3d172b42620"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/settings/DebridSettingsScreen.kt": {
+    "mtime": 1788029445.445551,
+    "ast_hash": "f8799444f479d401d210f40061507a84",
+    "semantic_hash": "f8799444f479d401d210f40061507a84"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/settings/DebridSettingsViewModel.kt": {
+    "mtime": 1788029445.4516711,
+    "ast_hash": "8383ddc7871cb3ad40458c3210d44b4a",
+    "semantic_hash": "8383ddc7871cb3ad40458c3210d44b4a"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/settings/DebugMemberTierCard.kt": {
+    "mtime": 1788029445.455382,
+    "ast_hash": "b0f358f2699ba7e5b63ed580106305b6",
+    "semantic_hash": "b0f358f2699ba7e5b63ed580106305b6"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/settings/DebugSettingsScreen.kt": {
+    "mtime": 1788029445.447821,
+    "ast_hash": "bc787f9960123730d85f613fb950b155",
+    "semantic_hash": "bc787f9960123730d85f613fb950b155"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/settings/DebugSettingsViewModel.kt": {
+    "mtime": 1788029445.4470897,
+    "ast_hash": "e7657d52535820b44fa812b7590d4708",
+    "semantic_hash": "e7657d52535820b44fa812b7590d4708"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/settings/DiagnosticsCard.kt": {
+    "mtime": 1788029445.4559302,
+    "ast_hash": "629e4f0c5ab5933de0d2b2e4c776ab26",
+    "semantic_hash": "629e4f0c5ab5933de0d2b2e4c776ab26"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/settings/EssentialPlaybackSettingsContent.kt": {
+    "mtime": 1788029445.456462,
+    "ast_hash": "99c8b781c552bf21fe51ae2141482c0d",
+    "semantic_hash": "99c8b781c552bf21fe51ae2141482c0d"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/settings/ExperienceModeConfirmationDialog.kt": {
+    "mtime": 1788029445.4587936,
+    "ast_hash": "56bfe2defcb95de545b3f074c752f64d",
+    "semantic_hash": "56bfe2defcb95de545b3f074c752f64d"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/settings/ExperienceModeSettingsViewModel.kt": {
+    "mtime": 1788029445.4463718,
+    "ast_hash": "32438455ce69624d261474545afd943a",
+    "semantic_hash": "32438455ce69624d261474545afd943a"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/settings/LayoutSettingsScreen.kt": {
+    "mtime": 1788029445.4551191,
+    "ast_hash": "050978745231e738a6ecb37b8edbb437",
+    "semantic_hash": "050978745231e738a6ecb37b8edbb437"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/settings/LayoutSettingsViewModel.kt": {
+    "mtime": 1788029445.450745,
+    "ast_hash": "3267d7e91252b02bcbba1be87df848d6",
+    "semantic_hash": "3267d7e91252b02bcbba1be87df848d6"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/settings/LicensesAttributionsScreen.kt": {
+    "mtime": 1788029445.45209,
+    "ast_hash": "fe6ee71437f6ceda6f4647b80723ee63",
+    "semantic_hash": "fe6ee71437f6ceda6f4647b80723ee63"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/settings/MDBListSettingsScreen.kt": {
+    "mtime": 1788029445.4528801,
+    "ast_hash": "febaafb0965433aa64d2ac67f3ee53b1",
+    "semantic_hash": "febaafb0965433aa64d2ac67f3ee53b1"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/settings/MDBListSettingsViewModel.kt": {
+    "mtime": 1788029445.456196,
+    "ast_hash": "617fff77ee6bf28c09d6bafc75a04542",
+    "semantic_hash": "617fff77ee6bf28c09d6bafc75a04542"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/settings/MemoryBudget.kt": {
+    "mtime": 1788029445.456722,
+    "ast_hash": "eb63858540927088d0269d0fe82060a0",
+    "semantic_hash": "eb63858540927088d0269d0fe82060a0"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/settings/NetworkSettingsScreen.kt": {
+    "mtime": 1788029445.4536986,
+    "ast_hash": "aebdc18bdced378f136a8fb95b043fb8",
+    "semantic_hash": "aebdc18bdced378f136a8fb95b043fb8"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/settings/PlaybackAudioSettings.kt": {
+    "mtime": 1788029445.450051,
+    "ast_hash": "59f7f1269b023ba38bbf41cdea937a95",
+    "semantic_hash": "59f7f1269b023ba38bbf41cdea937a95"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/settings/PlaybackAutoPlaySettings.kt": {
+    "mtime": 1788029445.4533079,
+    "ast_hash": "3707aeb5ab34cf93d04890e8d6c85bf3",
+    "semantic_hash": "3707aeb5ab34cf93d04890e8d6c85bf3"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/settings/PlaybackBufferNetworkSettings.kt": {
+    "mtime": 1788029445.4434667,
+    "ast_hash": "1196873bd7cd2ca568e5a8c258f2838a",
+    "semantic_hash": "1196873bd7cd2ca568e5a8c258f2838a"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/settings/PlaybackSettingsScreen.kt": {
+    "mtime": 1788029445.4573565,
+    "ast_hash": "e7ee75bb63e0d065d529dd1fb299c624",
+    "semantic_hash": "e7ee75bb63e0d065d529dd1fb299c624"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/settings/PlaybackSettingsSections.kt": {
+    "mtime": 1788029445.4482205,
+    "ast_hash": "524f957d15275b07d794b489c6916fe2",
+    "semantic_hash": "524f957d15275b07d794b489c6916fe2"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/settings/PlaybackSettingsViewModel.kt": {
+    "mtime": 1788029445.4438338,
+    "ast_hash": "947240bbc7543639abba00b5968d9762",
+    "semantic_hash": "947240bbc7543639abba00b5968d9762"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/settings/PlaybackSubtitleSettings.kt": {
+    "mtime": 1788029445.4486198,
+    "ast_hash": "46ba0cf013adfe6670cff79fd4191e38",
+    "semantic_hash": "46ba0cf013adfe6670cff79fd4191e38"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/settings/ProfileSettingsContent.kt": {
+    "mtime": 1788029445.4461393,
+    "ast_hash": "4dc24ab0ed3b67367e4b8f8f63e4254d",
+    "semantic_hash": "4dc24ab0ed3b67367e4b8f8f63e4254d"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/settings/ProfileSettingsViewModel.kt": {
+    "mtime": 1788029445.4496655,
+    "ast_hash": "1a5262e463826a65b84fe38de38740e4",
+    "semantic_hash": "1a5262e463826a65b84fe38de38740e4"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/settings/SentrySettingsDialog.kt": {
+    "mtime": 1788029445.4578862,
+    "ast_hash": "bb62c407a1623c7120555aef2bca06a2",
+    "semantic_hash": "bb62c407a1623c7120555aef2bca06a2"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/settings/SettingsDesignSystem.kt": {
+    "mtime": 1788029445.4450848,
+    "ast_hash": "b19936f1934f69fb0379074611faa18c",
+    "semantic_hash": "b19936f1934f69fb0379074611faa18c"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/settings/SettingsScreen.kt": {
+    "mtime": 1788029445.4525268,
+    "ast_hash": "1d0250ae98b3cd6957e68129d5bf0673",
+    "semantic_hash": "1d0250ae98b3cd6957e68129d5bf0673"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/settings/SettingsScrollIndicators.kt": {
+    "mtime": 1788029445.4503262,
+    "ast_hash": "0367f171cb301ee036dcf539f890e9a9",
+    "semantic_hash": "0367f171cb301ee036dcf539f890e9a9"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/settings/SimklSettingsConnectionPolicy.kt": {
+    "mtime": 1788029445.4576173,
+    "ast_hash": "53d887882154b2fde38f338d089fc945",
+    "semantic_hash": "53d887882154b2fde38f338d089fc945"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/settings/SimklSettingsViewModel.kt": {
+    "mtime": 1788029445.4441295,
+    "ast_hash": "9f438ae7763d3dc52458c6ae7b1cde72",
+    "semantic_hash": "9f438ae7763d3dc52458c6ae7b1cde72"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/settings/SupporterMembershipPanel.kt": {
+    "mtime": 1788029445.445916,
+    "ast_hash": "01123053755f3347882bac8be4f7fa3d",
+    "semantic_hash": "01123053755f3347882bac8be4f7fa3d"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/settings/SupportersContributorsScreen.kt": {
+    "mtime": 1788029445.451209,
+    "ast_hash": "58a27ae4cdd3e22b3f6f583c241db0a9",
+    "semantic_hash": "58a27ae4cdd3e22b3f6f583c241db0a9"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/settings/SupportersContributorsViewModel.kt": {
+    "mtime": 1788029445.453999,
+    "ast_hash": "06d7c42efd2eb5191a887783b0e58dff",
+    "semantic_hash": "06d7c42efd2eb5191a887783b0e58dff"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/settings/ThemeSettingsScreen.kt": {
+    "mtime": 1788029445.4467328,
+    "ast_hash": "ba403deb015912c222daad7f7ba7dd09",
+    "semantic_hash": "ba403deb015912c222daad7f7ba7dd09"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/settings/ThemeSettingsViewModel.kt": {
+    "mtime": 1788029445.4543025,
+    "ast_hash": "c47f1433159920c0084df99453feffaa",
+    "semantic_hash": "c47f1433159920c0084df99453feffaa"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/settings/TmdbSettingsScreen.kt": {
+    "mtime": 1788029445.4489465,
+    "ast_hash": "fa9cf365be018e4e936d690dbf7edc72",
+    "semantic_hash": "fa9cf365be018e4e936d690dbf7edc72"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/settings/TmdbSettingsViewModel.kt": {
+    "mtime": 1788029445.4556398,
+    "ast_hash": "90081a4d41bf09d5ccfef4863a6f0080",
+    "semantic_hash": "90081a4d41bf09d5ccfef4863a6f0080"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/settings/TrackingProviderDialogs.kt": {
+    "mtime": 1788029445.4585347,
+    "ast_hash": "937ee0a590300380408b6456b5e77ae1",
+    "semantic_hash": "937ee0a590300380408b6456b5e77ae1"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/settings/TrackingSettingsScreen.kt": {
+    "mtime": 1788029445.447447,
+    "ast_hash": "c45f38dda3267ec5e2f54370121f3f07",
+    "semantic_hash": "c45f38dda3267ec5e2f54370121f3f07"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/settings/TrackingSettingsViewModel.kt": {
+    "mtime": 1788029445.4444222,
+    "ast_hash": "2958f6ffd4cdb096527cf79d022d0700",
+    "semantic_hash": "2958f6ffd4cdb096527cf79d022d0700"
+  },
+  "app/src/main/java/com/nuvio/tv/ui/screens/settings/TraktViewModel.kt": {
+    "mtime": 1788029445.4493384,
+    "ast_hash": "fa05718ff6e8b9bfda4f649069da69e9",
+    "semantic_hash": "fa05718ff6e8b9bfda4f649069da69e9"
+  },
+  "docs/ai-media-research/benchmarks/2026-08-29-qwen-live-translate.json": {
+    "mtime": 1788029445.477901,
+    "ast_hash": "296e7abcc26fb10dceb9c8980a3a96b3",
+    "semantic_hash": "296e7abcc26fb10dceb9c8980a3a96b3"
+  },
+  "docs/ai-media-research/benchmarks/2026-08-29-subtitle-api-probes.json": {
+    "mtime": 1788029445.4780712,
+    "ast_hash": "93f9eba000184971f44a420bab141f15",
+    "semantic_hash": "93f9eba000184971f44a420bab141f15"
+  },
+  "docs/ai-media-research/lanes/01-commercial-realtime-dubbing.md": {
+    "mtime": 1788029445.4776044,
+    "ast_hash": "1c91f2773bd309528e7584c80259e34c",
+    "semantic_hash": "1c91f2773bd309528e7584c80259e34c"
+  },
+  "docs/ai-media-research/lanes/02-open-realtime-s2st.md": {
+    "mtime": 1788029445.4753146,
+    "ast_hash": "b841196a3c3a797e6a70b528875ccdd2",
+    "semantic_hash": "b841196a3c3a797e6a70b528875ccdd2"
+  },
+  "docs/ai-media-research/lanes/03-fast-subtitle-generation.md": {
+    "mtime": 1788029445.476628,
+    "ast_hash": "a2589ee24591c121296f89a9df6dea64",
+    "semantic_hash": "a2589ee24591c121296f89a9df6dea64"
+  },
+  "docs/ai-media-research/lanes/04-nuvio-extension-ecosystem.md": {
+    "mtime": 1788029445.4769924,
+    "ast_hash": "935407126ace36edb3644f06adc246ee",
+    "semantic_hash": "935407126ace36edb3644f06adc246ee"
+  },
+  "docs/ai-media-research/lanes/05-player-audio-integration.md": {
+    "mtime": 1788029445.4756598,
+    "ast_hash": "7917e34af19071c71b0d3379286c7424",
+    "semantic_hash": "7917e34af19071c71b0d3379286c7424"
+  },
+  "docs/ai-media-research/lanes/06-subtitle-integration-ux.md": {
+    "mtime": 1788029445.475993,
+    "ast_hash": "f587f02190d5b5a5b0b25e0047790666",
+    "semantic_hash": "f587f02190d5b5a5b0b25e0047790666"
+  },
+  "docs/ai-media-research/lanes/07-byok-security-tv-ux.md": {
+    "mtime": 1788029445.4763935,
+    "ast_hash": "ff657f281262241a772d248793d147c3",
+    "semantic_hash": "ff657f281262241a772d248793d147c3"
+  },
+  "docs/ai-media-research/lanes/08-feasibility-economics.md": {
+    "mtime": 1788029445.4774,
+    "ast_hash": "fccfa1e7e6ccdc630b497f9d112bc4c2",
+    "semantic_hash": "fccfa1e7e6ccdc630b497f9d112bc4c2"
+  }
+}

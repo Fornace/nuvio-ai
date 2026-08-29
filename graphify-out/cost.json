@@ -1,0 +1,13 @@
+{
+  "runs": [
+    {
+      "date": "2026-08-29T18:52:22.082242+00:00",
+      "input_tokens": 1502,
+      "output_tokens": 1356,
+      "files": 354,
+      "scope": "AI media integration architecture subset"
+    }
+  ],
+  "total_input_tokens": 1502,
+  "total_output_tokens": 1356
+}
