@@ -1,0 +1,79 @@
+{
+  "receipt_version": 1,
+  "review_date": "2026-08-29",
+  "host": {
+    "hardware": "Apple M5 Max, 48 GB",
+    "os_family": "macOS",
+    "notes": "Synthetic clean-speech transport and timing probes only. These are not film or TV accuracy benchmarks."
+  },
+  "source": {
+    "generator": "macOS say, Samantha voice, 160 words per minute",
+    "text": "Good evening. This is a subtitle timing test. The television needs stable words and accurate timestamps when a movie has no captions.",
+    "duration_seconds": 7.8984375
+  },
+  "probes": [
+    {
+      "provider": "Alibaba Cloud Model Studio",
+      "sdk": "dashscope 1.27.2",
+      "model": "qwen-audio-3.0-asr-flash-streaming",
+      "mode": "WebSocket streaming",
+      "input": "PCM signed 16-bit little-endian, 16 kHz, mono, 100 ms real-time frames",
+      "result": "success",
+      "first_transcription_event_seconds": 1.7037,
+      "final_transcription_event_seconds": 8.7112,
+      "wall_seconds": 9.01935,
+      "final_sentence_begin_milliseconds": 120,
+      "final_sentence_end_milliseconds": 7880,
+      "final_text": "Good evening. This is a subtitle timing test. The television needs stable words and accurate timestamps when a movie has no captions.",
+      "word_items": 24,
+      "notes": [
+        "The response included sentence and word begin/end timestamps.",
+        "Two word items contained standalone whitespace and require normalization during cue construction."
+      ]
+    },
+    {
+      "provider": "Cloudflare Workers AI",
+      "model": "@cf/openai/whisper-large-v3-turbo",
+      "mode": "REST batch",
+      "input": "166072-byte 16 kHz mono FLAC encoded as Base64 JSON; VAD enabled",
+      "http_status": 200,
+      "result": "success",
+      "wall_seconds": 3.875103,
+      "observed_wall_realtime_factor": 0.49063,
+      "final_text": "Good evening. This is a subtitle timing test. The television needs stable words and accurate timestamps when a movie has no captions.",
+      "api_word_count": 22,
+      "segments": 3,
+      "word_timestamps_returned": true
+    },
+    {
+      "provider": "Cartesia",
+      "sdk": "cartesia 4.1.0",
+      "model": "ink-2",
+      "mode": "WebSocket streaming turn detection",
+      "input": "PCM signed 16-bit little-endian, 16 kHz, mono",
+      "http_status": 402,
+      "result": "billing_blocked",
+      "wall_seconds": 0.6821465,
+      "claim": "No transcription or timing result exists. The credential reached the provider, but the account had no usable balance."
+    }
+  ],
+  "derived_findings": [
+    "Qwen's timestamped streaming contract is immediately suitable for progressive subtitle cues after token normalization.",
+    "Cloudflare provides a very cheap and simple ahead-of-playback or correction pass, but this one clip does not establish long-form throughput or film accuracy.",
+    "Provider timing metrics must keep setup, upload, first partial, first final, and full completion separate."
+  ],
+  "evidence_limits": [
+    "One short synthetic English clean-speech clip.",
+    "No film mix, music, effects, overlap, accents, code-switching, long-form drift, Android TV capture, or cost invoice reconciliation.",
+    "Provider results used different transports and therefore are not a quality bake-off."
+  ],
+  "official_sources": [
+    "https://www.alibabacloud.com/help/en/model-studio/asr-model",
+    "https://www.alibabacloud.com/help/en/model-studio/real-time-speech-recognition-user-guide",
+    "https://www.alibabacloud.com/help/en/model-studio/fun-asr-realtime-websocket-api",
+    "https://developers.cloudflare.com/workers-ai/models/whisper-large-v3-turbo/",
+    "https://docs.cartesia.ai/api-reference/stt/turns/websocket",
+    "https://docs.cartesia.ai/changelog/2026"
+  ],
+  "secret_handling": "No API key, token, authorization header, account identifier, or credential value is stored in this receipt."
+}

@@ -1,0 +1,115 @@
+{
+  "receipt_version": 1,
+  "review_date": "2026-08-29",
+  "host": {
+    "hardware": "Apple M5 Max, 48 GB",
+    "os_family": "macOS",
+    "notes": "Synthetic clean-speech transport and timing probes only. These are not film or TV accuracy benchmarks."
+  },
+  "source": {
+    "generator": "macOS say, Samantha voice, 160 words per minute",
+    "text": "Good evening. This is a timing test for near real time television dubbing. We need every sentence to remain synchronized with the video, even when the viewer pauses or seeks.",
+    "format": "PCM signed 16-bit little-endian, 16 kHz, mono",
+    "duration_seconds": 9.8140625
+  },
+  "provider": {
+    "name": "Alibaba Cloud Model Studio",
+    "sdk": "dashscope 1.27.2",
+    "model": "qwen3.5-livetranslate-flash-realtime",
+    "region_endpoint": "Singapore legacy public WebSocket endpoint",
+    "target_language": "it",
+    "input_chunk_milliseconds": 100,
+    "output_format": "PCM signed 16-bit little-endian, 24 kHz, mono"
+  },
+  "probes": [
+    {
+      "name": "fixed_multilingual_voice_without_source_asr",
+      "voice": "Tina",
+      "voice_clone": false,
+      "source_asr": false,
+      "session_created_seconds": 0.8799,
+      "session_updated_seconds": 1.2527,
+      "speech_started_seconds": 1.3485,
+      "first_response_seconds": 1.834,
+      "first_audio_seconds": 2.5572,
+      "first_audio_after_session_update_seconds": 1.3045,
+      "last_audio_seconds": 13.265,
+      "wall_seconds": 13.26587575,
+      "output_audio_seconds": 14.96,
+      "estimated_usage_cost_usd": 0.00612524,
+      "estimated_cost_per_source_minute_usd": 0.03744772,
+      "estimated_22_minute_cost_usd_at_observed_output_ratio": 0.82384991,
+      "estimated_100_minute_cost_usd_at_observed_output_ratio": 3.74477233,
+      "translated_text": "Buonasera, questo è un test di temporizzazione per il doppiaggio televisivo quasi in tempo reale. Dobbiamo assicurarci che ogni frase rimanga sincronizzata con il video, anche quando lo spettatore mette in pausa o salta avanti.",
+      "result": "success"
+    },
+    {
+      "name": "source_voice_clone_once",
+      "voice": "default",
+      "voice_clone": true,
+      "voice_clone_frequency": "once",
+      "source_asr": true,
+      "session_created_seconds": 0.8122,
+      "session_updated_seconds": 1.1202,
+      "speech_started_seconds": 1.2178,
+      "first_response_seconds": 1.703,
+      "first_audio_seconds": 4.5778,
+      "first_audio_after_session_update_seconds": 3.4576,
+      "source_transcript_final_seconds": 12.3216,
+      "last_audio_seconds": 13.192,
+      "wall_seconds": 13.193276709,
+      "output_audio_seconds": 15.36,
+      "estimated_usage_cost_usd": 0.00627524,
+      "estimated_cost_per_source_minute_usd": 0.03836477,
+      "estimated_22_minute_cost_usd_at_observed_output_ratio": 0.84402504,
+      "estimated_100_minute_cost_usd_at_observed_output_ratio": 3.83647747,
+      "translated_text": "Buonasera, questo è un test di temporizzazione per il doppiaggio televisivo quasi in tempo reale. Dobbiamo assicurarci che ogni frase rimanga sincronizzata con il video, anche quando lo spettatore mette in pausa o salta avanti.",
+      "result": "success"
+    },
+    {
+      "name": "invalid_clone_voice_combination",
+      "voice": "Tina",
+      "voice_clone": true,
+      "voice_clone_frequency": "once",
+      "wall_seconds": 1.2476,
+      "result": "rejected",
+      "provider_error_code": "invalid_value",
+      "provider_error_message": "Multilingual voice does not support voice clone."
+    },
+    {
+      "name": "wrong_region_default_endpoint",
+      "result": "failed",
+      "wall_seconds": 5.0672,
+      "error": "WebSocket connection timeout when an international key was sent to the SDK's Beijing default endpoint. Setting the documented Singapore endpoint resolved the failure."
+    }
+  ],
+  "billing_derivation": {
+    "region": "Singapore",
+    "input_audio_tokens_per_second": 7,
+    "output_audio_tokens_per_second": 12.5,
+    "input_usd_per_million_tokens": 7.5,
+    "output_usd_per_million_tokens": 30,
+    "formula": "source_seconds * 7 * 7.5 / 1e6 + generated_seconds * 12.5 * 30 / 1e6",
+    "source": "https://www.alibabacloud.com/help/en/model-studio/qwen3-5-livetranslate-flash-realtime and https://www.alibabacloud.com/help/en/model-studio/model-pricing",
+    "warning": "The 22- and 100-minute estimates hold the observed generated/source duration ratio constant. Real content, language pairs, silence and cloning behavior will differ. Input-ASR text output, optional images, retries and free quota are excluded."
+  },
+  "derived_findings": [
+    "A live translated audio track can arrive about 1.3 seconds after session configuration with a fixed provider voice in this clean sample.",
+    "Clone-once added about 2.15 seconds to first audio relative to the fixed-voice probe.",
+    "Both generated outputs were materially longer than the source. Streaming translation alone does not provide source-duration matching for video dubbing.",
+    "The integration needs source media timestamps, a user-visible base delay, bounded buffering, seek generations, and duration/drift correction."
+  ],
+  "evidence_limits": [
+    "One synthetic English-to-Italian clip.",
+    "No noisy dialogue, music, overlapping speakers, long-form drift, Android TV device, or provider invoice reconciliation.",
+    "Timing includes local connection and network conditions on one research host.",
+    "Voice similarity was not scored."
+  ],
+  "official_sources": [
+    "https://www.alibabacloud.com/help/en/model-studio/qwen3-5-livetranslate-flash-realtime",
+    "https://www.alibabacloud.com/help/en/model-studio/qwen-livetranslate-python-sdk",
+    "https://www.alibabacloud.com/help/en/model-studio/qwen-livetranslate-java-sdk",
+    "https://www.alibabacloud.com/help/en/model-studio/model-pricing"
+  ],
+  "secret_handling": "No API key, token, authorization header, workspace ID, raw request capture, or credential value is stored in this receipt."
+}
