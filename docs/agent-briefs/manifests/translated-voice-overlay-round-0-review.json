@@ -1,0 +1,43 @@
+{
+  "run_name": "nuvio-translated-voice-overlay",
+  "workdir": "/tmp/hammersmith-nuvio-translated-voice-overlay",
+  "max_parallel": 3,
+  "tasks": [
+    {
+      "key": "voice-player-transport-review",
+      "engine": "codex",
+      "model": "gpt-5.6-sol",
+      "task_type": "code-review",
+      "timeout_s": 2400,
+      "expect_files": ["report.md"],
+      "engine_args": ["-c", "model_reasoning_effort=\"xhigh\""],
+      "spec": "You are a read-only NuvioTV player and transport reviewer. Write only ./report.md in the scratch task directory and never modify the repository.\n\nRepository: /Users/ffrappo/works/repos/NuvioTV\nRead docs/ai-media-research/decision.md, docs/agent-briefs/translated-voice-overlay-hammersmith.md, docs/ai-media-research/lanes/05-player-audio-integration.md and docs/ai-media-research/audits/nuvio-architecture-audit.md. Inspect current NuvioMpvSurfaceView, PlayerMediaSourceFactory, track enumeration/selection, delay, seek, lifecycle, failover, headers, external-player launch and local Media3/mpv dependencies.\n\nFalsify the finalized-artifact MPV pilot and localhost HLS/DASH target. Identify exact binary probes, source changes, failure behavior and disjoint ownership lanes.\n\nWrite report.md starting with ## Summary. For each finding use exactly: Finding:, Evidence:, Impact:, Fix:, Priority:, Confidence:. End with ## Executable probe plan and ## Proposed ownership split. No patches.",
+      "check": "python3 '/Users/ffrappo/works/repos/NuvioTV/docs/agent-briefs/checks/check_review_report.py' --file report.md && grep -qi 'Executable probe plan' report.md && grep -qi 'Proposed ownership split' report.md",
+      "verified": "The report grounds transport design in current code and specifies executable binary/player probes."
+    },
+    {
+      "key": "voice-source-sync-review",
+      "engine": "codex",
+      "model": "gpt-5.6-sol",
+      "task_type": "code-review",
+      "timeout_s": 2400,
+      "expect_files": ["report.md"],
+      "engine_args": ["-c", "model_reasoning_effort=\"xhigh\""],
+      "spec": "You are a read-only media systems reviewer for near-real-time translated voice. Write only ./report.md and never modify NuvioTV.\n\nRepository: /Users/ffrappo/works/repos/NuvioTV\nRead docs/ai-media-research/decision.md, docs/agent-briefs/translated-voice-overlay-hammersmith.md, docs/ai-media-research/benchmarks/2026-08-29-qwen-live-translate.json and docs/ai-media-research/audits/model-research-audit.md. Inspect current Exo audio sink, MPV output, source/header handling, seek paths, torrent/local inputs and lifecycle.\n\nAttack the source-acquisition premise: prove why one selected-renderer tap cannot feed original audio while generated audio plays. Compare independent demux/decoder and localhost proxy options for clear VOD. Define source-time mapping, buffering, segment, correction, seek generation, reconnect and long-form measurement requirements.\n\nWrite report.md starting with ## Summary. For each finding use exactly: Finding:, Evidence:, Impact:, Fix:, Priority:, Confidence:. End with ## Architecture experiment matrix whose cells include commands/fixtures/metrics/pass-fail gates. No patches.",
+      "check": "python3 '/Users/ffrappo/works/repos/NuvioTV/docs/agent-briefs/checks/check_review_report.py' --file report.md && grep -qi 'Architecture experiment matrix' report.md",
+      "verified": "The report provides a falsifiable source-acquisition and synchronization experiment matrix."
+    },
+    {
+      "key": "voice-security-product-review",
+      "engine": "codex",
+      "model": "gpt-5.6-sol",
+      "task_type": "code-review",
+      "timeout_s": 2400,
+      "expect_files": ["report.md"],
+      "engine_args": ["-c", "model_reasoning_effort=\"high\""],
+      "spec": "You are a read-only security, cost and television product reviewer. Write only ./report.md and never modify NuvioTV.\n\nRepository: /Users/ffrappo/works/repos/NuvioTV\nRead docs/ai-media-research/decision.md, docs/agent-briefs/translated-voice-overlay-hammersmith.md, docs/ai-media-research/lanes/07-byok-security-tv-ux.md and 08-feasibility-economics.md, plus both security/model audits. Inspect current provider credentials, NetworkModule, logging/Sentry, DEX/JS, flavor policy, audio overlay and settings UX.\n\nReview BYOK custody, voice-clone consent, protected-source veto, provider billing caps, translated voice overlay naming, TV setup density, fallback truth and public-release kill conditions. Distinguish internal pilot controls from public gates.\n\nWrite report.md starting with ## Summary. For each finding use exactly: Finding:, Evidence:, Impact:, Fix:, Priority:, Confidence:. End with ## Release gate table using GO, CONDITIONAL or NO-GO for artifact pilot, near-real-time prototype and public feature. No patches.",
+      "check": "python3 '/Users/ffrappo/works/repos/NuvioTV/docs/agent-briefs/checks/check_review_report.py' --file report.md && grep -qi 'Release gate table' report.md",
+      "verified": "The report defines evidence-backed security, cost and product release gates."
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "run_name": "nuvio-generated-dialogue-subtitles",
+  "workdir": "/tmp/hammersmith-nuvio-generated-dialogue-subtitles",
+  "max_parallel": 3,
+  "tasks": [
+    {
+      "key": "subtitle-baseline-contract-review",
+      "engine": "codex",
+      "model": "gpt-5.6-sol",
+      "task_type": "code-review",
+      "timeout_s": 2400,
+      "expect_files": ["report.md"],
+      "engine_args": ["-c", "model_reasoning_effort=\"high\""],
+      "spec": "You are a read-only architecture reviewer for NuvioTV's Generated Dialogue Subtitles mission. Your current working directory is a scratch task directory and you may write only ./report.md. Never modify the repository.\n\nRepository: /Users/ffrappo/works/repos/NuvioTV\nBaseline material: docs/ai-media-research/decision.md, docs/agent-briefs/generated-dialogue-subtitles-hammersmith.md, docs/ai-media-research/lanes/04-nuvio-extension-ecosystem.md, docs/ai-media-research/lanes/06-subtitle-integration-ux.md, docs/ai-media-research/audits/nuvio-architecture-audit.md.\n\nReview exact current source seams for stream-provided subtitles, SubtitleRepository error handling, OpenSubtitlesHasher range validation, PlayerSidecarSubtitles, Exo audio sink/processors, seek/source/episode/engine lifecycle and both flavor policies. Confirm or falsify the brief against current HEAD.\n\nWrite report.md starting with ## Summary. For each finding use exactly: Finding:, Evidence:, Impact:, Fix:, Priority:, Confidence:. Priority is P0/P1/P2/P3. Confidence is high/medium/low. Include exact paths and current line ranges. End with ## Proposed ownership split listing at least three disjoint implementation lanes and files each lane may own. No patches.",
+      "check": "python3 '/Users/ffrappo/works/repos/NuvioTV/docs/agent-briefs/checks/check_review_report.py' --file report.md && grep -qi 'Proposed ownership split' report.md",
+      "verified": "The report contains evidence-backed current-HEAD findings and a disjoint ownership plan."
+    },
+    {
+      "key": "subtitle-security-review",
+      "engine": "codex",
+      "model": "gpt-5.6-sol",
+      "task_type": "code-review",
+      "timeout_s": 2400,
+      "expect_files": ["report.md"],
+      "engine_args": ["-c", "model_reasoning_effort=\"high\""],
+      "spec": "You are a read-only Android security reviewer for the NuvioTV Generated Dialogue Subtitles mission. Write only ./report.md in the scratch task directory and never modify the repository.\n\nRepository: /Users/ffrappo/works/repos/NuvioTV\nRead: docs/ai-media-research/decision.md, docs/agent-briefs/generated-dialogue-subtitles-hammersmith.md, docs/ai-media-research/lanes/07-byok-security-tv-ux.md, docs/ai-media-research/audits/security-ux-feasibility-audit.md. Inspect current credential stores, NetworkModule clients and bindings, Sentry/logging, profile deletion/reuse, QuickJS/DEX execution, NanoHTTPD config servers and flavor application IDs.\n\nFalsify the proposed profile-local BYOK, native provider identity, grant and PCM boundary. Identify exact release blockers versus deferred infrastructure.\n\nWrite report.md starting with ## Summary. For each finding use exactly: Finding:, Evidence:, Impact:, Fix:, Priority:, Confidence:. End with ## Required launch controls and list executable tests. No patches or vague policy claims.",
+      "check": "python3 '/Users/ffrappo/works/repos/NuvioTV/docs/agent-briefs/checks/check_review_report.py' --file report.md && grep -qi 'Required launch controls' report.md",
+      "verified": "The report identifies executable security controls and distinguishes blockers from deferred work."
+    },
+    {
+      "key": "subtitle-tv-ux-review",
+      "engine": "codex",
+      "model": "gpt-5.6-sol",
+      "task_type": "code-review",
+      "timeout_s": 2400,
+      "expect_files": ["report.md"],
+      "engine_args": ["-c", "model_reasoning_effort=\"high\""],
+      "spec": "You are a read-only Android TV interaction and accessibility reviewer. Write only ./report.md and never modify the NuvioTV repository.\n\nRepository: /Users/ffrappo/works/repos/NuvioTV\nRead docs/ai-media-research/decision.md and docs/agent-briefs/generated-dialogue-subtitles-hammersmith.md. Inspect current SubtitleSelectionOverlay, PlayerOverlayScaffold, PlayerScreen focus restoration, SettingsDesignSystem, settings navigation, RTL helpers and existing Compose tests.\n\nReview whether Generate dialogue captions (beta), setup/consent/status states, provider connection and Exo switch can fit current TV rails without focus churn. State exact stable-key, D-pad, Back, TalkBack, RTL and error/retry tests.\n\nWrite report.md starting with ## Summary. For each finding use exactly: Finding:, Evidence:, Impact:, Fix:, Priority:, Confidence:. End with ## Focus state model and a deterministic transition table. No patches.",
+      "check": "python3 '/Users/ffrappo/works/repos/NuvioTV/docs/agent-briefs/checks/check_review_report.py' --file report.md && grep -qi 'Focus state model' report.md",
+      "verified": "The report provides current-source evidence and a testable TV focus state model."
+    }
+  ]
+}
