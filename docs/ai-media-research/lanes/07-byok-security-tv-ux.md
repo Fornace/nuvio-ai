@@ -1,4 +1,4 @@
-# Lane 07 — Android BYOK Security and TV UX
+# Lane 07 , Android BYOK Security and TV UX
 
 **Research date:** 2026-08-29  
 **Freshness order:** official Android material updated in the exact window **2026-07-31 through 2026-08-29** is presented first. Material updated before 2026-07-31 is explicitly labeled **Historical background**.
@@ -13,7 +13,7 @@ Nuvio should not add AI-provider BYOK as another string in Preferences DataStore
 
 1. Android 17 requires `ACCESS_LOCAL_NETWORK` at runtime for apps targeting API 37 that make or accept LAN connections; apps can instead use a system-mediated picker for supported discovery cases. Nuvio currently targets API 36, so this is not enforced yet, but its NanoHTTPD configuration flows will be affected when target SDK reaches 37 ([Android 17 target behavior changes, updated 2026-08-28](https://developer.android.com/about/versions/17/behavior-changes-17#local-network-protection-permission); `app/build.gradle.kts:98-107`).
 2. Android 17 hides all password characters by default when a target-37 app receives password input from a physical keyboard, reducing shoulder-surfing exposure for a correctly typed password field ([Android 17 target behavior changes, updated 2026-08-28](https://developer.android.com/about/versions/17/behavior-changes-17#hide-pwd-kbd)).
-3. Android 17 imposes per-app Keystore limits—50,000 keys for a non-system app targeting API 37+, 200,000 otherwise—and key creation beyond the limit throws `KeyStoreException` ([Android 17 all-app behavior changes, updated 2026-08-14](https://developer.android.com/about/versions/17/behavior-changes-all#per-app-keystore-limits)).
+3. Android 17 imposes per-app Keystore limits,50,000 keys for a non-system app targeting API 37+, 200,000 otherwise,and key creation beyond the limit throws `KeyStoreException` ([Android 17 all-app behavior changes, updated 2026-08-14](https://developer.android.com/about/versions/17/behavior-changes-all#per-app-keystore-limits)).
 4. The network-security guide now documents Certificate Transparency enabled by default from Android 17, cleartext disabled by platform default from Android 9 unless an app opts in, and an Android 17 localhost exception; the page also says app-wide cleartext opt-in should be avoided where possible ([Network Security Configuration, updated 2026-08-28](https://developer.android.com/privacy-and-security/security-config)).
 5. Current stable DataStore is 1.2.1; the page is current as of 2026-08-27. Encryption via `androidx.datastore:datastore-tink` and `AeadSerializer` exists only on the 1.3 alpha line as of this date, so it is useful evidence of Android's direction but is not a stable-production dependency recommendation yet ([DataStore guide, updated 2026-08-27](https://developer.android.com/topic/libraries/architecture/datastore); [DataStore releases, updated 2026-08-27](https://developer.android.com/jetpack/androidx/releases/datastore#1.3.0-alpha07)).
 6. Credential Manager Restore Credentials can restore one app account through cloud backup or device-to-device transfer, but the current official page says it works on mobile and does **not** work across form factors. It cannot be assumed to move a credential from phone to Android TV ([Restore Credentials, updated 2026-08-27](https://developer.android.com/identity/sign-in/restore-credentials)).
@@ -35,7 +35,7 @@ Nuvio should not add AI-provider BYOK as another string in Preferences DataStore
 
 **Evidence.** Preferences DataStore provides asynchronous, consistent, transactional persistence; its stable guide does not claim transparent encryption ([DataStore guide, updated 2026-08-27](https://developer.android.com/topic/libraries/architecture/datastore)). **Historical background:** Android Keystore keeps cryptographic key material in a container intended to make extraction more difficult and can keep key material outside the app process ([Android Keystore system, updated 2026-03-06](https://developer.android.com/privacy-and-security/keystore)).
 
-**So what.** DataStore is not itself a secret store. Implement one broker storage backend and migrate all user-held long-lived credentials—future AI keys first, then debrid and tracking tokens—rather than cloning provider-specific storage classes. Keep non-secret provider preferences in DataStore, but replace the secret value with an opaque credential ID.
+**So what.** DataStore is not itself a secret store. Implement one broker storage backend and migrate all user-held long-lived credentials,future AI keys first, then debrid and tracking tokens,rather than cloning provider-specific storage classes. Keep non-secret provider preferences in DataStore, but replace the secret value with an opaque credential ID.
 
 ### 3. Current provider sync sends raw credential values to Supabase and custom server operators; this is not end-to-end encrypted sync
 
@@ -57,7 +57,7 @@ Nuvio should not add AI-provider BYOK as another string in Preferences DataStore
 
 **What.** `AddonConfigServer` starts NanoHTTPD on an available port, has no bearer token, cookie session, origin check, client pairing, CSRF protection, or per-request authorization in its route dispatcher, and returns full state to any LAN caller. Writes are deferred for TV confirmation, which limits silent mutation, but reads are immediate and an attacker can still observe configuration or generate repeated pending changes (`app/src/main/java/com/nuvio/tv/core/server/AddonConfigServer.kt:10-50,76-91,160-209,221-250`). The QR contains only a plain HTTP IP/port URL (`app/src/main/java/com/nuvio/tv/ui/screens/addon/AddonManagerViewModel.kt:361-375`). Debrid formatter LAN updates are applied immediately and likewise show no pairing token (`app/src/main/java/com/nuvio/tv/core/server/DebridFormatterConfigServer.kt:19-30,55-96,123-142`).
 
-**Evidence.** Android's fresh LAN documentation states that both outgoing and accepted incoming TCP traffic are covered, enforcement applies beneath OkHttp and other networking APIs, and target-37 apps must request `ACCESS_LOCAL_NETWORK` or use a supported system picker ([Local network permission, updated 2026-07-13—**Historical background**, but incorporated by the fresh Android 17 behavior page](https://developer.android.com/privacy-and-security/local-network-permission); [Android 17 target behavior, updated 2026-08-28](https://developer.android.com/about/versions/17/behavior-changes-17#local-network-protection-permission)).
+**Evidence.** Android's fresh LAN documentation states that both outgoing and accepted incoming TCP traffic are covered, enforcement applies beneath OkHttp and other networking APIs, and target-37 apps must request `ACCESS_LOCAL_NETWORK` or use a supported system picker ([Local network permission, updated 2026-07-13,**Historical background**, but incorporated by the fresh Android 17 behavior page](https://developer.android.com/privacy-and-security/local-network-permission); [Android 17 target behavior, updated 2026-08-28](https://developer.android.com/about/versions/17/behavior-changes-17#local-network-protection-permission)).
 
 **So what.** Do not add `/api/credentials` to these servers. Use provider device authorization or a cloud-mediated HTTPS linking flow. If an offline LAN fallback is required, the browser must encrypt the key to an ephemeral public key embedded in the TV-displayed QR, use a one-time bearer carried in the URL fragment rather than the HTTP request URL, require a TV confirmation phrase, expire within minutes, and expose no general app state.
 
@@ -83,7 +83,7 @@ However, these controls do not form a complete non-leakage contract:
 - JavaScript scrapers run in QuickJS, receive their entire arbitrary settings map and the app's compiled TMDB API key, and get a bridge that can make arbitrary HTTP requests with caller-provided headers and bodies (`app/src/full/java/com/nuvio/tv/core/plugin/PluginRuntime.kt:286-305,448-452,506-558,676-714`). This is containable only if secrets never enter `SCRAPER_SETTINGS`, plugin console data, or the JavaScript heap.
 - External DEX extensions load into the app process and are passed app/activity context. CloudStream compatibility exposes app-private SharedPreferences APIs, and its shared client explicitly ignores all SSL errors (`app/src/full/java/com/lagradost/cloudstream3/utils/DataStore.kt:13-33,39-92`; `app/src/full/java/com/nuvio/tv/core/runtime/PluginRuntimeHooks.kt:40-62`). A same-UID, same-process DEX can read files/preferences and invoke or reflect into app code; an in-process broker API cannot establish a meaningful confidentiality boundary against it.
 
-**Evidence.** The main app client also installs a trust-all `X509TrustManager` and hostname verifier (`app/src/main/java/com/nuvio/tv/core/di/NetworkModule.kt:103-116`). This is a separate critical transport issue: any credential-bearing call made through that client can be intercepted by an on-path attacker despite using an `https://` URL. Direct debrid uses a separate client without that override, but addon, metadata, or other derived clients can inherit the unsafe base client (`NetworkModule.kt:127-143,169-184`).
+**Evidence.** The unqualified main app client installs a trust-all `X509TrustManager` and hostname verifier (`app/src/main/java/com/nuvio/tv/core/di/NetworkModule.kt:103-116`), and the Trakt client derives from that base. Direct debrid, custom-server auth and Simkl use separately constructed clients and must be reviewed independently (`NetworkModule.kt:127-143,169-184`). This remains a critical transport issue: every credential-bearing consumer of the unqualified client is interceptable by an on-path attacker despite an `https://` URL. The implementation phase must enumerate Retrofit/API bindings against each qualified and unqualified client before changing them.
 
 **So what.** The broker can safely serve first-party code and restricted QuickJS operations, but **must deny BYOK grants to same-process DEX plugins**. Supporting DEX BYOK requires moving extension execution into an `isolatedProcess` service with no app-data access and mediating both network and credential operations over a narrow Binder contract; otherwise the only honest policy is “external extensions cannot use app-managed credentials.” Remove all trust-all TLS behavior before any BYOK launch.
 
@@ -103,11 +103,11 @@ However, these controls do not form a complete non-leakage contract:
 
 **So what.** The broker API must offer operations such as `test`, `executeProviderRequest`, `revoke`, and `delete`, not `readSecret`. A grant should constrain profile/device scope, provider, operations, destination host templates, data categories, expiry, budget, and consumer identity; the grant ID is not a Keystore alias and contains no key material.
 
-### 9. Nuvio already has the right TV interaction primitive—QR/device code—but raw-key entry needs stricter consent, scope, cost, reveal, and revocation semantics
+### 9. Nuvio already has the right TV interaction primitive,QR/device code,but raw-key entry needs stricter consent, scope, cost, reveal, and revocation semantics
 
 **What.** Existing Torbox and Premiumize flows start provider device authorization, display a provider verification URL and user code as a QR, poll, and save the resulting token (`app/src/main/java/com/nuvio/tv/ui/screens/settings/DebridSettingsViewModel.kt:251-309,315-365`; `app/src/main/java/com/nuvio/tv/ui/screens/settings/DebridSettingsScreen.kt:1194-1283,1317-1415`). This is preferable to entering a long key with a remote. Existing manual-key validation also tests Torbox/Premiumize before saving (`DebridSettingsViewModel.kt:210-249`).
 
-**Evidence.** **Historical background:** Android TV's Gboard supports password input types, but TV has a constrained input layout and voice entry; password fields should use the password input type and must not allow voice dictation for secrets ([On-screen keyboard, updated 2026-03-05](https://developer.android.com/training/tv/get-started/onscreen-keyboard)). TV navigation is D-pad/focus based, should be predictable, and should provide a visible Cancel action when the only alternatives are confirm/destructive actions ([Navigation on TV, updated 2025-05-09—Historical background](https://developer.android.com/design/ui/tv/guides/foundations/navigation-on-tv); [Focus system, updated 2024-03-21—Historical background](https://developer.android.com/design/ui/tv/guides/styles/focus-system)).
+**Evidence.** **Historical background:** Android TV's Gboard supports password input types, but TV has a constrained input layout and voice entry; password fields should use the password input type and must not allow voice dictation for secrets ([On-screen keyboard, updated 2026-03-05](https://developer.android.com/training/tv/get-started/onscreen-keyboard)). TV navigation is D-pad/focus based, should be predictable, and should provide a visible Cancel action when the only alternatives are confirm/destructive actions ([Navigation on TV, updated 2025-05-09,Historical background](https://developer.android.com/design/ui/tv/guides/foundations/navigation-on-tv); [Focus system, updated 2024-03-21,Historical background](https://developer.android.com/design/ui/tv/guides/styles/focus-system)).
 
 **So what.** Reuse device authorization whenever the provider supports it. For raw API keys, make phone/desktop HTTPS link entry primary and TV password input only a fallback. The final TV confirmation must show provider, verified account/plan if available, profile versus device scope, model/language, data sent, estimated provider cost, budget controls, consumer grants, and whether encrypted sync is enabled before saving.
 
@@ -229,8 +229,8 @@ Contract rules:
 
 Use a small alias set:
 
-- `com.nuvio.tv.byok.master.v1` — device master AES-256-GCM key.
-- Optional future `com.nuvio.tv.byok.sync-wrap.v1` — asymmetric device key used only to unwrap cross-device data keys.
+- `com.nuvio.tv.byok.master.v1` , device master AES-256-GCM key.
+- Optional future `com.nuvio.tv.byok.sync-wrap.v1` , asymmetric device key used only to unwrap cross-device data keys.
 - Do **not** create aliases per provider, profile, plugin, grant, or credential; Android 17 now explicitly limits per-app aliases ([Android 17 all-app behavior, updated 2026-08-14](https://developer.android.com/about/versions/17/behavior-changes-all#per-app-keystore-limits)).
 
 Store each record as:
@@ -247,13 +247,13 @@ Authenticated associated data must be immutable and unique to the record:
 "nuvio-byok-v1|<applicationId>|<installId>|<scopeType>|<scopeId>|<providerId>|<credentialId>"
 ```
 
-This prevents swapping a ciphertext between profile, provider, installation, or credential records. Simkl's current AES-GCM implementation is a useful foundation but supplies no explicit AAD (`AndroidSimklAuthStorage.kt:230-260`); the broker format should add it. If the Keystore key is missing or invalidated, delete unusable ciphertext only after recording a safe recovery reason and ask the user to relink—never fall back to plaintext.
+This prevents swapping a ciphertext between profile, provider, installation, or credential records. Simkl's current AES-GCM implementation is a useful foundation but supplies no explicit AAD (`AndroidSimklAuthStorage.kt:230-260`); the broker format should add it. If the Keystore key is missing or invalidated, delete unusable ciphertext only after recording a safe recovery reason and ask the user to relink,never fall back to plaintext.
 
 The current stable DataStore line does not provide stable transparent encrypted Preferences. The official `datastore-tink` `AeadSerializer` exists on 1.3 alpha and demonstrates unique associated data to prevent ciphertext swapping, but should be adopted only after a stable release or an explicit alpha risk decision ([DataStore releases, updated 2026-08-27](https://developer.android.com/jetpack/androidx/releases/datastore#1.3.0-alpha07)). Until then, a small broker-owned encrypted file/Room table with the Keystore primitive is safer than inserting ciphertext strings into every feature DataStore.
 
 ### TV QR/link/code UX
 
-#### A. Provider device authorization — preferred
+#### A. Provider device authorization , preferred
 
 Use the provider's OAuth/device authorization when available, matching Nuvio's current Torbox/Premiumize and Trakt/Simkl patterns (`DebridSettingsViewModel.kt:251-309`; `DebridSettingsScreen.kt:1243-1283,1317-1415`).
 
@@ -263,7 +263,7 @@ Use the provider's OAuth/device authorization when available, matching Nuvio's c
 4. TV tests a low-cost identity/quota endpoint, displays verified account/plan and scopes, then asks **Save for profile _X_** or **Save for this device**.
 5. Back/Cancel aborts and clears the device code. Expiry presents a single focused **Generate new code** action.
 
-#### B. Raw API key — HTTPS link with browser-to-TV E2EE
+#### B. Raw API key , HTTPS link with browser-to-TV E2EE
 
 1. TV generates an ephemeral X25519/P-256 key pair in memory, 128+ bits of session entropy, a short human code, expiry (target five minutes), and a two-word confirmation phrase.
 2. QR contains only an official `https://nuvio.tv/link-key/...` URL, session ID, ephemeral TV public key/fingerprint, and challenge. It contains no provider key and is never logged.
@@ -282,7 +282,7 @@ Use the provider's OAuth/device authorization when available, matching Nuvio's c
 
 #### D. Credential details, test, reveal, and revoke
 
-Credential list rows show provider, label, `••••last4`, profile/device badge, state, last-tested date, enabled operations, consumer count, model/language, budget, and sync state—never key length or prefix.
+Credential list rows show provider, label, `••••last4`, profile/device badge, state, last-tested date, enabled operations, consumer count, model/language, budget, and sync state,never key length or prefix.
 
 - **Test:** uses the lowest-cost identity/models/quota endpoint available, sends no media/prompt content, and reports `Valid`, `Invalid/revoked`, `Network unavailable`, or `Provider rate-limited` without displaying raw response bodies.
 - **Reveal:** default behavior is **no full reveal on the living-room TV**. Require profile PIN/adult re-authentication and send a new E2EE phone link that reveals for at most 30 seconds. If product insists on TV reveal, require hold-to-reveal, `FLAG_SECURE`, a 10-second timeout, no accessibility announcement of the value, and an explicit shoulder-surfing warning; plugins and addons can never invoke reveal.
@@ -398,8 +398,8 @@ Rules:
 
 #### UX, accessibility, and revocation
 
-- [ ] All elements are reachable with D-pad, have obvious focused state, and Back/Cancel behaves predictably ([Navigation on TV—Historical background](https://developer.android.com/design/ui/tv/guides/foundations/navigation-on-tv)).
-- [ ] Raw TV input uses password input type and disables voice/suggestions; TalkBack announces purpose/status but never the value ([On-screen keyboard—Historical background](https://developer.android.com/training/tv/get-started/onscreen-keyboard)).
+- [ ] All elements are reachable with D-pad, have obvious focused state, and Back/Cancel behaves predictably ([Navigation on TV,Historical background](https://developer.android.com/design/ui/tv/guides/foundations/navigation-on-tv)).
+- [ ] Raw TV input uses password input type and disables voice/suggestions; TalkBack announces purpose/status but never the value ([On-screen keyboard,Historical background](https://developer.android.com/training/tv/get-started/onscreen-keyboard)).
 - [ ] Test does not save; save requires provider/profile/scope/cost/data consent; reveal requires adult re-auth and auto-hides.
 - [ ] Revoke invalidates local record, all grants, remote encrypted copy/tombstone, and provider token where supported; subsequent operation proves failure.
 - [ ] Invalid/provider-revoked responses transition metadata to `INVALID` without placing provider response text in telemetry.
@@ -407,7 +407,7 @@ Rules:
 ## Recommendations
 
 1. **Block BYOK launch on the two critical prerequisites:** remove trust-all TLS from `NetworkModule` and CloudStream compatibility clients, and prohibit secret-bearing addon/repository URLs (`NetworkModule.kt:103-116`; `PluginRuntimeHooks.kt:51-62`; `AddonPreferences.kt:53-75`).
-2. **Build the broker as a separate security module before provider UI.** Start with one Keystore AES-GCM master alias, AAD-bound encrypted records, metadata-only DataStore, profile-generation checks, operation-based API, and no plaintext getter. Reuse concepts—not code blindly—from Simkl (`AndroidSimklAuthStorage.kt:55-87,116-169,230-260`).
+2. **Build the broker as a separate security module before provider UI.** Start with one Keystore AES-GCM master alias, AAD-bound encrypted records, metadata-only DataStore, profile-generation checks, operation-based API, and no plaintext getter. Reuse concepts, not code blindly, from Simkl (`AndroidSimklAuthStorage.kt:55-87,116-169,230-260`).
 3. **Ship AI BYOK local-only in v1.** Do not add AI credentials to `ProviderCredentialSyncService`; sync only status/mask/grant metadata. This removes backend/custom-operator key custody while the E2EE recovery design remains unresolved (`ProviderCredentialSyncService.kt:178-224`).
 4. **Migrate existing credentials in order:** debrid and MDBList first because they are already raw-synced; Trakt next because access/refresh tokens and device codes are plaintext; Simkl last into the shared broker format. On successful migration, overwrite/remove legacy key and all `.bak` remnants (`DebridSettingsDataStore.kt:42-50`; `TraktAuthDataStore.kt:57-89`; `ProfileDataStoreFactory.kt:184-219`).
 5. **Use provider device OAuth wherever possible.** Preserve the current QR/code/poll interaction but add provider/profile/scope/cost/data confirmation and safe logging (`DebridSettingsScreen.kt:1194-1283,1317-1415`).
@@ -422,7 +422,7 @@ Rules:
 1. **Backend credential protections are not in the inspected repository.** The SQL/functions for `sync_push_provider_credentials`, RLS policy, at-rest encryption, service-role access, retention, audit, and deletion could not be verified. Backend migrations and deployment configuration are required to determine current operator/compromise exposure (`ProviderCredentialSyncService.kt:150-188`).
 2. **Supabase Auth's persisted session format is unresolved here.** Nuvio enables SDK auto-load/auto-save, but this repository does not define the SDK storage adapter. Dependency source/version and on-device file inspection are needed to determine whether the Nuvio account refresh token is plaintext (`SupabaseModule.kt:100-104`).
 3. **Cross-device E2EE recovery policy is a product/security decision.** A Keystore key cannot simply migrate across devices. Resolve whether users re-enter keys per TV (recommended v1), approve new devices from an existing device, use account-recovery encryption, or accept server custody.
-4. **Provider-specific revoke/test/cost APIs need a provider matrix.** Exact endpoints, minimum scopes, identity/quota response fields, key prefixes, pricing units, model/language availability, and true revocation—not merely local disconnect—must be validated against each chosen AI provider before implementation.
+4. **Provider-specific revoke/test/cost APIs need a provider matrix.** Exact endpoints, minimum scopes, identity/quota response fields, key prefixes, pricing units, model/language availability, and true revocation, not merely local disconnect,must be validated against each chosen AI provider before implementation.
 5. **External DEX compatibility may conflict with isolation.** Determine which extensions require activity context, arbitrary app-private storage, native libraries, unrestricted network, or host class reflection before committing to an `isolatedProcess` runner. Without isolation, the security answer remains no DEX BYOK.
 6. **Addon URL migration needs compatibility policy.** Some installed addon URLs may already contain functional tokens in path/query. Decide whether to warn and quarantine, redact only telemetry/LAN display, or migrate supported addons to broker handles without breaking user installations (`AddonPreferences.kt:53-75`; `AddonSyncService.kt:59-69`).
 7. **Android 17 behavior is current official guidance as of 2026-08-29, but Nuvio still targets 36.** Reconfirm permission names, TV-device availability, system-picker support, and final platform behavior immediately before raising `targetSdk` to 37 ([Android 17 target behavior, updated 2026-08-28](https://developer.android.com/about/versions/17/behavior-changes-17)).

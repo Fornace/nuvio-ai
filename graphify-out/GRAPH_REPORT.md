@@ -324,8 +324,8 @@
 - None detected.
 
 ## Hyperedges (group relationships)
-- **Authentication Session Management Flow** — src_auth_session_sessionmanager, src_auth_session_create_session, src_auth_session_validate_token [INFERRED 0.90]
-- **Authentication Session Management Flow** — src_auth_session_sessionmanager, src_auth_session_create_session, src_auth_session_validate_token [INFERRED 0.90]
+- **Authentication Session Management Flow** , src_auth_session_sessionmanager, src_auth_session_create_session, src_auth_session_validate_token [INFERRED 0.90]
+- **Authentication Session Management Flow** , src_auth_session_sessionmanager, src_auth_session_create_session, src_auth_session_validate_token [INFERRED 0.90]
 
 ## Communities (297 total, 54 thin omitted)
 
@@ -1280,7 +1280,7 @@ Nodes (3): SettingsSectionDestination, External, Inline
 ## Knowledge Gaps
 - **678 isolated node(s):** `ANNEX_B`, `LENGTH_DELIMITED`, `SubtitleInput`, `FULL`, `COLLECTIONS_ONLY` (+673 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **54 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **54 thin communities (<3 nodes) omitted from report** , run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_

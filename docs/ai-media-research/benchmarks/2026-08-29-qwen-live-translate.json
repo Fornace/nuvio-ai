@@ -95,7 +95,7 @@
   },
   "derived_findings": [
     "A live translated audio track can arrive about 1.3 seconds after session configuration with a fixed provider voice in this clean sample.",
-    "Clone-once added about 2.15 seconds to first audio relative to the fixed-voice probe.",
+    "The clone-once configuration produced first audio about 2.15 seconds later than the fixed-voice configuration. Because voice, source ASR and cloning changed together, this is a confounded configuration difference rather than an isolated clone penalty.",
     "Both generated outputs were materially longer than the source. Streaming translation alone does not provide source-duration matching for video dubbing.",
     "The integration needs source media timestamps, a user-visible base delay, bounded buffering, seek generations, and duration/drift correction."
   ],

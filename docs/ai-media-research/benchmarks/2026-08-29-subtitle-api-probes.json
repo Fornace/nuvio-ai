@@ -58,7 +58,7 @@
     }
   ],
   "derived_findings": [
-    "Qwen's timestamped streaming contract is immediately suitable for progressive subtitle cues after token normalization.",
+    "Qwen's response contained the word and sentence timestamp fields required for a progressive-caption implementation trial after token normalization. Production suitability remains unproven.",
     "Cloudflare provides a very cheap and simple ahead-of-playback or correction pass, but this one clip does not establish long-form throughput or film accuracy.",
     "Provider timing metrics must keep setup, upload, first partial, first final, and full completion separate."
   ],

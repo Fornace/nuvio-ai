@@ -6,33 +6,33 @@ Nuvio already has a capable static-subtitle pipeline: concurrent Stremio-addon d
 
 ## Key Findings
 
-1. **What — The standard addon request path is suitable for lookup and completed batch subtitles, not a live host-coupled transcription session.**
-   **Evidence —** Nuvio selects enabled addons advertising `subtitles`, matching type and ID prefix (`app/src/main/java/com/nuvio/tv/data/repository/SubtitleRepositoryImpl.kt:50-68`, `:127-154`), then calls a REST resource containing only type, video/content ID, and optional hash/size/filename (`:156-185`, `:220-237`). The accepted response object has only `id`, `url`, and `lang`/`language` (`app/src/main/java/com/nuvio/tv/data/remote/dto/SubtitleResponseDto.kt:7-16`). This matches the official Stremio subtitle resource and response documentation: [protocol](https://github.com/Stremio/stremio-addon-sdk/blob/master/docs/protocol.md), [subtitle response](https://github.com/Stremio/stremio-addon-sdk/blob/master/docs/api/responses/subtitles.md).
-   **So what —** A normal addon may run server-side batch ASR if it can independently acquire the media, cache the completed VTT/SRT, and return its URL. It receives neither Nuvio’s selected stream URL/headers nor decoded audio, seek, cancel, grant, or episode-transition events; those must remain Nuvio extensions.
+1. **What , The standard addon request path is suitable for lookup and completed batch subtitles, not a live host-coupled transcription session.**
+   **Evidence ,** Nuvio selects enabled addons advertising `subtitles`, matching type and ID prefix (`app/src/main/java/com/nuvio/tv/data/repository/SubtitleRepositoryImpl.kt:50-68`, `:127-154`), then calls a REST resource containing only type, video/content ID, and optional hash/size/filename (`:156-185`, `:220-237`). The accepted response object has only `id`, `url`, and `lang`/`language` (`app/src/main/java/com/nuvio/tv/data/remote/dto/SubtitleResponseDto.kt:7-16`). This matches the official Stremio subtitle resource and response documentation: [protocol](https://github.com/Stremio/stremio-addon-sdk/blob/master/docs/protocol.md), [subtitle response](https://github.com/Stremio/stremio-addon-sdk/blob/master/docs/api/responses/subtitles.md).
+   **So what ,** A normal addon may run server-side batch ASR if it can independently acquire the media, cache the completed VTT/SRT, and return its URL. It receives neither Nuvio’s selected stream URL/headers nor decoded audio, seek, cancel, grant, or episode-transition events; those must remain Nuvio extensions.
 
-2. **What — ExoPlayer’s current sidecar is the right rendering foundation, but its source is immutable and one-shot.**
-   **Evidence —** The hot path downloads the entire body, parses it, stores one `List<CuesWithTiming>`, and only then begins a render loop (`app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerSidecarSubtitles.kt:98-175`). Rendering already applies current playback position and audio/subtitle delay, sanitization, SDH filtering, overlap merging, and direct `SubtitleView.setCues` without replacing the video media source (`:178-200`). The stated purpose is to preserve the progressive/VOD buffer (`:26-38`).
-   **So what —** Generalize this into a `TimedCueSource`: static addon files populate an immutable source, while ASR populates a host-owned mutable source. Do not repeatedly download a growing VTT file or call `setMediaSource` for every partial result.
+2. **What , ExoPlayer’s current sidecar is the right rendering foundation, but its source is immutable and one-shot.**
+   **Evidence ,** The hot path downloads the entire body, parses it, stores one `List<CuesWithTiming>`, and only then begins a render loop (`app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerSidecarSubtitles.kt:98-175`). Rendering already applies current playback position and audio/subtitle delay, sanitization, SDH filtering, overlap merging, and direct `SubtitleView.setCues` without replacing the video media source (`:178-200`). The stated purpose is to preserve the progressive/VOD buffer (`:26-38`).
+   **So what ,** Generalize this into a `TimedCueSource`: static addon files populate an immutable source, while ASR populates a host-owned mutable source. Do not repeatedly download a growing VTT file or call `setMediaSource` for every partial result.
 
-3. **What — Nuvio currently carries useful media identity but deliberately does not expose media access to subtitle addons.**
-   **Evidence —** Player navigation includes stream URL, serialized headers, filename, video hash, and size (`app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerNavigationArgs.kt:7-38`, `:65-97`). Runtime normalizes and retains current URL/headers (`app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerRuntimeController.kt:183-216`) and lazily computes an OpenSubtitles hash before querying addons (`app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerRuntimeControllerObservers.kt:40-104`). Only filename/hash/size are sent to `SubtitleRepository`; URL, headers, and PCM are not (`:95-104`).
-   **So what —** Preserve that boundary. Grant an ASR plugin expiring access to selected decoded PCM, never a debrid URL, cookie, authorization header, torrent session URL, or unrestricted playback data source.
+3. **What , Nuvio currently carries useful media identity but does not expose media access to subtitle addons.**
+   **Evidence ,** Player navigation includes stream URL, serialized headers, filename, video hash, and size (`app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerNavigationArgs.kt:7-38`, `:65-97`). Runtime normalizes and retains current URL/headers (`app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerRuntimeController.kt:183-216`) and lazily computes an OpenSubtitles hash before querying addons (`app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerRuntimeControllerObservers.kt:40-104`). Only filename/hash/size are sent to `SubtitleRepository`; URL, headers, and PCM are not (`:95-104`).
+   **So what ,** Preserve that boundary. Grant an ASR plugin expiring access to selected decoded PCM, never a debrid URL, cookie, authorization header, torrent session URL, or unrestricted playback data source.
 
-4. **What — The existing TV selector supplies the interaction model, but it lacks actionable fetch errors and a generated-track kind.**
-   **Evidence —** It is a language → option → style layout with dedicated focus requesters and scroll restoration (`app/src/main/java/com/nuvio/tv/ui/screens/player/SubtitleSelectionOverlay.kt:225-363`, `:394-436`, `:593-705`), explicit D-pad rail transitions (`:997-1044`, `:1069-1120`), and loading/empty cards (`:707-719`). `PlayerUiState` contains `addonSubtitlesError` (`app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerUiState.kt:121-126`), but `PlayerScreen` passes only loading state into the overlay (`app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerScreen.kt:1534-1552`). Repository failures are generally converted to empty lists (`SubtitleRepositoryImpl.kt:82-116`, `:189-217`), so the controller’s exception-to-error branch is seldom reached (`PlayerRuntimeControllerObservers.kt:107-151`).
-   **So what —** Add a real error/retry model before ASR. Generated tracks need stable IDs and explicit queued/listening/transcribing/paused/complete/failed states so cue updates do not move focus or rebuild rails.
+4. **What , The existing TV selector supplies the interaction model, but it lacks actionable fetch errors and a generated-track kind.**
+   **Evidence ,** It is a language → option → style layout with dedicated focus requesters and scroll restoration (`app/src/main/java/com/nuvio/tv/ui/screens/player/SubtitleSelectionOverlay.kt:225-363`, `:394-436`, `:593-705`), explicit D-pad rail transitions (`:997-1044`, `:1069-1120`), and loading/empty cards (`:707-719`). `PlayerUiState` contains `addonSubtitlesError` (`app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerUiState.kt:121-126`), but `PlayerScreen` passes only loading state into the overlay (`app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerScreen.kt:1534-1552`). Repository failures are generally converted to empty lists (`SubtitleRepositoryImpl.kt:82-116`, `:189-217`), so the controller’s exception-to-error branch is seldom reached (`PlayerRuntimeControllerObservers.kt:107-151`).
+   **So what ,** Add a real error/retry model before ASR. Generated tracks need stable IDs and explicit queued/listening/transcribing/paused/complete/failed states so cue updates do not move focus or rebuild rails.
 
-5. **What — A decoded-PCM hook is practical in ExoPlayer, while MPV has no equivalent Kotlin seam in this baseline.**
-   **Evidence —** ExoPlayer is already built with a custom renderers factory and injected `GainAudioProcessor` (`app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerRuntimeControllerInitialization.kt:805-848`); its `DefaultAudioSink` currently receives that processor (`:2065-2095`). The gain processor demonstrates PCM-16/float handling (`app/src/main/java/com/nuvio/tv/ui/screens/player/GainAudioProcessor.kt:29-61`). MPV is configured to output through `audiotrack,opensles` (`app/src/main/java/com/nuvio/tv/ui/screens/player/NuvioMpvSurfaceView.kt:590-614`) and exposes subtitle commands, but no decoded-audio callback (`:431-479`).
-   **So what —** Ship the first generation path on ExoPlayer. MPV requires native/libmpv audio-frame integration; Android Audio Playback Capture is a user-consented `MediaProjection` fallback with platform eligibility constraints, not a silent substitute ([Android playback capture](https://developer.android.com/media/platform/av-capture)).
+5. **What , A decoded-PCM hook is practical in ExoPlayer, while MPV has no equivalent Kotlin seam in this baseline.**
+   **Evidence ,** ExoPlayer is already built with a custom renderers factory and injected `GainAudioProcessor` (`app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerRuntimeControllerInitialization.kt:805-848`); its `DefaultAudioSink` currently receives that processor (`:2065-2095`). The gain processor demonstrates PCM-16/float handling (`app/src/main/java/com/nuvio/tv/ui/screens/player/GainAudioProcessor.kt:29-61`). MPV is configured to output through `audiotrack,opensles` (`app/src/main/java/com/nuvio/tv/ui/screens/player/NuvioMpvSurfaceView.kt:590-614`) and exposes subtitle commands, but no decoded-audio callback (`:431-479`).
+   **So what ,** Ship the first generation path on ExoPlayer. MPV requires native/libmpv audio-frame integration; Android Audio Playback Capture is a user-consented `MediaProjection` fallback with platform eligibility constraints, not a silent substitute ([Android playback capture](https://developer.android.com/media/platform/av-capture)).
 
-6. **What — Existing plugin and QR infrastructure are precedents, not secure media-capability transports.**
-   **Evidence —** The full-build JavaScript runtime has a broad native fetch bridge (`app/src/full/java/com/nuvio/tv/core/plugin/PluginRuntime.kt:286-304`) and a general network client (`:48-66`), so decoded audio should not simply be injected into that environment. The LAN configuration server listens on ports beginning at 8080 and exposes unauthenticated state and mutation routes (`app/src/main/java/com/nuvio/tv/core/server/AddonConfigServer.kt:20-50`, `:156-210`, `:221-255`). Its QR contains only `http://<LAN-IP>:<port>` (`app/src/main/java/com/nuvio/tv/ui/screens/addon/AddonManagerViewModel.kt:361-377`), although mutation does require TV-side confirmation (`:600-646`).
-   **So what —** Reuse the visible QR + TV confirmation pattern only for plugin account/configuration. Add short-lived authentication and never expose stream URLs, headers, PCM, transcripts, or grant handles over the LAN server.
+6. **What , Existing plugin and QR infrastructure are precedents, not secure media-capability transports.**
+   **Evidence ,** The full-build JavaScript runtime has a broad native fetch bridge (`app/src/full/java/com/nuvio/tv/core/plugin/PluginRuntime.kt:286-304`) and a general network client (`:48-66`), so decoded audio should not simply be injected into that environment. The LAN configuration server listens on ports beginning at 8080 and exposes unauthenticated state and mutation routes (`app/src/main/java/com/nuvio/tv/core/server/AddonConfigServer.kt:20-50`, `:156-210`, `:221-255`). Its QR contains only `http://<LAN-IP>:<port>` (`app/src/main/java/com/nuvio/tv/ui/screens/addon/AddonManagerViewModel.kt:361-377`), although mutation does require TV-side confirmation (`:600-646`).
+   **So what ,** Reuse the visible QR + TV confirmation pattern only for plugin account/configuration. Add short-lived authentication and never expose stream URLs, headers, PCM, transcripts, or grant handles over the LAN server.
 
-7. **What — There are two important correctness gaps to close before layering ASR on top.**
-   **Evidence —** `StreamDto` accepts inline `subtitles` (`app/src/main/java/com/nuvio/tv/data/remote/dto/StreamResponseDto.kt:12-24`, `:108-113`), but `StreamMapper.toDomain()` omits the field and the domain `Stream` has no subtitle property (`app/src/main/java/com/nuvio/tv/data/mapper/StreamMapper.kt:18-32`; `app/src/main/java/com/nuvio/tv/domain/model/Stream.kt:9-27`). Also, the hasher accepts any successful response for a range read, including `200` from a server that ignored `Range` (`app/src/main/java/com/nuvio/tv/core/player/OpenSubtitlesHasher.kt:92-131`), which can yield a false hash when no cached range-capability probe was available.
-   **So what —** Preserve stream-provided subtitles and harden fingerprinting first; otherwise Nuvio may offer unnecessary generation or cache a transcript against the wrong media.
+7. **What , There are two important correctness gaps to close before layering ASR on top.**
+   **Evidence ,** `StreamDto` accepts inline `subtitles` (`app/src/main/java/com/nuvio/tv/data/remote/dto/StreamResponseDto.kt:12-24`, `:108-113`), but `StreamMapper.toDomain()` omits the field and the domain `Stream` has no subtitle property (`app/src/main/java/com/nuvio/tv/data/mapper/StreamMapper.kt:18-32`; `app/src/main/java/com/nuvio/tv/domain/model/Stream.kt:9-27`). The hasher's Range path accepts every 2xx response, including `200` from a server that ignored `Range`, does not validate `Content-Range`, and can reduce rejected or short reads to zero or partial sums (`app/src/main/java/com/nuvio/tv/core/player/OpenSubtitlesHasher.kt:92-131`). This can produce a plausible false hash.
+   **So what ,** Preserve stream-provided subtitles and harden fingerprinting first; otherwise Nuvio may offer unnecessary generation or cache a transcript against the wrong media.
 
 ## Data / Evidence
 
@@ -52,7 +52,7 @@ Nuvio already has a capable static-subtitle pipeline: concurrent Stremio-addon d
 
 - Runtime starts with navigation hash/size/filename and derives a filename from the URL path if needed (`PlayerRuntimeController.kt:183-212`). Stream switching replaces hash, size, filename, addon metadata, and the normalized URL/headers (`app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerRuntimeControllerStreams.kt:572-606`).
 - The OpenSubtitles algorithm adds content length and little-endian 64-bit words from the first and last 64 KiB (`OpenSubtitlesHasher.kt:11-39`). Files below 128 KiB, missing length, cached “no ranges,” or exceptions return `null` (`:23-42`, `:45-89`).
-- Range requests preserve playback headers except caller-supplied `Range` and add a default user agent (`:92-110`). The response validation at `:113-115` should require `206` plus a matching `Content-Range`; accepting `200` can hash the first chunk twice.
+- Range requests preserve playback headers except caller-supplied `Range` and add a default user agent (`:92-110`). The response validation must require exact `206`, a matching range/total in `Content-Range`, and exactly 64 KiB of body; rejected, short, or malformed reads must fail `compute` rather than contribute a partial or zero sum.
 - Hash failure is intentionally silent. ASR identity therefore needs an explicit quality marker (`EXACT_FILE_HASH`, `TORRENT_FILE`, `WEAK_METADATA`, `SESSION_ONLY`) rather than treating every available key as equally durable.
 
 #### 1.3 Fetch, decode, parse, and render
@@ -190,7 +190,7 @@ interface TimedCueSource {
 - `GeneratedCueSource` snapshots `MutableCueStore`.
 - The existing render loop continues to apply delay, sanitization, SDH stripping, overlap merging, and `SubtitleView.setCues` (`PlayerSidecarSubtitles.kt:178-200`).
 - The cue store accepts an upsert only when `(epoch, cueId)` matches the current namespace and `revision` is newer. Final cues are immutable; a plugin attempting to revise a final cue is rejected and recorded as a protocol fault.
-- Provisional cues may change text/timing, but update presentation is coalesced (for example, at 5–10 Hz) to avoid Compose or `SubtitleView` churn. Cue-list changes must not mutate the option card’s stable ID.
+- Provisional cues may change text/timing, but update presentation is coalesced (for example, at 5-10 Hz) to avoid Compose or `SubtitleView` churn. Cue-list changes must not mutate the option card’s stable ID.
 - On a seek, provisional cues from the old epoch are removed immediately. Final cues outside a configurable overlap window may remain available, but only if their media identity and timeline revision still match.
 - Do not use an ever-growing VTT response as the primary extension. HLS defines segmented WebVTT delivery ([RFC 8216 §3.5](https://www.rfc-editor.org/rfc/rfc8216#section-3.5)), but that solves segment transport, not host grants, cue revision semantics, seek cancellation, or this sidecar’s full-body parsing behavior.
 
@@ -268,13 +268,13 @@ Actions: **Allow for this episode**, optionally **Always allow this signed on-de
 
 Use one stable option ID for the generated track. Its label changes without replacing the focused item:
 
-- `Preparing model…` — cancellable download/setup.
-- `Listening · 00:42 transcribed` — live and selected automatically only after first renderable cue, unless user chose “generate without selecting.”
-- `Paused` — playback paused; no frames leave the broker.
-- `Repositioning…` — seek epoch changed, queued audio discarded.
-- `Subtitles live` — partial coverage; small progress/coverage value.
-- `Complete` — durable result available.
-- `Couldn’t continue` — focused **Resume** and **Details** actions.
+- `Preparing model…` , cancellable download/setup.
+- `Listening · 00:42 transcribed` , live and selected automatically only after first renderable cue, unless user chose “generate without selecting.”
+- `Paused` , playback paused; no frames leave the broker.
+- `Repositioning…` , seek epoch changed, queued audio discarded.
+- `Subtitles live` , partial coverage; small progress/coverage value.
+- `Complete` , durable result available.
+- `Couldn’t continue` , focused **Resume** and **Details** actions.
 
 The right rail switches to **Generation status** with focused **Pause generation**, **Stop & keep captions**, and **Cancel & remove**. Once a generated track is selected, normal Style and Timing remain reachable. Cue arrivals must never steal focus, scroll the rails, dismiss the overlay, or pause playback.
 
@@ -297,8 +297,8 @@ A small persistent player indicator should say **Audio being transcribed** with 
 | Resume | Resume only if grant, plugin identity, audio track, and media identity still match | `Listening` resumes |
 | Seek | Flush queued audio, increment timing epoch, send discontinuity, remove old provisional cues, restart at target | Brief `Repositioning…`; finalized compatible cues retained |
 | Scrub repeatedly | Debounce restarts; only the final target opens an epoch | No flood of model restarts |
-| Audio track change | Revoke old track grant and create a new identity; require confirmation if consent was track-specific | “Audio changed — continue generation?” |
-| Switch to MPV | Revoke Exo PCM grant. Keep finalized cue cache but stop live updates | “Generation paused — switch to ExoPlayer to resume” |
+| Audio track change | Revoke old track grant and create a new identity; require confirmation if consent was track-specific | “Audio changed , continue generation?” |
+| Switch to MPV | Revoke Exo PCM grant. Keep finalized cue cache but stop live updates | “Generation paused , switch to ExoPlayer to resume” |
 | Switch back to ExoPlayer | Resume only exact compatible finalized cache; create a new in-flight epoch/grant | Resume action, never silent capture |
 | Stop & keep captions | Revoke audio immediately; finalize valid cues and retain selected snapshot | Captions remain, marked incomplete |
 | Cancel & remove | Revoke, zero/drain frame buffers, delete provisional cues and session files | Return focus to Generate card |
@@ -310,7 +310,7 @@ Existing episode switching already resets stream hash/size/filename and selected
 
 ### 6. Privacy and security requirements
 
-1. **Explicit purpose and visibility:** Capture begins only after Start + consent. Keep a persistent indicator while frames can flow and an audit entry containing provider, episode identity, start/end time, and disposition—but no audio or transcript text.
+1. **Explicit purpose and visibility:** Capture begins only after Start + consent. Keep a persistent indicator while frames can flow and an audit entry containing provider, episode identity, start/end time, and disposition,but no audio or transcript text.
 2. **Least privilege:** PCM16 mono at the model-required sample rate, selected audio track only, bounded time window, no raw media access. Grant expiry should be measured with monotonic time and renewed only while playback/session state is valid.
 3. **Identity verification:** Bind grants to Android package signing certificate or signed module digest. An addon URL or display name is not an identity.
 4. **Isolation:** Prefer an isolated on-device service. For cloud engines, use host-mediated allowlisted HTTPS egress. Rate-limit frame bytes, cue events, cue length, revision frequency, and total transcript size.
@@ -406,13 +406,13 @@ The existing server’s unauthenticated routes and plain IP URL are acceptable o
 
 ## Recommendations
 
-1. **Phase 0 — Correct the static foundation.** Preserve `StreamDto.subtitles`; return structured subtitle lookup outcomes instead of swallowing all failures; pass error/retry state into `SubtitleSelectionOverlay`; require valid `206 Content-Range` for hashing; add repository/hasher regression tests.
-2. **Phase 1 — Generalize sidecar rendering.** Extract `TimedCueSource` and `MutableCueStore` while keeping static addon behavior byte-for-byte compatible. Prove that cue-source snapshots update `SubtitleView` without `setMediaSource`, buffer loss, or focus recomposition.
-3. **Phase 2 — Build the host coordinator and fake ASR plugin.** Implement the pure lifecycle reducer, identity/cache model, grants, revocation, bounded audio broker, and synthetic cue producer before integrating a real model.
-4. **Phase 3 — ExoPlayer on-device MVP.** Add a PCM tap to the existing custom audio sink path, with authoritative timing anchors and seek epochs. Ship one signed on-device model, explicit consent, persistent indicator, Generate/setup/status TV cards, cancellation, and finalized VTT export.
-5. **Phase 4 — Cloud provider connector.** Add host-brokered allowlisted egress, provider-specific retention disclosure, rate/size limits, cancellation, and encrypted profile-scoped final transcript cache. Do not send stream credentials.
-6. **Phase 5 — Harden configuration pairing.** If QR setup is needed, add single-use auth, TV approval, origin/rate/body controls, rapid shutdown, and OAuth/device-code handling for secrets. Keep media capabilities off LAN.
-7. **Phase 6 — MPV parity only after a native design.** Evaluate a libmpv/native decoded-audio callback and timestamp contract. Until it is implemented and tested, offer an explicit ExoPlayer switch rather than Android playback-capture prompts or periodically reloaded subtitle files.
+1. **Phase 0 , Correct the static foundation.** Preserve `StreamDto.subtitles`; return structured subtitle lookup outcomes instead of swallowing all failures; pass error/retry state into `SubtitleSelectionOverlay`; require valid `206 Content-Range` for hashing; add repository/hasher regression tests.
+2. **Phase 1 , Generalize sidecar rendering.** Extract `TimedCueSource` and `MutableCueStore` while keeping static addon behavior byte-for-byte compatible. Prove that cue-source snapshots update `SubtitleView` without `setMediaSource`, buffer loss, or focus recomposition.
+3. **Phase 2 , Build the host coordinator and fake ASR plugin.** Implement the pure lifecycle reducer, identity/cache model, grants, revocation, bounded audio broker, and synthetic cue producer before integrating a real model.
+4. **Phase 3 , ExoPlayer on-device MVP.** Add a PCM tap to the existing custom audio sink path, with authoritative timing anchors and seek epochs. Ship one signed on-device model, explicit consent, persistent indicator, Generate/setup/status TV cards, cancellation, and finalized VTT export.
+5. **Phase 4 , Cloud provider connector.** Add host-brokered allowlisted egress, provider-specific retention disclosure, rate/size limits, cancellation, and encrypted profile-scoped final transcript cache. Do not send stream credentials.
+6. **Phase 5 , Harden configuration pairing.** If QR setup is needed, add single-use auth, TV approval, origin/rate/body controls, rapid shutdown, and OAuth/device-code handling for secrets. Keep media capabilities off LAN.
+7. **Phase 6 , MPV parity only after a native design.** Evaluate a libmpv/native decoded-audio callback and timestamp contract. Until it is implemented and tested, offer an explicit ExoPlayer switch rather than Android playback-capture prompts or periodically reloaded subtitle files.
 8. **Release gates:** no playback-thread blocking; no post-revocation frames; no raw PCM on disk; no stream secrets in plugin IPC/log/cache; stable D-pad focus under cue updates; correct seek/episode isolation; exact Exo/MPV capability messaging; user-clearable generated data.
 
 ## Open Questions

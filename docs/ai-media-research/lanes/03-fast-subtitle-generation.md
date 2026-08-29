@@ -4,17 +4,17 @@
 
 ## Executive summary
 
-For NuvioTV, the fastest useful subtitle design is not a whole-title batch request. It is a streaming ASR session fed from a host-owned PCM tap, with finalized word or sentence timestamps inserted into the existing sidecar cue renderer. The strongest new in-window candidate is **Gemini 3.5 Transcribe**, introduced August 13 and promoted to GA August 26. It supports incremental live text, 85+ languages, automatic code-switching and hybrid VAD, but its live path has only utterance timestamps and ten-minute sessions. The strongest timestamped streaming candidate that was both documented and measured here is **Alibaba Qwen-Audio-3.0-ASR-Flash-Streaming**: unlimited sessions, word/sentence timestamps, rich audio formats, and a real test produced a correct 7.898 s transcript with first result at 1.704 s and final at 8.711 s.
+For NuvioTV, live captions and ahead-of-playback generation are separate useful modes. Live generation uses a streaming ASR session fed from a host-owned PCM tap, with finalized word or sentence timestamps inserted into the existing sidecar cue renderer. The strongest in-window hosted live candidate is **Gemini 3.5 Transcribe**, promoted to GA August 26. It supports incremental live text, 85+ languages, automatic code-switching and hybrid VAD, but its live path has only utterance timestamps and ten-minute sessions. The strongest timestamped streaming candidate that was both documented and measured here is **Alibaba Qwen-Audio-3.0-ASR-Flash-Streaming**: unlimited sessions, word/sentence timestamps, rich audio formats, and a real test produced a correct 7.898 s transcript with first result at 1.704 s and final at 8.711 s.
 
-For ahead-of-playback batch generation, **Cloudflare Whisper Large V3 Turbo** is the cost and integration outlier at $0.00051/audio minute; a real test transcribed the same 7.898 s clip in 3.875 s wall time with exact text and word timestamps. **Groq Whisper Large V3 Turbo** is a mature low-cost alternative at $0.04/audio hour, but it is file/chunk based rather than streaming. **Mistral Voxtral Realtime** is the best open-weight controllable streaming ASR, with a configurable 80–2400 ms delay and a 4B footprint, while **WhisperX** remains the strongest open long-form post-processing option when forced alignment and diarization matter more than time-to-first-caption.
+For ahead-of-playback batch generation, **Cloudflare Whisper Large V3 Turbo** is the cost and integration outlier at $0.0005/audio minute; a real test transcribed the same 7.898 s clip in 3.875 s wall time with exact text and word timestamps. **Groq Whisper Large V3 Turbo** is a mature low-cost alternative at $0.04/audio hour, but it is file/chunk based rather than streaming. **Mistral Voxtral Realtime** is the best open-weight controllable streaming ASR, with a configurable 80-2400 ms delay and a 4B footprint, while **WhisperX** remains the strongest open long-form post-processing option when forced alignment and diarization matter more than time-to-first-caption.
 
 No candidate should be selected from vendor WER or “latency” claims alone. Streaming latency, batch real-time factor, long-form drift, timestamp error, subtitle segmentation, code-switching, background-music robustness, and provider cost must be measured on the same film/TV corpus.
 
 ## Priority-window findings
 
-### Gemini 3.5 Transcribe, August 13 launch and August 26 GA
+### Gemini 3.5 Transcribe, August 26 GA
 
-Google's release notes introduced `gemini-3.5-transcribe` and `gemini-3.5-transcribe-live` on August 13 and marked them generally available August 26 [official changelog](https://ai.google.dev/gemini-api/docs/changelog). The batch model detects 85+ languages, handles code-switching, supports diarization, word timestamps, custom vocabulary and Smart transcription. Unary requests allow one hour, reduced to 30 minutes with diarization or word timestamps [model page](https://ai.google.dev/gemini-api/docs/models/gemini-3.5-transcribe).
+Google's release notes marked `gemini-3.5-transcribe` and `gemini-3.5-transcribe-live` generally available on August 26 [official changelog](https://ai.google.dev/gemini-api/docs/changelog). The reviewed mutable changelog does not preserve evidence for an August 13 introduction, so the earlier launch date remains unverified. The batch model detects 85+ languages, handles code-switching, supports diarization, word timestamps, custom vocabulary and Smart transcription. Unary requests allow one hour, reduced to 30 minutes with diarization or word timestamps [model page](https://ai.google.dev/gemini-api/docs/models/gemini-3.5-transcribe).
 
 The live model uses a bidirectional WebSocket, accepts 16-bit PCM in recommended 100 ms chunks, emits speculative `interim_input_transcription` updates and finalized `input_transcription`, and supports server or hybrid VAD. Hybrid VAD lets the client send `audio_stream_end` as soon as local silence is detected to avoid the server's silence wait [live guide](https://ai.google.dev/gemini-api/docs/live-api/live-transcribe). Limitations matter for subtitles: sessions last at most ten minutes, live diarization is unavailable, and live output has utterance-level rather than word-level timestamps. Nuvio would need transparent session rotation and cue boundary derivation.
 
@@ -26,7 +26,7 @@ Deepgram updated Nova-3 repeatedly in August: language additions and quality imp
 
 Cartesia's August changelog adds keyterm prompting to **Ink-2** and exposes turn-detection tuning in its Playground/API [official changelog](https://docs.cartesia.ai/changelog/2026). Ink-2's `/stt/turns/websocket` takes binary audio, recommends 100 ms chunks, and emits `turn.start`, repeated `turn.update`, eager-end/resume and `turn.end`; it is English-only [official WebSocket reference](https://docs.cartesia.ai/api-reference/stt/turns/websocket). A credentialed handshake test returned HTTP 402, proving the existing key authenticates but has no usable balance. No timing claim is made from that failed probe.
 
-### Qwen current documentation updated August 25–26
+### Qwen current documentation updated August 25-26
 
 Alibaba's raw WebSocket reference was updated August 25 and the model/user pages August 26. The recommended streaming model, `qwen-audio-3.0-asr-flash-streaming`, supports multilingual audio and dialects, hotwords and prompt context, unlimited mono streaming, formats including PCM/WAV/MP3/Opus/AAC, and sentence plus word timestamps by default. `qwen3-asr-flash-realtime` has broader emotion output but currently no timestamps, so it is a worse subtitle choice [model selector](https://www.alibabacloud.com/help/en/model-studio/asr-model), [streaming guide](https://www.alibabacloud.com/help/en/model-studio/real-time-speech-recognition-user-guide), [WebSocket API](https://www.alibabacloud.com/help/en/model-studio/fun-asr-realtime-websocket-api).
 
@@ -36,13 +36,14 @@ Alibaba's raw WebSocket reference was updated August 25 and the model/user pages
 |---:|---|---|---|---|
 | 1 | **Qwen-Audio-3.0-ASR-Flash-Streaming** | True WebSocket/AOQ stream; word + sentence timestamps; unlimited | Best verified match for progressive captions; actual key and timing test succeeded | Workspace/region setup; no diarization in streaming; provider benchmarks need corpus validation |
 | 2 | **Gemini 3.5 Transcribe Live + batch** | Incremental live text with utterance timestamps; batch word timestamps/diarization | Fresh GA, 85+ languages, code-switching, Smart/verbatim modes, hybrid VAD | Ten-minute live sessions; no live word times or diarization |
-| 3 | **Deepgram Nova-3** | Streaming and prerecorded with interim/final words, timing and diarization | Mature media API, broad rapidly updated language coverage | Current direct price/latency/film-corpus evidence must be measured; no in-window universal benchmark |
-| 4 | **AssemblyAI Universal-3.5 Pro Streaming** | Streaming, realtime diarization, native code-switching in 18 languages | Official docs claim sub-300 ms and fastest word emissions | Session-based billing; candidate claim must be independently timed; fewer languages than Gemini/Qwen |
+| 3 | **Qwen-Audio-3.0-ASR-Flash-Filetrans** | Async file URL, word/sentence timestamps and optional diarization | 12-hour/2 GB long-title control, provider reuse, $0.0021/min international list price | Public file URL requirement; asynchronous rather than progressive |
+| 4 | **Deepgram Nova-3** | Streaming and prerecorded with interim/final words, timing and diarization | Mature media API, broad rapidly updated language coverage | Current direct price/latency/film-corpus evidence must be measured; no in-window universal benchmark |
 | 5 | **Mistral Voxtral Realtime / Transcribe 2** | Realtime configurable down to sub-200 ms; batch word timestamps + diarization | Open-weight realtime model, controllable delay, 4B edge footprint; batch accepts up to 3 hours | Realtime and diarization cannot be combined; 13 languages |
-| 6 | **Groq Whisper Large V3 Turbo** | Batch/file URL with word or segment timestamps | $0.04/audio hour, 100 MB dev file, easy chunking, mature OpenAI shape | No streaming session; URL fetch cannot carry arbitrary source headers; chunk boundary work belongs to Nuvio |
-| 7 | **Cloudflare Whisper Large V3 Turbo** | Batch REST; segments and words | $0.00051/min, direct successful test, excellent broker fit | Not streaming; Workers AI limits and long-form accuracy need measurement |
-| 8 | **Soniox v4** | Realtime and async text/translation tokens | Extremely low public rates and 60+ languages | Speech-to-text translation is text output, not automatic subtitle timing proof; direct bake-off needed |
-| 9 | **Cartesia Ink-2** | Turn streaming, tunable endpointing | Useful provisional/final event model and keyterm prompting | English-only; current local key has no balance; no word timestamps in fetched turn schema |
+| 6 | **AssemblyAI Universal-3.5 Pro Streaming** | Streaming, realtime diarization, native code-switching in 18 languages | Official docs claim sub-300 ms and fastest word emissions | Session-based billing; candidate claim must be independently timed; fewer languages than Gemini/Qwen |
+| 7 | **Groq Whisper Large V3 Turbo** | Batch/file URL with word or segment timestamps | $0.04/audio hour, 100 MB dev file, easy chunking, mature OpenAI shape | No streaming session; URL fetch cannot carry arbitrary source headers; chunk boundary work belongs to Nuvio |
+| 8 | **Cloudflare Whisper Large V3 Turbo** | Batch REST; segments and words | $0.0005/min, direct successful test, excellent broker fit | Not streaming; Workers AI limits and long-form accuracy need measurement |
+| 9 | **Soniox v4** | Realtime and async text/translation tokens | Extremely low public rates and 60+ languages | Speech-to-text translation is text output, not automatic subtitle timing proof; direct bake-off needed |
+| 10 | **Cartesia Ink-2** | Turn streaming, tunable endpointing | Useful provisional/final event model and keyterm prompting | English-only; current local key has no balance; no word timestamps in fetched turn schema |
 
 ### Batch-only and component holds
 
@@ -58,7 +59,7 @@ Alibaba's raw WebSocket reference was updated August 25 and the model/user pages
 | 1 | **Voxtral Mini Transcribe Realtime 2602** | Apache-2.0 4B streaming ASR | 13 languages, user-selectable delay in 80 ms increments through 1.2 s plus 2.4 s, WebSocket serving, open weights. Best adjustable latency/quality research baseline [model card](https://huggingface.co/mistralai/Voxtral-Mini-4B-Realtime-2602). |
 | 2 | **WhisperX** | Batched Whisper + VAD + forced alignment + optional diarization | Repo claims 70× realtime on large-v2 under its benchmark setup, word alignment, VAD and speaker labels. Strong post-pass for finalized VTT/SRT, not a low-latency streaming UI [official repo](https://github.com/m-bain/whisperX). |
 | 3 | **faster-whisper** | CTranslate2 Whisper runtime | Excellent throughput/batching and lower memory, useful first-pass transcription. Native Whisper timestamps need forced alignment for production subtitle precision [official repo](https://github.com/SYSTRAN/faster-whisper). |
-| 4 | **NVIDIA Nemotron 3.5 ASR Streaming 0.6B** | Open streaming ASR | Exact 80–1120 ms chunk/right-context operating points and large-stream GPU throughput; useful deployment baseline, but Nuvio needs timestamp support verification [model card](https://huggingface.co/nvidia/nemotron-3.5-asr-streaming-0.6b). |
+| 4 | **NVIDIA Nemotron 3.5 ASR Streaming 0.6B** | Open streaming ASR | Exact 80-1120 ms chunk/right-context operating points and large-stream GPU throughput; useful deployment baseline, but Nuvio needs timestamp support verification [model card](https://huggingface.co/nvidia/nemotron-3.5-asr-streaming-0.6b). |
 | 5 | **NVIDIA Parakeet/Canary** | ASR or speech-to-text translation | Parakeet is strong English streaming/offline ASR; Canary supplies speech translation text. Neither alone produces multilingual timed subtitles for every target; use as controlled components. |
 
 ## Real timing receipts
@@ -107,7 +108,7 @@ All probes used a synthetic macOS `say` English clip on an Apple M5 Max, encoded
 
 Use owned/test media with exact references:
 
-- 24 short clips (15–90 s) across clean dialogue, music, effects, whisper, shouting, accents, code-switching and overlap.
+- 24 short clips (15-90 s) across clean dialogue, music, effects, whisper, shouting, accents, code-switching and overlap.
 - 12 continuous 22-minute episodes across at least four source languages.
 - 6 continuous 100-minute films, including alternate cuts.
 - Embedded/reference subtitle files manually corrected to word/cue timing.
@@ -139,14 +140,14 @@ Use owned/test media with exact references:
 Build one host contract with two provider modes:
 
 1. **Live captions:** Qwen-Audio-3.0 streaming first because it offers verified word timestamps and worked with an available key; Gemini Transcribe Live second for broad code-switching and provider diversity; Deepgram/AssemblyAI in the paid bake-off.
-2. **Ahead-of-playback and finalization:** Cloudflare Whisper V3 Turbo as the cheap batch baseline; Groq as the high-throughput API control; WhisperX/Voxtral as self-hosted/open controls.
+2. **Ahead-of-playback and finalization:** Cloudflare Whisper V3 Turbo as the cheap batch baseline; Groq as the high-throughput API control; Qwen Audio 3.0 Filetrans as the long-title, diarization and same-provider control; WhisperX/Voxtral as self-hosted/open controls.
 3. Run a correction pass over live output: finalized Qwen/Gemini cues can be replaced by a slower batch or forced-alignment artifact behind the current playhead, never rewriting cues already shown unless the user requests regeneration.
 
 ## Evidence gaps
 
 - No common current benchmark compares the candidates on long-form film audio, same hardware/region and same timestamp metric.
 - Vendor “sub-200 ms,” “sub-300 ms,” or “70×” numbers describe different quantities and are not interchangeable with first stable subtitle latency.
-- Qwen and Gemini pricing-to-minute conversion requires authenticated usage reconciliation; token-based pricing must be measured from raw provider usage.
+- Qwen streaming ASR list price is duration-based at $0.00009/second ($0.0054/min) internationally. Invoice reconciliation is still required. Gemini pricing-to-minute conversion should likewise be checked against authenticated usage.
 - Cloudflare's short successful probe does not prove long-title scaling, request-size limits or language quality.
 - Live ASR usually lacks reliable diarization and SDH generation. Those need separate stages and tests.
 - Local Android TV capture and thermal behavior remain unmeasured; source access and player integration reports define the required host seam.

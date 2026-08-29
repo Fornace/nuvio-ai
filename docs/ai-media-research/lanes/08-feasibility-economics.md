@@ -1,8 +1,8 @@
-# Lane 08 — Feasibility and Economics: AI Dubbing and Missing-Caption Generation
+# Lane 08 , Feasibility and Economics: AI Dubbing and Missing-Caption Generation
 
 **Research cutoff:** 2026-08-29  
 **Required publication window reviewed first:** 2026-07-31 through 2026-08-29 inclusive  
-**Scope:** challenge two proposed capabilities—AI dubbing and generation of missing captions—for NuvioTV. This is a technical/economic feasibility report, not an implementation specification.
+**Scope:** challenge two proposed capabilities,AI dubbing and generation of missing captions,for NuvioTV. This is a technical/economic feasibility report, not an implementation specification.
 
 Nuvio can plausibly pilot **generated dialogue captions** for clear, seekable VOD, but it should not promise accessibility-equivalent captions and should not make an arbitrary media URL sufficient proof that a source is processable. A product called “dubbing” is substantially harder: transcription, translation, timing, voice generation, dialogue/background separation, remix, correction, caching, and seek behavior form a stateful media pipeline, not a thin plugin call.
 
@@ -16,14 +16,14 @@ Only primary pages whose dated release/update falls inside the required window a
 |---|---|---|
 | 2026-07-31 | Deepgram made model/language changes possible mid-session, added STT latency to its latency report, and imposed a two-hour maximum on Voice Agent sessions; keep-alives do not extend the limit. [Deepgram changelog, 2026-07-31](https://developers.deepgram.com/changelog/2026/7/31) | Dynamic language selection and measured latency are useful, but a two-hour conversational session is not a durable 100-minute media-job protocol. A media job still needs resumable shards and persisted state. |
 | 2026-08-05 | Media3 1.11.0 added/fixed several relevant primitives: reduced OOM risk in load control, fragmented-MP4 `mfra` seeking by default, per-stream progression, time-aware audio-processor metadata, and multiple extractor/audio fixes. [AndroidX Media3 1.11.0 release notes](https://developer.android.com/jetpack/androidx/releases/media3#1.11.0) | These changes improve the feasibility of edge extraction and time-based processing. They do **not** prove Nuvio receives them: Nuvio uses local player/extractor AARs plus a stock `media3-database:1.8.0`, and the local AARs’ upstream revision is not declared in the inspected Gradle file (`app/build.gradle.kts:452-478`). |
-| 2026-08-12 | Deepgram’s Flux TTS became generally available on REST and WebSocket. The live socket can interrupt an active turn and report `text_spoken` and `text_remaining`; speed is limited to 0.85–1.15 in 0.05 steps; the announced catalog is 36 English voices. [Deepgram changelog, 2026-08-12](https://developers.deepgram.com/changelog/2026/8/12) | Exact interruption accounting is useful for cancel/seek. English-only catalog coverage and the narrow speed range make this release insufficient by itself for multilingual, duration-matched dubbing. |
+| 2026-08-12 | Deepgram’s Flux TTS became generally available on REST and WebSocket. The live socket can interrupt an active turn and report `text_spoken` and `text_remaining`; speed is limited to 0.85-1.15 in 0.05 steps; the announced catalog is 36 English voices. [Deepgram changelog, 2026-08-12](https://developers.deepgram.com/changelog/2026/8/12) | Exact interruption accounting is useful for cancel/seek. English-only catalog coverage and the narrow speed range make this release insufficient by itself for multilingual, duration-matched dubbing. |
 | 2026-08-14 | Android documents that playback capture requires `RECORD_AUDIO`, one-time user-approved `MediaProjection`, same-profile execution, eligible audio usage, and an effective capture policy that permits capture. The most restrictive policy wins, and `ALLOW_CAPTURE_BY_NONE` prevents even system capture. [Android playback capture](https://developer.android.com/media/platform/av-capture) | Capturing arbitrary playback is not a universal fallback for inaccessible or protected sources. Nuvio should acquire its **own** clear stream before decode or through an explicit in-player tap, not depend on a screen-capture permission flow. |
 | 2026-08-27 | Cartesia released Sonic 3.6 with 44 languages/61 locales and a dated production snapshot. Existing voice IDs carry over, and timestamps, codec, speed, volume, and SSML behavior remain as on Sonic 3.5. [Cartesia 2026 changelog](https://docs.cartesia.ai/changelog/2026) | This is a credible multilingual synthesis candidate. It remains TTS, not dialogue separation, translation, timeline fitting, remix, or a complete dubbing service. Pinning the dated snapshot is safer than a moving alias. |
 | 2026-08-28 | Deepgram announced Nova-3 quality improvements for ten languages, following several language additions and model updates during August. [Deepgram changelog](https://developers.deepgram.com/changelog) | Language coverage is improving rapidly, which is an opportunity, but model quality is a moving dependency. Acceptance must be corpus-based and model snapshots must be recorded per artifact. |
 
-**Window conclusion — fact:** the window produced meaningful STT/TTS and media-stack improvements, but no release removed the source-access, DRM, separation/remix, durable-job, or cross-flavor blockers.  
-**Window conclusion — assumption:** the relevant vendor/API behavior seen on 2026-08-29 will remain available during a pilot.  
-**Window conclusion — unknown:** the upstream Media3 revision represented by Nuvio’s local AARs and whether those AARs include the 1.11.0 fixes.
+**Window conclusion , fact:** the window produced meaningful STT/TTS and media-stack improvements, but no release removed the source-access, DRM, separation/remix, durable-job, or cross-flavor blockers.  
+**Window conclusion , assumption:** the relevant vendor/API behavior seen on 2026-08-29 will remain available during a pilot.  
+**Window conclusion , unknown:** the upstream Media3 revision represented by Nuvio’s local AARs and whether those AARs include the 1.11.0 fixes.
 
 ## Key Findings
 
@@ -80,15 +80,15 @@ Only primary pages whose dated release/update falls inside the required window a
 ### Established facts
 
 1. Nuvio can apply arbitrary non-empty playback headers, follow redirects, and issue range requests through its media stack (`app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerPlaybackNetworking.kt:67-140`).
-2. The current subtitle domain model contains `id`, `url`, language, and addon identity—but no subtitle-specific headers, expiry, content hash, generated status, revision, or job ID (`app/src/main/java/com/nuvio/tv/domain/model/Subtitle.kt:6-18`).
+2. The current subtitle domain model contains `id`, `url`, language, and addon identity,but no subtitle-specific headers, expiry, content hash, generated status, revision, or job ID (`app/src/main/java/com/nuvio/tv/domain/model/Subtitle.kt:6-18`).
 3. Subtitle downloads forward current stream headers only when subtitle and video share a host, then retry; foreign-host header forwarding is deliberately avoided (`app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerRuntimeControllerSubtitleTiming.kt:196-263`).
 4. Addon subtitle lookups run in parallel with a 20-second timeout per addon (`app/src/main/java/com/nuvio/tv/data/repository/SubtitleRepositoryImpl.kt:31-34,77-124`).
 5. A torrent is converted to a local HTTP URL; stopping drops the torrent and resets service state (`app/src/main/java/com/nuvio/tv/core/torrent/TorrentService.kt:92-112`).
-6. Deepgram prerecorded STT currently lists 2 GB input, up to 100 concurrent requests for its principal prerecorded models, and a processing-time timeout—not a 22- or 100-minute media-duration prohibition. [Deepgram prerecorded audio](https://developers.deepgram.com/docs/pre-recorded-audio)
+6. Deepgram prerecorded STT currently lists 2 GB input, up to 100 concurrent requests for its principal prerecorded models, and a processing-time timeout, not a 22- or 100-minute media-duration prohibition. [Deepgram prerecorded audio](https://developers.deepgram.com/docs/pre-recorded-audio)
 7. Google batch STT accepts only Cloud Storage URIs, currently permits up to five files per request, and allows each file to be up to eight hours. [Google STT quotas](https://docs.cloud.google.com/speech-to-text/docs/quotas)
 8. Azure fast transcription permits files under 500 MB and five hours; batch allows 1 GB input and diarization up to 240 minutes per file. [Azure Speech quotas](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/speech-services-quotas-and-limits)
 
-### Explicit modeling assumptions—not facts
+### Explicit modeling assumptions, not facts
 
 - Reference title durations are **D = 22** and **D = 100** minutes.
 - Reference compressed media bitrate is **Bv = 8 Mb/s**; reference demuxed mono audio is **Ba = 0.128 Mb/s**. Real values must come from the selected track/manifest.
@@ -249,7 +249,7 @@ The table below applies the explicit assumptions `r=150 source characters/minute
 |---|---:|---:|---:|
 | Low rate-card combination: Azure batch STT `$0.003/min`; Amazon MT `$15/M`; Azure TTS `$15/M` | `$0.066 / $0.300` | `$0.116 / $0.525` | `$0.165 / $0.750` |
 | Mid reference: Deepgram Nova-3 mono `$0.0043/min`; Google NMT `$20/M`; Polly Neural `$16/M` | `$0.095 / $0.430` | `$0.161 / $0.730` | `$0.213 / $0.970` |
-| Higher reference—not a worst case: Google standard STT `$0.016/min`; Google NMT `$20/M`; Deepgram Aura-2 `$30/M` | `$0.352 / $1.600` | `$0.418 / $1.900` | `$0.517 / $2.350` |
+| Higher reference, not a worst case: Google standard STT `$0.016/min`; Google NMT `$20/M`; Deepgram Aura-2 `$30/M` | `$0.352 / $1.600` | `$0.418 / $1.900` | `$0.517 / $2.350` |
 
 **Economic interpretation.** Model metering is not the main reason to reject a pilot. The dangerous business error is pricing from the final column while assigning zero to separation, remix, retries, cache misses, abandoned jobs, storage/egress, support, and fraud. The broker pilot must record all of those as separate meters and report gross margin by completed playable minute, not submitted minute.
 
@@ -276,7 +276,7 @@ voiceId, revision, status, costMeters, expiresAt
 
 **Captions.** Cue times stay in source media time. Nuvio’s sidecar renderer already evaluates cues against `player.currentPosition`, adjusted by audio/subtitle delay (`PlayerSidecarSubtitles.kt:178-199`). A generated track therefore must not use “time since job start.”
 
-**Voice output.** For utterance `i`, define source interval `[si,ei]`, generated duration `gi`, and target interval duration `di=ei-si`. The local fit ratio is `fi=gi/di`. If a provider’s speed control cannot place `fi` inside its supported range, use bounded silence insertion, edit/retranslate the line, split/merge utterances, or mark the segment for correction; do not accumulate the error into later segments. Deepgram Flux’s current speed control is only 0.85–1.15. [Deepgram changelog, 2026-08-12](https://developers.deepgram.com/changelog/2026/8/12)
+**Voice output.** For utterance `i`, define source interval `[si,ei]`, generated duration `gi`, and target interval duration `di=ei-si`. The local fit ratio is `fi=gi/di`. If a provider’s speed control cannot place `fi` inside its supported range, use bounded silence insertion, edit/retranslate the line, split/merge utterances, or mark the segment for correction; do not accumulate the error into later segments. Deepgram Flux’s current speed control is only 0.85-1.15. [Deepgram changelog, 2026-08-12](https://developers.deepgram.com/changelog/2026/8/12)
 
 **Correction.** Store immutable model output plus a correction revision containing text edits, cue boundary edits, speaker/voice reassignment, and piecewise time anchors. A global subtitle delay is useful for a constant offset, but cannot repair rate drift or a wrong edition. Corrected popular artifacts are the principal cache opportunity.
 
@@ -305,7 +305,7 @@ Include only:
 - User-initiated, clear, seekable VOD.
 - Direct HTTP/HLS/DASH, cached debrid HTTP, and torrents that the local gateway can read.
 - A declared source audio track and one target language.
-- 20–30 second resumable audio shards with stable word/cue timestamps.
+- 20-30 second resumable audio shards with stable word/cue timestamps.
 - Generic “generated” badge, confidence/quality warning, correction offset, delete/regenerate, and original subtitle preference.
 - Broker-held provider keys; no playback headers sent beyond the trusted acquisition component.
 
@@ -335,7 +335,7 @@ These should be **native capabilities with provider adapters**, even if the full
 
 ## Falsifiable pilots and acceptance tests
 
-### Pilot 0 — access and no-spend preflight
+### Pilot 0 , access and no-spend preflight
 
 **Corpus:** at least 36 owned/test fixtures, balanced across public MP4/MKV, signed-query URL, header/cookie/referrer URL, HLS, clear DASH, short-lived debrid URL, healthy/weak torrent, wrong edition, malformed media, and DRM controls.
 
@@ -350,7 +350,7 @@ These should be **native capabilities with provider adapters**, even if the full
 
 **Kill condition:** any protected fixture sends payload to a speech provider, or any raw credential appears in a remote log.
 
-### Pilot 1 — generated dialogue captions
+### Pilot 1 , generated dialogue captions
 
 **Corpus:** 12×22-minute and 6×100-minute clear titles; at least four languages, two code-switch cases, music-heavy scenes, overlapping dialogue, quiet speech, and one deliberately mismatched cut.
 
@@ -367,7 +367,7 @@ These should be **native capabilities with provider adapters**, even if the full
 
 **Kill condition:** p95 TTFO exceeds 40 seconds after warm-up, wrong-edition reuse occurs, or median all-in variable cost exceeds the approved cap after retries are included.
 
-### Pilot 2 — translated voice overlay, not full dubbing
+### Pilot 2 , translated voice overlay, not full dubbing
 
 **Corpus:** six 22-minute clear titles in one source/target pair, then two 100-minute gates; include two-speaker, overlap, music, silence, shouting, and whisper scenes.
 
@@ -380,7 +380,7 @@ These should be **native capabilities with provider adapters**, even if the full
 5. Original-language dialogue bleed is detected in <5% of sampled dialogue windows after ducking/overlay. Failure means the feature remains “voice overlay,” not “dubbing.”
 6. Seek to an ungenerated region never plays stale target audio; original-audio fallback begins within 500 ms.
 7. Cancel meets Pilot 1 cancellation timing and leaves no orphaned generated-audio download.
-8. Observed model charge is within ±10% of metered seconds/characters, and all-in variable cost—including separation/remix if introduced—is reported separately for 22 and 100 minutes.
+8. Observed model charge is within ±10% of metered seconds/characters, and all-in variable cost,including separation/remix if introduced,is reported separately for 22 and 100 minutes.
 
 **Kill condition:** overlap/music scenes require destructive full-track replacement, p95 onset error exceeds 1 second, or 100-minute artifacts cannot resume from a failed shard without restarting completed work.
 
@@ -430,12 +430,12 @@ Any DRM leakage or credential leakage is a veto regardless of score.
 
 ### Primary web evidence
 
-- [Deepgram changelog — 2026-07-31](https://developers.deepgram.com/changelog/2026/7/31)
-- [AndroidX Media3 1.11.0 — 2026-08-05](https://developer.android.com/jetpack/androidx/releases/media3#1.11.0)
-- [Deepgram changelog — 2026-08-12](https://developers.deepgram.com/changelog/2026/8/12)
-- [Android playback capture — updated 2026-08-14](https://developer.android.com/media/platform/av-capture)
-- [Cartesia 2026 changelog — Sonic 3.6, 2026-08-27](https://docs.cartesia.ai/changelog/2026)
-- [Deepgram changelog — language/model releases through 2026-08-28](https://developers.deepgram.com/changelog)
+- [Deepgram changelog , 2026-07-31](https://developers.deepgram.com/changelog/2026/7/31)
+- [AndroidX Media3 1.11.0 , 2026-08-05](https://developer.android.com/jetpack/androidx/releases/media3#1.11.0)
+- [Deepgram changelog , 2026-08-12](https://developers.deepgram.com/changelog/2026/8/12)
+- [Android playback capture , updated 2026-08-14](https://developer.android.com/media/platform/av-capture)
+- [Cartesia 2026 changelog , Sonic 3.6, 2026-08-27](https://docs.cartesia.ai/changelog/2026)
+- [Deepgram changelog , language/model releases through 2026-08-28](https://developers.deepgram.com/changelog)
 - [Media3 DRM guide](https://developer.android.com/media/media3/exoplayer/drm)
 - [Deepgram prerecorded STT guide](https://developers.deepgram.com/docs/pre-recorded-audio)
 - [Deepgram prerecorded API schema](https://developers.deepgram.com/reference/speech-to-text/listen-pre-recorded)

@@ -1,4 +1,4 @@
-# Lane 04 — Nuvio Extension Ecosystem Archaeology (commit eca648a8)
+# Lane 04 , Nuvio Extension Ecosystem Archaeology (commit eca648a8)
 
 Scope: Stremio-compatible HTTP addons, Nuvio native JS plugins, CloudStream DEX extensions at commit `eca648a8`. All file references are exact paths/lines at that commit; no source files were modified.
 
@@ -23,7 +23,7 @@ Nuvio has three parallel source ecosystems, but only two output channels: `Strea
 ### 1.3 CloudStream DEX extensions (EXTERNAL_DEX)
 - Repo formats: repo manifest with `pluginLists` or direct plugin array at `app/src/main/java/com/nuvio/tv/domain/model/Plugin.kt:119-146`, `app/src/full/java/com/nuvio/tv/core/plugin/cloudstream/ExternalRepoParser.kt:56-104`.
 - `.cs3` downloads to app-private `cs_extensions`, loaded via `DexClassLoader`; max 10 MB at `app/src/full/java/com/nuvio/tv/core/plugin/cloudstream/ExternalExtensionLoader.kt:165-195`, `205-260`, `276-281`.
-- Execution bridge: TMDB id → title → `search()` → `load()` → `loadLinks()` → `LocalScraperResult` at `app/src/full/java/com/nuvio/tv/core/plugin/cloudstream/ExternalExtensionRunner.kt:49-89`, `361-372`.
+- Execution bridge has two production paths: a `TmdbProvider` takes a JSON/URL `load()` then `loadLinks()` path, while search-based providers resolve TMDB metadata, run `search()`, match, `load()`, then `loadLinks()`. See `app/src/full/java/com/nuvio/tv/core/plugin/cloudstream/ExternalExtensionRunner.kt:345-457`, `474-610`.
 
 ### 1.4 Flavor gates
 - Gradle flavors: `full` sets `FEATURE_PLUGINS_ENABLED=true`, `playstore=false` at `app/build.gradle.kts:152-173`; dependencies `quickjs`, `cloudstream` are `fullImplementation` only at `app/build.gradle.kts:504-521`.
@@ -115,7 +115,7 @@ Nuvio has three parallel source ecosystems, but only two output channels: `Strea
 - Plugins stream results as `(ScraperInfo, results)` into same `AddonStreams` list at `StreamRepositoryImpl.kt:429-491`, `app/src/full/java/com/nuvio/tv/core/plugin/PluginManager.kt:698-760`.
 - Conversion to playback info carries URL and request headers only at `app/src/main/java/com/nuvio/tv/ui/screens/stream/StreamScreenViewModel.kt:1305-1342`; `StreamPlaybackInfo.headers` at `1818-1847`.
 - Player creates media source with `subtitleConfigurations` only; no external audio merge path in main player factory at `app/src/main/java/com/nuvio/tv/ui/screens/player/PlayerMediaSourceFactory.kt:82-207`.
-- External audio is currently only used for trailer playback via `MergingMediaSource` at `app/src/main/java/com/nuvio/tv/ui/components/TrailerPlayer.kt:112-114`, `188-190` — proving a local precedent but not wired to main playback.
+- External audio is currently only used for trailer playback via `MergingMediaSource` at `app/src/main/java/com/nuvio/tv/ui/components/TrailerPlayer.kt:112-114`, `188-190` , proving a local precedent but not wired to main playback.
 
 ### 4.2 Subtitle collection and UI
 - Subtitle repository fans out to all subtitle-capable addons, per-addon 20s timeout, progress callback and emitted snapshot callback at `app/src/main/java/com/nuvio/tv/data/repository/SubtitleRepositoryImpl.kt:33-126`.
@@ -148,7 +148,7 @@ Legend: ✅ supported, ⚠️ partial/blocked, ❌ not supported.
 | Install/config/profile storage | ✅ profile-scoped URLs/enabled/order/name (`AddonPreferences.kt:28-56`, `66-84`); query-URL config persisted (`AddonRepositoryImpl.kt:60-75`) | ✅ profile-scoped repos/scrapers/settings (`PluginDataStore.kt:36-64`, `224-257`) | ✅ profile-scoped repo/scraper state (`PluginManager.kt:1068-1119`); extension key/value store partial |
 | Manifest/resources declared | ✅ manifest resources/types/idPrefixes (`AddonManifestDto.kt:8-24`, `AddonMapper.kt:52-75`) | ✅ manifest scrapers metadata (`Plugin.kt:39-69`) | ✅ repo manifest + plugin entries (`Plugin.kt:119-146`) |
 | Runtime sandbox/API | n/a (server-side HTTP) | QuickJS no DOM; fetch/cheerio/crypto/settings/TMDB key (`PluginRuntime.kt:270-744`) | DEX in-process Kotlin; CS MainAPI/Extractor (`Plugin.kt:33-65`, `ExternalExtensionLoader.kt:276-327`) |
-| Content/stream context received | ✅ type/id/videoId + optional videoHash/size/filename (`SubtitleRepositoryImpl.kt:156-242`) | ✅ tmdbId/mediaType/season/episode (`PluginRuntime.kt:129-150`) | ✅ search/load/data + optional TMDB ids (`ExternalExtensionRunner.kt:361-432`) |
+| Content/stream context received | ✅ type/id/videoId + optional videoHash/size/filename (`SubtitleRepositoryImpl.kt:156-242`) | ✅ tmdbId/mediaType/season/episode (`PluginRuntime.kt:129-150`) | ✅ production `TmdbProvider` JSON/load context or search-provider TMDB metadata path (`ExternalExtensionRunner.kt:345-457`, `474-610`); diagnostics-only `TmdbLink` context is separate (`:138-168`) |
 | Can output stream URL | ✅ `StreamDto.url` (`StreamResponseDto.kt:16`) | ✅ `LocalScraperResult.url` (`Plugin.kt:100-117`) | ✅ `ExtractorLink.url` → result (`ExternalExtensionRunner.kt:849-872`) |
 | Can output request headers | ✅ `behaviorHints.proxyHeaders.request` (`StreamResponseDto.kt:92-106`, `StreamMapper.kt:97-121`) | ✅ `headers` field (`Plugin.kt:100-117`, `PluginRuntime.kt:1344-1369`) | ✅ `ExtractorLink.headers/referer` (`ExternalExtensionRunner.kt:849-872`) |
 | Can output subtitles (collected by host) | ✅ via dedicated `/subtitles` resource (`SubtitleRepositoryImpl.kt:36-126`, `196-204`) | ❌ no subtitle output schema (`PluginRuntime.kt:1331-1374`) | ⚠️ provider can emit `SubtitleFile`, but host drops them (`ExternalExtensionRunner.kt:172-198`, `595-624`) |
@@ -162,13 +162,13 @@ Legend: ✅ supported, ⚠️ partial/blocked, ❌ not supported.
 
 ## 7. What works without host changes
 
-1. **AI subtitles as ready URLs** — works today:
+1. **AI subtitles as ready URLs** , works today:
    - Build a Stremio addon exposing `resources: ["subtitles"]`; Nuvio will call `/subtitles/...` and collect `{id,url,lang}` (`AddonMapper.kt:52-75`, `SubtitleRepositoryImpl.kt:59-126`, `190-204`).
    - The player will render SRT/VTT/TTML via sidecar without buffer reset (`PlayerSidecarSubtitles.kt:22-52`, `98-180`) and ASS via libass/media path (`PlayerRuntimeControllerTrackSelection.kt:500-570`).
    - Caveat: async generation must complete before returning the subtitle response (20s per-addon timeout) (`SubtitleRepositoryImpl.kt:33-35`, `83-113`). No polling/progress contract exists.
-2. **AI provider orchestration inside plugin/extension** — works only if output is a playable URL:
+2. **AI provider orchestration inside plugin/extension** , works only if output is a playable URL:
    - JS plugin/DEX can call any AI backend (native fetch / OkHttp), but final output must be a normal stream URL (`PluginRuntime.kt:692-744`, `1331-1374`; `ExternalExtensionRunner.kt:849-872`).
-3. **Config for JS plugins** — can be set programmatically (sync or future code) because `setScraperSettings` exists (`PluginDataStore.kt:239-257`), but users cannot edit in UI.
+3. **Config for JS plugins** , can be set programmatically (sync or future code) because `setScraperSettings` exists (`PluginDataStore.kt:239-257`), but users cannot edit in UI.
 
 ## 8. Minimal host changes for AI subtitles and AI dubbing
 
