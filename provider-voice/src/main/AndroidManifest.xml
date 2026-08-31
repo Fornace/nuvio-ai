@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <uses-permission android:name="com.nuvio.tv.permission.BIND_MEDIA_PROVIDER" />
+
     <!-- Contract shell package: no activity, so it never appears in the
          launcher. The host binds the exported service below by explicit
          intent after verifying the APK digest and signing certificate. -->
@@ -10,7 +12,8 @@
 
         <service
             android:name=".ProviderContractService"
-            android:exported="true">
+            android:exported="true"
+            android:permission="com.nuvio.tv.permission.BIND_MEDIA_PROVIDER">
             <intent-filter>
                 <action android:name="com.nuvio.tv.provider.BIND" />
                 <category android:name="android.intent.category.DEFAULT" />
