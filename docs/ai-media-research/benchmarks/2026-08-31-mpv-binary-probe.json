@@ -1,0 +1,30 @@
+{
+  "mpvAarSha256": "bb1a007c545cc7ac3304293ae79866b5361a48449ee7648c4030d5355869effc",
+  "mpvAarPath": "/Users/ffrappo/.gradle/caches/modules-2/files-2.1/io.github.abdallahmehiz/mpv-android-lib/0.1.12/dc39f049f70af00140214eeb925f0a90308ea4e7/mpv-android-lib-0.1.12.aar",
+  "libmpvSha256": "ea485887c3663a69c7ea9586530e173fda8d498f67891e29909ddcf06bf19f16",
+  "apkLibmpvSha256": "ea485887c3663a69c7ea9586530e173fda8d498f67891e29909ddcf06bf19f16",
+  "mpvVersion": "v0.41.0-174-g76a5eba99",
+  "mpvCommandsPresent": {
+    "audio-add": true,
+    "audio-remove": true,
+    "audio-reload": true
+  },
+  "media3Version": "1.8.0",
+  "appLibsSha256": {
+    "lib-common-release.aar": "a01729509ff920e273ee696fc2cdf99ec073b9b5dc039c4d8dec72aa61bcb447",
+    "lib-datasource-okhttp-release.aar": "ba71ce4326b6bab3b06991ef1bbf50dd2205e5f65ae72fed1802858a99b10617",
+    "lib-datasource-release.aar": "5375c0ff43784d210a69e7bfc438b9da9b2f42d6fb3b967ddae9b55902c7bf3d",
+    "lib-decoder-av1-release.aar": "e4f929a8132fdd2e9f8f65ad731c5e27f9251eced72aab3138e4520ab0e13e5f",
+    "lib-decoder-ffmpeg-release.aar": "c88b83a15c1f89dd94006e185520a5c2b2703e58a4938f5a4a975af960584fb1",
+    "lib-decoder-iamf-release.aar": "087a237d730868144d16aceea40a87992699efbff511245e81cdc0c71dbe7c96",
+    "lib-decoder-mpegh-release.aar": "e21884ef2f0e88b97a6baa0442d3e63696d64fd6743c30675661501d9079b114",
+    "lib-exoplayer-hls-release.aar": "826cbaddd86d9ff5165db4bbf7e0951490533351152bfff34e98e61b9b5f5119",
+    "lib-exoplayer-release.aar": "b4a9e7052a2d9d06fa164f0232cd9bb714ca8fc77ba7f03a2fb4f951fbf374e7",
+    "lib-extractor-release.aar": "bb8eec291549eb5760ef16d78fb964e1faf0303f71fc033a0ef691aad4eb5798",
+    "lib-ui-release.aar": "3ffdb5b0d11f2a1c2d2dab8ca628cd7d3242f14dd482bd70cd2b979007c9c07f",
+    "nextlib-mediainfo-local.aar": "509e645e0f4232bdd3c6e1b2e4b82c3686140a0355f13656890f3641d8b7fb53",
+    "quickjs-kt-android-1.0.5-nuvio.aar": "7bbafcaf3c94feac4a329c9861f5ffc1bf470841a28a34c3c305f801cb7948ab"
+  },
+  "generatedAt": "2026-08-31T23:21:23Z",
+  "notes": "Coordinates io.github.abdallahmehiz:mpv-android-lib:0.1.12 are declared directly in app/build.gradle.kts:496, not in gradle/libs.versions.toml (toml has no mpv entry); the Gradle cache path and hash match the review's P0a receipt exactly. Media3 emitter string is AndroidXMedia3/1.8.0 (VERSION_SLASHY from androidx/media3/common/MediaLibraryInfo). macOS 'strings' misparses Java class files (0xCAFEBABE collides with Mach-O fat magic); constants were read via grep -a on the class bytes. All three mpv command names appear as standalone NUL-terminated strings. APK app-full-arm64-v8a-debug.apk (variant fullDebug, versionCode 1051, built from HEAD 3ca77f44)."
+}
