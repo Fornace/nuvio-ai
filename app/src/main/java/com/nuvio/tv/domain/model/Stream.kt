@@ -24,7 +24,9 @@ data class Stream(
     val qualityValue: Int = -1,
     val clientResolve: StreamClientResolve? = null,
     val debridCacheStatus: StreamDebridCacheStatus? = null,
-    val badges: List<StreamBadge> = emptyList()
+    val badges: List<StreamBadge> = emptyList(),
+    /** Subtitles provided inline by the addon alongside this stream. */
+    val subtitles: List<Subtitle> = emptyList()
 ) {
     /**
      * Returns the primary stream source URL

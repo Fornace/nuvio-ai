@@ -2,23 +2,26 @@ package com.nuvio.tv.data.repository
 
 import android.content.Context
 import android.util.Log
-import com.nuvio.tv.core.network.NetworkResult
-import com.nuvio.tv.core.network.safeApiCall
-import com.nuvio.tv.data.local.AddonPreferences
 import com.nuvio.tv.data.remote.api.AddonApi
 import com.nuvio.tv.domain.model.Addon
 import com.nuvio.tv.domain.model.Subtitle
 import com.nuvio.tv.domain.model.enabledAddons
+import com.nuvio.tv.domain.repository.SubtitleLookupErrorKind
+import com.nuvio.tv.domain.repository.SubtitleLookupFailure
+import com.nuvio.tv.domain.repository.SubtitleLookupResult
 import com.nuvio.tv.domain.repository.SubtitleRepository
+import com.squareup.moshi.JsonDataException
 import dagger.hilt.android.qualifiers.ApplicationContext
+import java.io.InterruptedIOException
+import java.net.SocketTimeoutException
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.withTimeoutOrNull
+import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 
@@ -33,6 +36,18 @@ class SubtitleRepositoryImpl @Inject constructor(
         private const val PER_ADDON_TIMEOUT_MS = 20_000L
     }
 
+    /** Per-addon timeout; overridable from unit tests to keep them fast. */
+    internal var perAddonTimeoutMs: Long = PER_ADDON_TIMEOUT_MS
+
+    private sealed class AddonOutcome {
+        data class Succeeded(val subtitles: List<Subtitle>) : AddonOutcome()
+        data class Failed(
+            val kind: SubtitleLookupErrorKind,
+            val httpStatus: Int?,
+            val message: String?
+        ) : AddonOutcome()
+    }
+
     override suspend fun getSubtitles(
         type: String,
         id: String,
@@ -42,30 +57,41 @@ class SubtitleRepositoryImpl @Inject constructor(
         filename: String?,
         onProgress: ((completed: Int, total: Int, addonName: String?) -> Unit)?,
         onSubtitlesEmitted: ((List<Subtitle>) -> Unit)?
-    ): List<Subtitle> = withContext(Dispatchers.IO) {
+    ): List<Subtitle> = lookupSubtitlesDetailed(
+        type, id, videoId, videoHash, videoSize, filename, onProgress, onSubtitlesEmitted
+    ).subtitles
+
+    override suspend fun lookupSubtitlesDetailed(
+        type: String,
+        id: String,
+        videoId: String?,
+        videoHash: String?,
+        videoSize: Long?,
+        filename: String?,
+        onProgress: ((completed: Int, total: Int, addonName: String?) -> Unit)?,
+        onSubtitlesEmitted: ((List<Subtitle>) -> Unit)?
+    ): SubtitleLookupResult = withContext(Dispatchers.IO) {
         val requestType = canonicalSubtitleType(type)
         val startedAtMs = System.currentTimeMillis()
         Log.d(TAG, "Fetching subtitles for type=$requestType, id=$id, videoId=$videoId")
-        
-        // Get installed addons
+
         val addons = try {
             addonRepository.getInstalledAddons().first().enabledAddons()
         } catch (e: Exception) {
             Log.e(TAG, "Failed to get installed addons", e)
-            return@withContext emptyList()
+            return@withContext SubtitleLookupResult(emptyList(), emptyList())
         }
 
-        // Filter addons that support subtitles resource
         val subtitleAddons = addons.filter { addon ->
             addon.resources.any { resource ->
                 isSubtitleResource(resource.name) && supportsType(addon, resource, requestType, id)
             }
         }
-        
+
         Log.d(TAG, "Found ${subtitleAddons.size} subtitle addons: ${subtitleAddons.map { it.name }}")
 
         if (subtitleAddons.isEmpty()) {
-            return@withContext emptyList()
+            return@withContext SubtitleLookupResult(emptyList(), emptyList())
         }
 
         val total = subtitleAddons.size
@@ -73,53 +99,73 @@ class SubtitleRepositoryImpl @Inject constructor(
         onProgress?.invoke(0, total, null)
 
         val accumulatedSubtitles = java.util.Collections.synchronizedList(mutableListOf<Subtitle>())
+        val failures = java.util.Collections.synchronizedList(mutableListOf<SubtitleLookupFailure>())
 
-        // Fetch subtitles from all addons in parallel and stream results immediately
-        val result = supervisorScope {
+        supervisorScope {
             subtitleAddons.map { addon ->
                 async {
                     val addonStartMs = System.currentTimeMillis()
-                    val subtitles = try {
-                        withTimeoutOrNull(PER_ADDON_TIMEOUT_MS) {
+                    val outcome = try {
+                        withTimeoutOrNull(perAddonTimeoutMs) {
                             fetchSubtitlesFromAddon(addon, type, id, videoId, videoHash, videoSize, filename)
-                        }
+                        } ?: AddonOutcome.Failed(
+                            kind = SubtitleLookupErrorKind.TIMEOUT,
+                            httpStatus = null,
+                            message = "timed out after ${perAddonTimeoutMs}ms"
+                        )
                     } catch (e: CancellationException) {
                         throw e
                     } catch (e: Exception) {
-                        Log.e(TAG, "Exception fetching subtitles from ${addon.name}", e)
-                        emptyList()
+                        AddonOutcome.Failed(classifyException(e), null, e.message)
                     }
                     onProgress?.invoke(completedCount.incrementAndGet(), total, addon.displayName)
-                    if (!subtitles.isNullOrEmpty()) {
-                        val snapshot = synchronized(accumulatedSubtitles) {
-                            accumulatedSubtitles.addAll(subtitles)
-                            accumulatedSubtitles.toList()
-                        }
-                        if (onSubtitlesEmitted != null) {
-                            withContext(Dispatchers.Main.immediate) {
-                                onSubtitlesEmitted.invoke(snapshot)
+                    when (outcome) {
+                        is AddonOutcome.Succeeded -> {
+                            if (outcome.subtitles.isNotEmpty()) {
+                                val snapshot = synchronized(accumulatedSubtitles) {
+                                    accumulatedSubtitles.addAll(outcome.subtitles)
+                                    accumulatedSubtitles.toList()
+                                }
+                                if (onSubtitlesEmitted != null) {
+                                    withContext(Dispatchers.Main.immediate) {
+                                        onSubtitlesEmitted.invoke(snapshot)
+                                    }
+                                }
                             }
-                        }
-                        Log.d(
-                            TAG,
-                            "Subtitle fetch done for addon=${addon.name} count=${subtitles.size} in ${System.currentTimeMillis() - addonStartMs}ms"
-                        )
-                        subtitles
-                    } else {
-                        if (subtitles == null) {
-                            Log.w(
+                            Log.d(
                                 TAG,
-                                "Subtitle fetch timed out for addon=${addon.name} after ${PER_ADDON_TIMEOUT_MS}ms"
+                                "Subtitle fetch done for addon=${addon.name} count=${outcome.subtitles.size} " +
+                                    "in ${System.currentTimeMillis() - addonStartMs}ms"
                             )
                         }
-                        emptyList()
+                        is AddonOutcome.Failed -> {
+                            failures.add(
+                                SubtitleLookupFailure(
+                                    addonId = addon.id,
+                                    addonName = addon.displayName,
+                                    kind = outcome.kind,
+                                    httpStatus = outcome.httpStatus,
+                                    message = outcome.message
+                                )
+                            )
+                            Log.w(
+                                TAG,
+                                "Subtitle fetch failed for addon=${addon.name}: kind=${outcome.kind.value} " +
+                                    "http=${outcome.httpStatus} message=${outcome.message}"
+                            )
+                        }
                     }
                 }
-            }.awaitAll().flatten()
+            }.awaitAll()
         }
+        val result = SubtitleLookupResult(
+            subtitles = synchronized(accumulatedSubtitles) { accumulatedSubtitles.toList() },
+            failures = synchronized(failures) { failures.toList() }
+        )
         Log.d(
             TAG,
-            "Subtitle fetch completed total=${result.size} fromAddons=${subtitleAddons.size} in ${System.currentTimeMillis() - startedAtMs}ms"
+            "Subtitle fetch completed total=${result.subtitles.size} failures=${result.failures.size} " +
+                "fromAddons=${subtitleAddons.size} in ${System.currentTimeMillis() - startedAtMs}ms"
         )
         result
     }
@@ -127,7 +173,7 @@ class SubtitleRepositoryImpl @Inject constructor(
     private fun canonicalSubtitleType(type: String): String {
         return if (type.equals("tv", ignoreCase = true)) "series" else type.lowercase()
     }
-    
+
     private fun supportsType(addon: Addon, resource: com.nuvio.tv.domain.model.AddonResource, type: String, id: String): Boolean {
         // Check if type is supported (normalizing "tv" and "series" to be equivalent)
         if (resource.types.isNotEmpty()) {
@@ -137,14 +183,14 @@ class SubtitleRepositoryImpl @Inject constructor(
             }
             if (!matchesType) return false
         }
-        
+
         // Check if id prefix is supported (check resource first, then fallback to addon top-level idPrefixes)
         val prefixes = resource.idPrefixes?.takeIf { it.isNotEmpty() }
             ?: addon.idPrefixes.takeIf { it.isNotEmpty() }
         if (prefixes != null && prefixes.isNotEmpty()) {
             return prefixes.any { prefix -> id.startsWith(prefix) }
         }
-        
+
         return true
     }
 
@@ -152,7 +198,7 @@ class SubtitleRepositoryImpl @Inject constructor(
         return name.equals("subtitles", ignoreCase = true) ||
             name.equals("subtitle", ignoreCase = true)
     }
-    
+
     private suspend fun fetchSubtitlesFromAddon(
         addon: Addon,
         type: String,
@@ -161,14 +207,14 @@ class SubtitleRepositoryImpl @Inject constructor(
         videoHash: String?,
         videoSize: Long?,
         filename: String?
-    ): List<Subtitle> {
+    ): AddonOutcome {
         val normalizedType = canonicalSubtitleType(type)
         val actualId: String = if (normalizedType == "series" && !videoId.isNullOrEmpty()) {
             videoId
         } else {
             videoId?.takeIf { it.isNotBlank() } ?: id
         }
-        
+
         val encodedType = encodePathSegment(normalizedType)
         val encodedActualId = encodePathSegment(actualId)
 
@@ -183,53 +229,62 @@ class SubtitleRepositoryImpl @Inject constructor(
         } else {
             "$basePath/subtitles/$encodedType/$encodedActualId.json$baseQuery"
         }
-        
+
         Log.d(TAG, "Fetching subtitles from ${addon.name}: $subtitleUrl")
-        
+
         return try {
-            when (val result = safeApiCall(context) { api.getSubtitles(subtitleUrl) }) {
-                is NetworkResult.Success -> {
-                    val subtitles = result.data.subtitles?.mapNotNull { dto ->
-                        val url = dto.url?.takeIf { it.isNotBlank() } ?: return@mapNotNull null
-                        val lang = dto.lang?.takeIf { it.isNotBlank() } ?: dto.language?.takeIf { it.isNotBlank() } ?: "und"
-                        val subId = dto.id?.takeIf { it.isNotBlank() } ?: "$lang-${url.hashCode()}"
-                        Subtitle(
-                            id = subId,
-                            url = url,
-                            lang = lang,
-                            addonName = addon.displayName,
-                            addonLogo = addon.logo
-                        )
-                    } ?: emptyList()
-                    
-                    Log.d(TAG, "Got ${subtitles.size} subtitles from ${addon.name}")
-                    subtitles
-                }
-                is NetworkResult.Error -> {
-                    Log.e(TAG, "Failed to fetch subtitles from ${addon.name}: code=${result.code} message=${result.message}")
-                    emptyList()
-                }
-                NetworkResult.Loading -> emptyList()
+            val response = api.getSubtitles(subtitleUrl)
+            if (!response.isSuccessful) {
+                Log.e(TAG, "Failed to fetch subtitles from ${addon.name}: code=${response.code()}")
+                AddonOutcome.Failed(SubtitleLookupErrorKind.HTTP_STATUS, response.code(), response.message())
+            } else {
+                val body = response.body()
+                    ?: return AddonOutcome.Failed(SubtitleLookupErrorKind.PARSE, null, "Empty response body")
+                val subtitles = body.subtitles?.mapNotNull { dto ->
+                    val url = dto.url?.takeIf { it.isNotBlank() } ?: return@mapNotNull null
+                    val lang = dto.lang?.takeIf { it.isNotBlank() } ?: dto.language?.takeIf { it.isNotBlank() } ?: "und"
+                    val subId = dto.id?.takeIf { it.isNotBlank() } ?: "$lang-${url.hashCode()}"
+                    Subtitle(
+                        id = subId,
+                        url = url,
+                        lang = lang,
+                        addonName = addon.displayName,
+                        addonLogo = addon.logo
+                    )
+                } ?: emptyList()
+
+                Log.d(TAG, "Got ${subtitles.size} subtitles from ${addon.name}")
+                AddonOutcome.Succeeded(subtitles)
             }
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             Log.e(TAG, "Exception fetching subtitles from ${addon.name}", e)
-            emptyList()
+            AddonOutcome.Failed(classifyException(e), null, e.message)
         }
     }
-    
+
+    private fun classifyException(e: Exception): SubtitleLookupErrorKind = when {
+        e is JsonDataException -> SubtitleLookupErrorKind.PARSE
+        e is SocketTimeoutException -> SubtitleLookupErrorKind.TIMEOUT
+        e is InterruptedIOException && e.message?.contains("timeout", ignoreCase = true) == true ->
+            SubtitleLookupErrorKind.TIMEOUT
+        else -> SubtitleLookupErrorKind.NETWORK
+    }
+
     private fun buildExtraParams(
         videoHash: String?,
         videoSize: Long?,
         filename: String?
     ): String {
         val params = mutableListOf<String>()
-        
+
         videoHash?.let { params.add("videoHash=$it") }
         videoSize?.let { params.add("videoSize=$it") }
         filename?.let {
             params.add("filename=${encodePathSegment(it)}")
         }
-        
+
         return if (params.isNotEmpty()) {
             params.joinToString("&")
         } else {
@@ -240,6 +295,4 @@ class SubtitleRepositoryImpl @Inject constructor(
     private fun encodePathSegment(value: String): String {
         return java.net.URLEncoder.encode(value, "UTF-8").replace("+", "%20")
     }
-
-    private fun String?.isNullOfBlank(): Boolean = this == null || this.isBlank()
 }

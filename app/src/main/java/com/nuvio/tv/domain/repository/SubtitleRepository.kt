@@ -2,16 +2,35 @@ package com.nuvio.tv.domain.repository
 
 import com.nuvio.tv.domain.model.Subtitle
 
+/** Stable classification for a failed per-addon subtitle lookup. */
+enum class SubtitleLookupErrorKind(val value: String) {
+    NETWORK("network"),
+    TIMEOUT("timeout"),
+    HTTP_STATUS("http-status"),
+    PARSE("parse")
+}
+
+/** A failure from one addon; other addons may still have succeeded. */
+data class SubtitleLookupFailure(
+    val addonId: String,
+    val addonName: String,
+    val kind: SubtitleLookupErrorKind,
+    val httpStatus: Int? = null,
+    val message: String? = null
+)
+
+/** Partial-success result for a parallel subtitle addon lookup. */
+data class SubtitleLookupResult(
+    val subtitles: List<Subtitle>,
+    val failures: List<SubtitleLookupFailure>
+)
+
 interface SubtitleRepository {
     /**
-     * Fetches subtitles from all installed addons that support subtitles
-     * @param type Content type (movie, series, etc.)
-     * @param id Content ID (IMDB ID, etc.)
-     * @param videoId Optional video ID for series (e.g., tt1234567:1:1 for series episode)
-     * @param videoHash Optional OpenSubtitles file hash
-     * @param videoSize Optional video file size in bytes
-     * @param filename Optional video filename
-     * @return List of subtitles from all addons
+     * Fetches subtitles from all installed addons that support subtitles.
+     *
+     * This compatibility method returns successful records only. Use
+     * [lookupSubtitlesDetailed] when per-addon failures must be surfaced.
      */
     suspend fun getSubtitles(
         type: String,
@@ -23,4 +42,19 @@ interface SubtitleRepository {
         onProgress: ((completed: Int, total: Int, addonName: String?) -> Unit)? = null,
         onSubtitlesEmitted: ((List<Subtitle>) -> Unit)? = null
     ): List<Subtitle>
+
+    /**
+     * Fetches all subtitle addons in parallel with a 20 second timeout per
+     * addon, preserving successful records and structured per-addon failures.
+     */
+    suspend fun lookupSubtitlesDetailed(
+        type: String,
+        id: String,
+        videoId: String? = null,
+        videoHash: String? = null,
+        videoSize: Long? = null,
+        filename: String? = null,
+        onProgress: ((completed: Int, total: Int, addonName: String?) -> Unit)? = null,
+        onSubtitlesEmitted: ((List<Subtitle>) -> Unit)? = null
+    ): SubtitleLookupResult
 }

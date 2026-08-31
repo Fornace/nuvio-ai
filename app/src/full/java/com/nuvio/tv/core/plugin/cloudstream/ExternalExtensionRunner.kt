@@ -27,6 +27,7 @@ import com.nuvio.tv.core.tmdb.TmdbMetadataService
 import com.nuvio.tv.core.tmdb.TmdbService
 import com.nuvio.tv.domain.model.ContentType
 import com.nuvio.tv.domain.model.LocalScraperResult
+import com.nuvio.tv.domain.model.Subtitle
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -195,7 +196,7 @@ class ExternalExtensionRunner @Inject constructor(
             diagnostics.addStep("Missing extractors: ${missing.take(5).joinToString()}")
         }
 
-        return links.filterValid().map { it.toLocalScraperResult(api.name) }
+        return links.filterValid().map { it.toLocalScraperResult(api.name, subtitles.toList()) }
     }
 
     private suspend fun executeSearchBasedWithDiagnostics(
@@ -331,7 +332,7 @@ class ExternalExtensionRunner @Inject constructor(
         )
 
         diagnostics.addStep("loadLinks returned: success=$success, ${links.size} links, ${subtitles.size} subs")
-        return links.filterValid().map { it.toLocalScraperResult(api.name) }
+        return links.filterValid().map { it.toLocalScraperResult(api.name, subtitles.toList()) }
     }
 
     private fun extractMissingClass(e: Error): String? {
@@ -468,7 +469,7 @@ class ExternalExtensionRunner @Inject constructor(
         }
 
         Log.d(TAG, "TmdbProvider ${api.name}: ${links.size} links, ${subtitles.size} subs")
-        return links.filterValid().map { link -> link.toLocalScraperResult(api.name) }
+        return links.filterValid().map { link -> link.toLocalScraperResult(api.name, subtitles.toList()) }
     }
 
     private suspend fun executeSearchBased(
@@ -621,7 +622,7 @@ class ExternalExtensionRunner @Inject constructor(
         }
 
         Log.d(TAG, "SearchBased ${api.name}: ${links.size} links, ${subtitles.size} subs")
-        return links.filterValid().map { link -> link.toLocalScraperResult(api.name) }
+        return links.filterValid().map { link -> link.toLocalScraperResult(api.name, subtitles.toList()) }
     }
 
     /** Extract year from SearchResponse concrete types (not in the interface). */
@@ -846,7 +847,10 @@ class ExternalExtensionRunner @Inject constructor(
         }
     }
 
-    private fun ExtractorLink.toLocalScraperResult(providerName: String): LocalScraperResult {
+    private fun ExtractorLink.toLocalScraperResult(
+        providerName: String,
+        subtitleFiles: List<SubtitleFile>
+    ): LocalScraperResult {
         val qualityStr = Qualities.getStringByInt(quality).ifEmpty { null }
         val streamType = when (type) {
             ExtractorLinkType.M3U8 -> "hls"
@@ -865,7 +869,29 @@ class ExternalExtensionRunner @Inject constructor(
             quality = qualityStr,
             type = streamType,
             headers = allHeaders.ifEmpty { null },
-            provider = providerName
+            provider = providerName,
+            subtitles = subtitleFiles.toSubtitleRecords(providerName)
         )
+    }
+
+    /**
+     * Converts DEX subtitle callbacks into the same completed [Subtitle] record
+     * shape used for stream-provided subtitles: id/url/lang records only, no live
+     * media access. Deduplicates by URL and synthesizes a stable id when the
+     * extension provides none.
+     */
+    private fun List<SubtitleFile>.toSubtitleRecords(providerName: String): List<Subtitle> {
+        if (isEmpty()) return emptyList()
+        return mapNotNull { file ->
+            val url = file.url?.takeIf { it.isNotBlank() } ?: return@mapNotNull null
+            val lang = file.lang?.takeIf { it.isNotBlank() } ?: "und"
+            Subtitle(
+                id = "$lang-${url.hashCode()}",
+                url = url,
+                lang = lang,
+                addonName = providerName,
+                addonLogo = null
+            )
+        }.distinctBy { it.url }
     }
 }

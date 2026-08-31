@@ -109,7 +109,9 @@ data class LocalScraperResult(
     val seeders: Int? = null,
     val peers: Int? = null,
     val infoHash: String? = null,
-    val headers: Map<String, String>? = null
+    val headers: Map<String, String>? = null,
+    /** Subtitles collected from the scraper's subtitle callbacks, as ordinary completed records. */
+    val subtitles: List<Subtitle> = emptyList()
 )
 
 /**
@@ -176,6 +178,7 @@ fun LocalScraperResult.toStream(scraper: ScraperInfo): com.nuvio.tv.domain.model
             proxyHeaders = headers?.let { ProxyHeaders(request = it, response = null) }
         ),
         addonName = scraper.name,
-        addonLogo = scraper.logo
+        addonLogo = scraper.logo,
+        subtitles = subtitles
     )
 }

@@ -7,6 +7,7 @@ import com.nuvio.tv.data.remote.dto.StreamClientResolveRawDto
 import com.nuvio.tv.data.remote.dto.StreamClientResolveStreamDto
 import com.nuvio.tv.data.remote.dto.StreamClientResolveDto
 import com.nuvio.tv.data.remote.dto.StreamDto
+import com.nuvio.tv.data.remote.dto.SubtitleDto
 import com.nuvio.tv.domain.model.ProxyHeaders
 import com.nuvio.tv.domain.model.Stream
 import com.nuvio.tv.domain.model.StreamBehaviorHints
@@ -14,6 +15,7 @@ import com.nuvio.tv.domain.model.StreamClientResolve
 import com.nuvio.tv.domain.model.StreamClientResolveParsed
 import com.nuvio.tv.domain.model.StreamClientResolveRaw
 import com.nuvio.tv.domain.model.StreamClientResolveStream
+import com.nuvio.tv.domain.model.Subtitle
 
 fun StreamDto.toDomain(addonName: String, addonLogo: String?): Stream = Stream(
     name = name,
@@ -28,8 +30,27 @@ fun StreamDto.toDomain(addonName: String, addonLogo: String?): Stream = Stream(
     addonName = addonName,
     addonLogo = addonLogo,
     sources = sources,
-    clientResolve = clientResolve?.toDomain()
+    clientResolve = clientResolve?.toDomain(),
+    subtitles = subtitles.orEmpty().mapNotNull { it.toDomain(addonName, addonLogo) }
+        .distinctBy { it.url }
 )
+
+/**
+ * Maps one addon-provided inline subtitle into the shared completed-subtitle
+ * record shape. Returns null when the record has no usable URL.
+ */
+private fun SubtitleDto.toDomain(addonName: String, addonLogo: String?): Subtitle? {
+    val subtitleUrl = url.takeIf { it.isNotBlank() } ?: return null
+    val subtitleLang = lang.takeIf { it.isNotBlank() } ?: "und"
+    val id = id?.takeIf { it.isNotBlank() } ?: "$subtitleLang-${subtitleUrl.hashCode()}"
+    return Subtitle(
+        id = id,
+        url = subtitleUrl,
+        lang = subtitleLang,
+        addonName = addonName,
+        addonLogo = addonLogo
+    )
+}
 
 fun StreamClientResolveDto.toDomain(): StreamClientResolve = StreamClientResolve(
     type = type,

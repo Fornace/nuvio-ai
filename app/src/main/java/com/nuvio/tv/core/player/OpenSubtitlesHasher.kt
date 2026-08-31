@@ -6,7 +6,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import java.io.InputStream
 
 /**
  * Calculates the OpenSubtitles file hash for a video stream.
@@ -20,6 +19,9 @@ object OpenSubtitlesHasher {
 
     data class Result(val hash: String, val fileSize: Long)
 
+    /** Raised when a range-read response violates the OpenSubtitles hash contract. */
+    private class HashRangeException(message: String) : Exception(message)
+
     suspend fun compute(
         url: String,
         headers: Map<String, String>,
@@ -30,8 +32,8 @@ object OpenSubtitlesHasher {
             if (fileSize < CHUNK_SIZE * 2) return@withContext null
 
             var hash = fileSize
-            hash += readChunkSum(url, headers, offset = 0, length = CHUNK_SIZE, client = client)
-            hash += readChunkSum(url, headers, offset = fileSize - CHUNK_SIZE, length = CHUNK_SIZE, client = client)
+            hash += readChunkSum(url, headers, offset = 0, length = CHUNK_SIZE, fileSize = fileSize, client = client)
+            hash += readChunkSum(url, headers, offset = fileSize - CHUNK_SIZE, length = CHUNK_SIZE, fileSize = fileSize, client = client)
 
             Result(
                 hash = "%016x".format(hash),
@@ -94,12 +96,14 @@ object OpenSubtitlesHasher {
         headers: Map<String, String>,
         offset: Long,
         length: Long,
+        fileSize: Long,
         client: OkHttpClient
     ): Long {
+        val rangeEnd = offset + length - 1
         val requestBuilder = Request.Builder()
             .url(url)
             .get()
-            .header("Range", "bytes=$offset-${offset + length - 1}")
+            .header("Range", "bytes=$offset-$rangeEnd")
         headers.forEach { (k, v) ->
             if (!k.equals("Range", ignoreCase = true)) {
                 requestBuilder.header(k, v)
@@ -111,24 +115,66 @@ object OpenSubtitlesHasher {
 
         val request = requestBuilder.build()
         client.newCall(request).execute().use { response ->
-            if (!response.isSuccessful && response.code != 206) return 0L
-            val stream: InputStream = response.body?.byteStream() ?: return 0L
+            // A server that ignored the Range request (200) or rejected it (416)
+            // cannot be hashed: accepting it silently produces a plausible but
+            // wrong sum.
+            if (response.code != 206) {
+                throw HashRangeException("Range request rejected: expected HTTP 206, got ${response.code}")
+            }
+            val contentRangeHeader = response.header("Content-Range")
+                ?: throw HashRangeException("HTTP 206 response is missing the Content-Range header")
+            val contentRange = parseContentRange(contentRangeHeader)
+                ?: throw HashRangeException("Malformed Content-Range header: \"$contentRangeHeader\"")
+            if (contentRange.totalSize != fileSize) {
+                throw HashRangeException(
+                    "Content-Range total ${contentRange.totalSize} does not match file size $fileSize"
+                )
+            }
+            if (contentRange.start != offset || contentRange.end != rangeEnd) {
+                throw HashRangeException(
+                    "Content-Range window ${contentRange.start}-${contentRange.end} " +
+                        "does not match requested range $offset-$rangeEnd"
+                )
+            }
+            val declaredBodyBytes = response.body?.contentLength() ?: -1L
+            if (declaredBodyBytes in 0..length - 1) {
+                throw HashRangeException(
+                    "Chunk body advertises $declaredBodyBytes bytes, expected exactly $length"
+                )
+            }
+            val stream = response.body?.byteStream()
+                ?: throw HashRangeException("HTTP 206 response has no body")
             val buf = ByteArray(LONG_SIZE)
             var sum = 0L
-            var remaining = length
-            while (remaining >= LONG_SIZE) {
+            var consumed = 0L
+            while (consumed < length) {
                 var read = 0
                 while (read < LONG_SIZE) {
                     val n = stream.read(buf, read, LONG_SIZE - read)
-                    if (n < 0) break
+                    if (n < 0) {
+                        throw HashRangeException(
+                            "Short read: got ${consumed + read} of $length required bytes before EOF"
+                        )
+                    }
                     read += n
                 }
-                if (read < LONG_SIZE) break
                 sum += buf.toLongLE()
-                remaining -= LONG_SIZE
+                consumed += LONG_SIZE
             }
             return sum
         }
+    }
+
+    private data class ContentRange(val start: Long, val end: Long, val totalSize: Long)
+
+    /** Parses `bytes <start>-<end>/<total>`; returns null when malformed. */
+    private fun parseContentRange(header: String): ContentRange? {
+        val match = Regex("""(?i)^\s*bytes\s+(\d+)-(\d+)/(\d+)\s*$""").find(header) ?: return null
+        val start = match.groupValues[1].toLongOrNull() ?: return null
+        val end = match.groupValues[2].toLongOrNull() ?: return null
+        val total = match.groupValues[3].toLongOrNull() ?: return null
+        if (end < start) return null
+        return ContentRange(start, end, total)
     }
 
     private fun ByteArray.toLongLE(): Long {
