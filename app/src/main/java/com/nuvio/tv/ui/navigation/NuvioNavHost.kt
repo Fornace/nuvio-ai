@@ -30,6 +30,7 @@ import com.nuvio.tv.ui.screens.player.PlayerExitReason
 import com.nuvio.tv.ui.screens.player.PlayerScreen
 import com.nuvio.tv.ui.screens.player.PostPlayRecommendation
 import com.nuvio.tv.ui.screens.plugin.PluginScreen
+import com.nuvio.tv.ui.screens.providers.ProviderCenterScreen
 import com.nuvio.tv.ui.screens.search.DiscoverScreen
 import com.nuvio.tv.ui.screens.search.SearchScreen
 import com.nuvio.tv.ui.screens.settings.AboutScreen
@@ -1151,6 +1152,7 @@ fun NuvioNavHost(
                 onNavigateToTracking = { navController.navigate(Screen.Tracking.route) },
                 onNavigateToAddons = { navController.navigate(Screen.AddonManager.route) },
                 onNavigateToPlugins = { navController.navigate(Screen.Plugins.route) },
+                onNavigateToProviderCenter = { navController.navigate(Screen.ProviderCenter.route) },
                 onNavigateToAuthQrSignIn = { navController.navigate(Screen.AuthQrSignIn.route) },
                 onNavigateToManageProfiles = { navController.navigate(Screen.ManageProfiles.route) },
                 onNavigateToSupportersContributors = {
@@ -1278,6 +1280,14 @@ fun NuvioNavHost(
         if (AppFeaturePolicy.pluginsEnabled) {
             composable(Screen.Plugins.route) {
                 PluginScreen(
+                    onBackPress = { navController.popBackStack() }
+                )
+            }
+        }
+
+        if (AppFeaturePolicy.mediaTransformProvidersEnabled) {
+            composable(Screen.ProviderCenter.route) {
+                ProviderCenterScreen(
                     onBackPress = { navController.popBackStack() }
                 )
             }
