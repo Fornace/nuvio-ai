@@ -8,6 +8,7 @@ import com.nuvio.tv.core.media.provider.host.ProviderCenterController
 import com.nuvio.tv.core.media.provider.host.ProviderCenterItem
 import com.nuvio.tv.core.media.provider.host.ProviderCenterOperationState
 import com.nuvio.tv.core.media.provider.host.ProviderCenterRefreshState
+import com.nuvio.tv.core.media.provider.host.VendorCatalogEntry
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,8 +20,14 @@ import javax.inject.Inject
 data class ProviderCredentialDialog(
     val providerId: String,
     val providerName: String,
-    val apiKeyInput: String = "",
-)
+    val capability: String,
+    val vendorOptions: List<VendorCatalogEntry> = emptyList(),
+    val selectedVendorId: String? = null,
+    val fieldInputs: Map<String, String> = emptyMap(),
+) {
+    val selectedVendor: VendorCatalogEntry?
+        get() = vendorOptions.firstOrNull { it.id == selectedVendorId }
+}
 
 data class ProviderCenterUiState(
     val refresh: ProviderCenterRefreshState = ProviderCenterRefreshState.Idle,
@@ -111,18 +118,43 @@ class ProviderCenterViewModel @Inject constructor(
 
     fun openCredentialDialog(providerId: String) {
         val item = _uiState.value.items.firstOrNull { it.entry.id == providerId } ?: return
+        val options = controller.vendorOptions(item.entry.capability)
+        val selection = controller.selectedVendor(providerId)
+        val selectedVendorId = selection?.vendorId?.takeIf { id -> options.any { it.id == id } }
+            ?: options.firstOrNull()?.id
+        val initialFields = selection?.let { sel ->
+            buildMap {
+                put(API_KEY_FIELD, "")
+                sel.auxFields.forEach { (key, value) -> put(key, value) }
+            }
+        } ?: emptyMap()
         _uiState.value = _uiState.value.copy(
             credentialDialog = ProviderCredentialDialog(
                 providerId = providerId,
                 providerName = item.entry.name,
+                capability = item.entry.capability,
+                vendorOptions = options,
+                selectedVendorId = selectedVendorId,
+                fieldInputs = initialFields,
             )
         )
     }
 
-    fun updateCredentialInput(input: String) {
+    fun selectVendor(vendorId: String) {
+        val dialog = _uiState.value.credentialDialog ?: return
+        if (dialog.vendorOptions.none { it.id == vendorId }) return
+        _uiState.value = _uiState.value.copy(
+            credentialDialog = dialog.copy(
+                selectedVendorId = vendorId,
+                fieldInputs = mapOf(API_KEY_FIELD to ""),
+            )
+        )
+    }
+
+    fun updateAuthField(fieldId: String, input: String) {
         val dialog = _uiState.value.credentialDialog ?: return
         _uiState.value = _uiState.value.copy(
-            credentialDialog = dialog.copy(apiKeyInput = input)
+            credentialDialog = dialog.copy(fieldInputs = dialog.fieldInputs + (fieldId to input))
         )
     }
 
@@ -132,9 +164,17 @@ class ProviderCenterViewModel @Inject constructor(
 
     fun saveCredential() {
         val dialog = _uiState.value.credentialDialog ?: return
+        val vendor = dialog.selectedVendor ?: return
         viewModelScope.launch {
-            val chars = dialog.apiKeyInput.toCharArray()
-            val completion = controller.saveCredential(dialog.providerId, chars)
+            val apiKey = dialog.fieldInputs[API_KEY_FIELD].orEmpty().toCharArray()
+            val aux = dialog.fieldInputs.filterKeys { it != API_KEY_FIELD }
+                .filterValues { it.isNotBlank() }
+            val completion = controller.saveCredential(
+                providerId = dialog.providerId,
+                vendorId = vendor.id,
+                apiKey = apiKey,
+                auxFields = aux,
+            )
             _uiState.value = _uiState.value.copy(
                 credentialDialog = null,
                 lastMessage = completion,
@@ -159,5 +199,9 @@ class ProviderCenterViewModel @Inject constructor(
         if (now != _uiState.value.canRequestInstalls) {
             _uiState.value = _uiState.value.copy(canRequestInstalls = now)
         }
+    }
+
+    companion object {
+        const val API_KEY_FIELD = "apiKey"
     }
 }

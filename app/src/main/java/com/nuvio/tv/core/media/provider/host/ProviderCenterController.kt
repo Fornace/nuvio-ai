@@ -66,6 +66,7 @@ class ProviderCenterController(
     private val credentialVault: ProviderCredentialVault,
     private val activeProfileProvider: ActiveProfileProvider,
     private val contractValidator: ProviderContractValidator,
+    private val vendorSelectionStore: VendorSelectionStore,
     private val externalScope: CoroutineScope,
 ) {
     private val mutableRefresh = MutableStateFlow<ProviderCenterRefreshState>(ProviderCenterRefreshState.Idle)
@@ -79,6 +80,9 @@ class ProviderCenterController(
 
     private val mutableActiveProfile = MutableStateFlow<Int?>(null)
     val activeProfileId: StateFlow<Int?> = mutableActiveProfile.asStateFlow()
+
+    private val mutableVendorCatalog = MutableStateFlow<ParsedVendorCatalog?>(null)
+    val vendorCatalog: StateFlow<ParsedVendorCatalog?> = mutableVendorCatalog.asStateFlow()
 
     private var activeProfileJob: Job? = null
 
@@ -97,6 +101,10 @@ class ProviderCenterController(
 
     fun refresh(): Job = externalScope.launch {
         mutableRefresh.value = ProviderCenterRefreshState.Loading
+        mutableVendorCatalog.value = when (val vendors = registryClient.fetchVendorCatalog()) {
+            is VendorCatalogResult.Success -> vendors.catalog
+            else -> null
+        }
         mutableRefresh.value = when (val result = registryClient.fetch()) {
             is ProviderRegistryResult.Success -> {
                 rebuildItems(result.registry.providers)
@@ -191,8 +199,26 @@ class ProviderCenterController(
         return opened
     }
 
-    suspend fun saveCredential(providerId: String, apiKey: CharArray): ProviderCenterCompletion {
-        val secret = ProviderSecret.copyOf(apiKey.map { it.code.toByte() }.toByteArray())
+    /** Vendor options for a capability, ordered as published in the catalog. */
+    fun vendorOptions(capability: String): List<VendorCatalogEntry> =
+        mutableVendorCatalog.value?.vendors?.filter { it.capability == capability }.orEmpty()
+
+    fun selectedVendor(providerId: String): VendorSelection? =
+        vendorSelectionStore.load(providerId)
+
+    suspend fun saveCredential(
+        providerId: String,
+        vendorId: String,
+        apiKey: CharArray,
+        auxFields: Map<String, String> = emptyMap(),
+    ): ProviderCenterCompletion {
+        val envelope = try {
+            CredentialEnvelope.build(vendorId, apiKey, auxFields)
+        } catch (_: IllegalArgumentException) {
+            apiKey.fill(Char.MIN_VALUE)
+            return ProviderCenterCompletion.Failed(ProviderContractFailure.PROVIDER_REPORTED_ERROR)
+        }
+        val secret = ProviderSecret.copyOf(envelope)
         apiKey.fill(Char.MIN_VALUE)
         val profileId = mutableActiveProfile.value ?: 1
         val record = CredentialRecordMeta(
@@ -204,6 +230,7 @@ class ProviderCenterController(
             withContext(externalScope.coroutineContext) {
                 credentialVault.store(record, secret)
             }
+            vendorSelectionStore.save(providerId, VendorSelection(vendorId, auxFields))
             recomputeCredentialFlags()
             ProviderCenterCompletion.CredentialSaved
         } catch (_: CredentialVaultException) {
@@ -221,6 +248,7 @@ class ProviderCenterController(
         val deleted = withContext(externalScope.coroutineContext) {
             credentialVault.delete(record)
         }
+        vendorSelectionStore.clear(providerId)
         recomputeCredentialFlags()
         return ProviderCenterCompletion.CredentialDeleted
     }

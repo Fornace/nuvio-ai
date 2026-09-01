@@ -17,6 +17,8 @@ import com.nuvio.tv.core.media.provider.host.ProviderApkDownloader
 import com.nuvio.tv.core.media.provider.host.ProviderArtifactVerifier
 import com.nuvio.tv.core.media.provider.host.ProviderPackageScanner
 import com.nuvio.tv.core.media.provider.host.ProviderRegistryClient
+import com.nuvio.tv.core.media.provider.host.AndroidVendorSelectionStore
+import com.nuvio.tv.core.media.provider.host.VendorSelectionStore
 import com.nuvio.tv.core.media.provider.host.ProviderRegistryHttpClientFactory
 import com.nuvio.tv.core.media.provider.security.AndroidCipherTextStore
 import com.nuvio.tv.core.media.provider.security.AndroidInstallationIdStorage
@@ -173,6 +175,12 @@ object ProviderHostModule {
 
     @Provides
     @Singleton
+    fun provideVendorSelectionStore(
+        @dagger.hilt.android.qualifiers.ApplicationContext context: android.content.Context,
+    ): VendorSelectionStore = AndroidVendorSelectionStore(context)
+
+    @Provides
+    @Singleton
     fun provideProviderCenterController(
         registryClient: ProviderRegistryClient,
         scanner: ProviderPackageScanner,
@@ -182,6 +190,7 @@ object ProviderHostModule {
         vault: ProviderCredentialVault,
         profileManager: ProfileManager,
         validator: ProviderContractValidator,
+        vendorSelectionStore: VendorSelectionStore,
     ): ProviderCenterController = ProviderCenterController(
         registryClient = registryClient,
         packageScanner = scanner,
@@ -191,6 +200,7 @@ object ProviderHostModule {
         credentialVault = vault,
         activeProfileProvider = profileManager.asActiveProfileProvider(),
         contractValidator = validator,
+        vendorSelectionStore = vendorSelectionStore,
         externalScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate),
     )
 }

@@ -53,6 +53,7 @@ class ProviderCenterControllerTest {
     private lateinit var registryClient: FakeRegistryClient
     private lateinit var scanner: FakeScanner
     private lateinit var operations: FakePackageOperations
+    private lateinit var vendorSelectionStore: RecordingVendorSelectionStore
     private lateinit var profileManager: FakeActiveProfileProvider
     private lateinit var cipherStore: RecordingCipherTextStore
     private lateinit var vault: ProviderCredentialVault
@@ -63,6 +64,7 @@ class ProviderCenterControllerTest {
         scanner = FakeScanner(mapOf(packageName to installed))
         operations = FakePackageOperations()
         profileManager = FakeActiveProfileProvider()
+        vendorSelectionStore = RecordingVendorSelectionStore()
         cipherStore = RecordingCipherTextStore()
         vault = ProviderCredentialVault(
             keystoreBridge = FakeKeystoreBridge(),
@@ -89,6 +91,7 @@ class ProviderCenterControllerTest {
         credentialVault = vault,
         activeProfileProvider = profileManager,
         contractValidator = ProviderContractValidator(hostVersionCode = 1051),
+        vendorSelectionStore = vendorSelectionStore,
         externalScope = scope,
     )
 
@@ -159,7 +162,7 @@ class ProviderCenterControllerTest {
         val controller = controller()
         controller.refresh().join()
 
-        val saved = controller.saveCredential(entry.id, "sk-test-123".toCharArray())
+        val saved = controller.saveCredential(entry.id, "groq", "sk-test-123".toCharArray())
         assertEquals(ProviderCenterCompletion.CredentialSaved, saved)
         assertTrue(controller.hasCredential(entry.id))
 
@@ -170,6 +173,60 @@ class ProviderCenterControllerTest {
         val deleted = controller.deleteCredential(entry.id)
         assertEquals(ProviderCenterCompletion.CredentialDeleted, deleted)
         assertFalse(controller.hasCredential(entry.id))
+    }
+
+    @Test
+    fun `vendor options filter by capability and selection persists with aux fields`() = runTest {
+        val controller = controller()
+        (registryClient as FakeRegistryClient).vendorResult = VendorCatalogResult.Success(
+            ParsedVendorCatalog(
+                schemaVersion = 1,
+                updated = "2026-09-01",
+                vendors = listOf(
+                    VendorCatalogEntry(
+                        id = "groq",
+                        name = "Groq",
+                        capability = entry.capability,
+                        adaptor = "openai-asr",
+                        apiBase = "https://api.groq.com/openai/v1",
+                        model = "whisper-large-v3-turbo",
+                        authFields = listOf("apiKey"),
+                        keyUrl = "https://console.groq.com/keys",
+                        docsUrl = "https://console.groq.com/docs/speech-to-text",
+                        pricingHint = "x",
+                        notes = null,
+                    ),
+                    VendorCatalogEntry(
+                        id = "qwen",
+                        name = "Qwen",
+                        capability = "DUB_ARTIFACT_V1",
+                        adaptor = "qwen-livetranslate-ws",
+                        apiBase = "wss://example/{workspaceId}?model={model}",
+                        model = "m",
+                        authFields = listOf("apiKey", "workspaceId"),
+                        keyUrl = "https://example.com/key",
+                        docsUrl = "https://example.com/docs",
+                        pricingHint = "y",
+                        notes = null,
+                    ),
+                ),
+                warnings = emptyList(),
+            )
+        )
+        controller.refresh().join()
+
+        assertEquals(listOf("groq"), controller.vendorOptions(entry.capability).map { it.id })
+
+        controller.saveCredential(
+            providerId = entry.id,
+            vendorId = "groq",
+            apiKey = "sk-test".toCharArray(),
+            auxFields = emptyMap(),
+        )
+        assertEquals("groq", controller.selectedVendor(entry.id)?.vendorId)
+
+        controller.deleteCredential(entry.id)
+        assertEquals(null, controller.selectedVendor(entry.id))
     }
 
     @Test
@@ -203,6 +260,12 @@ class ProviderCenterControllerTest {
         )
 
         override suspend fun fetch(): ProviderRegistryResult = result
+
+        var vendorResult: VendorCatalogResult = VendorCatalogResult.Success(
+            ParsedVendorCatalog(schemaVersion = 1, updated = "2026-09-01", vendors = emptyList(), warnings = emptyList())
+        )
+
+        override suspend fun fetchVendorCatalog(): VendorCatalogResult = vendorResult
     }
 
     private class FakeScanner(
@@ -306,5 +369,16 @@ class ProviderCenterControllerTest {
         override fun persistAll(generations: Map<Int, String>) {
             this.generations.putAll(generations)
         }
+    }
+}
+
+private class RecordingVendorSelectionStore : VendorSelectionStore {
+    val saved = mutableMapOf<String, VendorSelection>()
+    override fun load(providerId: String): VendorSelection? = saved[providerId]
+    override fun save(providerId: String, selection: VendorSelection) {
+        saved[providerId] = selection
+    }
+    override fun clear(providerId: String) {
+        saved.remove(providerId)
     }
 }

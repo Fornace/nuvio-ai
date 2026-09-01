@@ -145,10 +145,24 @@ fun ProviderCenterScreen(
     }
 
     uiState.credentialDialog?.let { dialog ->
+        val context = androidx.compose.ui.platform.LocalContext.current
         ProviderCredentialDialog(
             providerName = dialog.providerName,
-            apiKeyInput = dialog.apiKeyInput,
-            onInputChange = viewModel::updateCredentialInput,
+            vendorOptions = dialog.vendorOptions,
+            selectedVendor = dialog.selectedVendor,
+            fieldInputs = dialog.fieldInputs,
+            onSelectVendor = viewModel::selectVendor,
+            onFieldChange = viewModel::updateAuthField,
+            onOpenKeyUrl = { url ->
+                runCatching {
+                    context.startActivity(
+                        android.content.Intent(
+                            android.content.Intent.ACTION_VIEW,
+                            android.net.Uri.parse(url),
+                        )
+                    )
+                }
+            },
             onSave = viewModel::saveCredential,
             onDismiss = viewModel::dismissCredentialDialog,
         )

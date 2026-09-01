@@ -41,6 +41,29 @@ class ProviderRegistryClientTest {
     }
 
     @Test
+    fun `vendor catalog fetch parses from sibling url`() = runTest {
+        val registryClient = client(body = VENDORS_FIXTURE)
+
+        val result = registryClient.fetchVendorCatalog()
+
+        assertTrue(result is VendorCatalogResult.Success)
+        val catalog = (result as VendorCatalogResult.Success).catalog
+        assertEquals(1, catalog.vendors.size)
+        assertEquals("groq", catalog.vendors.single().id)
+        assertEquals("/v1/vendors.json", stub.lastUrl?.encodedPath)
+    }
+
+    @Test
+    fun `vendor catalog http error maps to HttpStatusError`() = runTest {
+        val registryClient = client(statusCode = 404, body = "missing")
+
+        val result = registryClient.fetchVendorCatalog()
+
+        assertTrue(result is VendorCatalogResult.HttpStatusError)
+        assertEquals(404, (result as VendorCatalogResult.HttpStatusError).statusCode)
+    }
+
+    @Test
     fun `http error status maps to HttpStatusError with status only`() = runTest {
         val registryClient = client(statusCode = 500, body = "internal registry error")
 
@@ -113,7 +136,15 @@ class ProviderRegistryClientTest {
     }
 
     companion object {
-        private const val REGISTRY_URL = "https://registry.example.test/v1/registry.json"
+        private val VENDORS_FIXTURE = """
+        {"schemaVersion":1,"updated":"2026-09-01","vendors":[
+          {"id":"groq","name":"Groq","capability":"SUBTITLE_CUES_V1","adaptor":"openai-asr",
+           "apiBase":"https://api.groq.com/openai/v1","model":"whisper-large-v3-turbo",
+           "authFields":["apiKey"],"keyUrl":"https://console.groq.com/keys",
+           "docsUrl":"https://console.groq.com/docs/speech-to-text","pricingHint":"x"}]}
+    """.trimIndent()
+
+private const val REGISTRY_URL = "https://registry.example.test/v1/registry.json"
 
         private val REGISTRY_FIXTURE = """
             {

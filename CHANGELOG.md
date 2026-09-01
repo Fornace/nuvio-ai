@@ -20,6 +20,16 @@ First public preview of the AI media provider platform.
 - Generated Dialogue Subtitles provider APK (`provider-subtitles`), preview 0.1.0-preview2.
 - Translated Voice Overlay provider APK (`provider-voice`), preview 0.1.0-preview1.
 - Public provider registry and install guide at `nuvio-extensions.fornace.net`.
+- Vendor catalog (`vendors.json`) beside the registry: supported vendors per capability with API key
+  console links, pricing hints and required auth fields. The BYOK dialog renders the catalog, so
+  adding a vendor or swapping a model is a registry-side JSON edit.
+- Engine adaptor layer in both provider APKs: the host resolves the catalog entry for the selected
+  vendor and hands the provider a resolved engine config plus the sealed credential envelope;
+  providers map adaptor ids to request builders (openai-asr, cloudflare-workers-ai,
+  qwen-livetranslate-ws, openai-realtime-translate, gemini-live-translate).
+- Credential envelope: vendor id, API key and auxiliary auth fields (account ID, workspace ID)
+  stored as one sealed JSON document in the vault; the non-secret vendor selection is persisted
+  separately per provider.
 - Research trail: commercial and open model lanes, API probes, and feasibility notes under
   `docs/ai-media-research`.
 

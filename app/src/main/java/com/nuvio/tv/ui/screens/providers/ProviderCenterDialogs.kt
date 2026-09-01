@@ -17,6 +17,7 @@ import androidx.tv.material3.OutlinedButton
 import androidx.tv.material3.Text
 import com.nuvio.tv.R
 import com.nuvio.tv.core.media.provider.host.ProviderCenterError
+import com.nuvio.tv.core.media.provider.host.VendorCatalogEntry
 import com.nuvio.tv.ui.theme.NuvioTheme
 import kotlinx.coroutines.delay
 
@@ -49,16 +50,22 @@ internal fun ErrorCard(reason: ProviderCenterError) {
     )
 }
 
-/** BYOK entry dialog: input never persists beyond the save call. */
+/** BYOK entry dialog: vendor picker plus per-vendor auth fields. Input never persists beyond the save call. */
 @Composable
 internal fun ProviderCredentialDialog(
     providerName: String,
-    apiKeyInput: String,
-    onInputChange: (String) -> Unit,
+    vendorOptions: List<VendorCatalogEntry>,
+    selectedVendor: VendorCatalogEntry?,
+    fieldInputs: Map<String, String>,
+    onSelectVendor: (String) -> Unit,
+    onFieldChange: (String, String) -> Unit,
+    onOpenKeyUrl: (String) -> Unit,
     onSave: () -> Unit,
     onDismiss: () -> Unit,
 ) {
     val focusRequester = remember { FocusRequester() }
+    val requiredFields = selectedVendor?.authFields ?: listOf("apiKey")
+    val allFieldsFilled = requiredFields.all { !fieldInputs[it].isNullOrBlank() }
 
     com.nuvio.tv.ui.components.NuvioDialog(
         onDismiss = onDismiss,
@@ -68,19 +75,62 @@ internal fun ProviderCredentialDialog(
         Column(
             verticalArrangement = Arrangement.spacedBy(NuvioTheme.spacing.md),
         ) {
-            com.nuvio.tv.ui.screens.account.InputField(
-                value = apiKeyInput,
-                onValueChange = onInputChange,
-                placeholder = stringResource(R.string.provider_center_key_dialog_placeholder),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .focusRequester(focusRequester),
-            )
+            if (vendorOptions.size > 1) {
+                Text(
+                    text = stringResource(R.string.provider_center_vendor_section),
+                    style = androidx.compose.material3.MaterialTheme.typography.labelSmall,
+                    color = NuvioTheme.colors.TextSecondary,
+                )
+                Row(horizontalArrangement = Arrangement.spacedBy(NuvioTheme.spacing.sm)) {
+                    vendorOptions.forEach { vendor ->
+                        val isSelected = vendor.id == selectedVendor?.id
+                        if (isSelected) {
+                            Button(onClick = { onSelectVendor(vendor.id) }) {
+                                Text(text = vendor.name)
+                            }
+                        } else {
+                            OutlinedButton(onClick = { onSelectVendor(vendor.id) }) {
+                                Text(text = vendor.name)
+                            }
+                        }
+                    }
+                }
+            }
+
+            selectedVendor?.let { vendor ->
+                Text(
+                    text = vendor.pricingHint,
+                    style = androidx.compose.material3.MaterialTheme.typography.bodySmall,
+                    color = NuvioTheme.colors.TextSecondary,
+                )
+                vendor.notes?.let { notes ->
+                    Text(
+                        text = notes,
+                        style = androidx.compose.material3.MaterialTheme.typography.bodySmall,
+                        color = NuvioTheme.colors.TextSecondary,
+                    )
+                }
+                OutlinedButton(onClick = { onOpenKeyUrl(vendor.keyUrl) }) {
+                    Text(text = stringResource(R.string.provider_center_get_api_key))
+                }
+            }
+
+            requiredFields.forEach { fieldId ->
+                com.nuvio.tv.ui.screens.account.InputField(
+                    value = fieldInputs[fieldId].orEmpty(),
+                    onValueChange = { onFieldChange(fieldId, it) },
+                    placeholder = authFieldLabel(fieldId),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .let { if (fieldId == "apiKey") it.focusRequester(focusRequester) else it },
+                )
+            }
+
             Row(horizontalArrangement = Arrangement.spacedBy(NuvioTheme.spacing.md)) {
                 OutlinedButton(onClick = onDismiss) {
                     Text(text = stringResource(R.string.provider_center_key_dialog_cancel))
                 }
-                Button(onClick = onSave, enabled = apiKeyInput.isNotBlank()) {
+                Button(onClick = onSave, enabled = allFieldsFilled) {
                     Text(text = stringResource(R.string.provider_center_key_dialog_save))
                 }
             }
@@ -91,3 +141,12 @@ internal fun ProviderCredentialDialog(
         focusRequester.requestFocus()
     }
 }
+
+@Composable
+private fun authFieldLabel(fieldId: String): String = stringResource(
+    when (fieldId) {
+        "accountId" -> R.string.provider_center_field_account_id
+        "workspaceId" -> R.string.provider_center_field_workspace_id
+        else -> R.string.provider_center_key_dialog_placeholder
+    }
+)

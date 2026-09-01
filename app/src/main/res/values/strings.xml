@@ -3211,6 +3211,10 @@
     <string name="provider_center_key_dialog_title">%1$s API key</string>
     <string name="provider_center_key_dialog_hint">The key is encrypted on this device and scoped to the active profile. It is never shown again after saving.</string>
     <string name="provider_center_key_dialog_placeholder">Paste API key</string>
+    <string name="provider_center_vendor_section">Vendor</string>
+    <string name="provider_center_get_api_key">Get API key</string>
+    <string name="provider_center_field_account_id">Cloudflare account ID</string>
+    <string name="provider_center_field_workspace_id">Model Studio workspace ID</string>
     <string name="provider_center_key_dialog_cancel">Cancel</string>
     <string name="provider_center_key_dialog_save">Save</string>
     <string name="provider_center_error_network">Network unreachable. Check the connection and refresh.</string>
