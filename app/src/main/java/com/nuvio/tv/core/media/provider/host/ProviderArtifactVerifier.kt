@@ -12,8 +12,8 @@ sealed interface ProviderArtifactVerificationResult {
     data class ReadError(val causeType: String) : ProviderArtifactVerificationResult
 }
 
-class ProviderArtifactVerifier {
-    fun verify(file: File, expectedSha256: String): ProviderArtifactVerificationResult {
+open class ProviderArtifactVerifier {
+    open fun verify(file: File, expectedSha256: String): ProviderArtifactVerificationResult {
         if (!expectedSha256.matches(SHA256_PATTERN)) {
             return ProviderArtifactVerificationResult.InvalidExpectedDigest(expectedSha256)
         }

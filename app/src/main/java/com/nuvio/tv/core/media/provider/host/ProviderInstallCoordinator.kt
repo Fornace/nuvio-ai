@@ -41,7 +41,7 @@ data class ProviderInstallRequest(
  * - A digest mismatch deletes the downloaded file and never touches the installer bridge.
  * - Cancelling the owning scope or [cancel] cleans every partial file.
  */
-class ProviderInstallCoordinator(
+open class ProviderInstallCoordinator(
     private val downloader: ProviderApkDownloader,
     private val verifier: ProviderArtifactVerifier,
     private val installerBridge: PackageInstallerBridge,

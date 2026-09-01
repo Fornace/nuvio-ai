@@ -20,12 +20,12 @@ object ProviderRegistryHttpClientFactory {
     fun create(): OkHttpClient = OkHttpClient.Builder().build()
 }
 
-class ProviderRegistryClient(
+open class ProviderRegistryClient(
     private val httpClient: OkHttpClient = ProviderRegistryHttpClientFactory.create(),
     private val registryUrl: String = OFFICIAL_PROVIDER_REGISTRY_URL,
     private val json: Json = Json { ignoreUnknownKeys = true }
 ) {
-    suspend fun fetch(): ProviderRegistryResult = withContext(Dispatchers.IO) {
+    open suspend fun fetch(): ProviderRegistryResult = withContext(Dispatchers.IO) {
         val request = try {
             Request.Builder().url(registryUrl).get().build()
         } catch (error: IllegalArgumentException) {

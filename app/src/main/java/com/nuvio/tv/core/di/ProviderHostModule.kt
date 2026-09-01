@@ -7,10 +7,12 @@ import com.nuvio.tv.core.media.provider.host.AndroidProviderContractClient
 import com.nuvio.tv.core.media.provider.host.AndroidProviderPackageOperations
 import com.nuvio.tv.core.media.provider.host.OkHttpProviderApkDownloader
 import com.nuvio.tv.core.media.provider.host.PackageInstallerBridge
+import com.nuvio.tv.core.media.provider.host.ProviderCenterController
 import com.nuvio.tv.core.media.provider.host.ProviderContractClient
 import com.nuvio.tv.core.media.provider.host.ProviderContractValidator
 import com.nuvio.tv.core.media.provider.host.ProviderPackageOperations
 import com.nuvio.tv.core.media.provider.host.PackageManagerProviderPackageScanner
+import com.nuvio.tv.core.media.provider.host.ProviderInstallCoordinator
 import com.nuvio.tv.core.media.provider.host.ProviderApkDownloader
 import com.nuvio.tv.core.media.provider.host.ProviderArtifactVerifier
 import com.nuvio.tv.core.media.provider.host.ProviderPackageScanner
@@ -29,7 +31,10 @@ import com.nuvio.tv.core.media.provider.security.ProfileGenerationStore
 import com.nuvio.tv.core.media.provider.security.ProviderCredentialVault
 import com.nuvio.tv.core.media.provider.security.ProviderProfileCredentialStore
 import com.nuvio.tv.core.media.provider.security.ProviderTlsClientFactory
+import com.nuvio.tv.core.profile.ActiveProfileProvider
+import com.nuvio.tv.core.profile.ProfileManager
 import com.nuvio.tv.core.profile.ProfileScopedCredentialStore
+import com.nuvio.tv.core.profile.asActiveProfileProvider
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -37,7 +42,16 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import dagger.multibindings.IntoSet
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import java.io.File
+import javax.inject.Qualifier
 import javax.inject.Singleton
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class ProviderCenterScope
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -141,4 +155,42 @@ object ProviderHostModule {
     fun providePackageInstallerBridge(
         @ApplicationContext context: Context,
     ): PackageInstallerBridge = AndroidPackageInstallerBridge(context)
+
+    @Provides
+    @Singleton
+    fun provideProviderInstallCoordinator(
+        downloader: ProviderApkDownloader,
+        verifier: ProviderArtifactVerifier,
+        bridge: PackageInstallerBridge,
+        @ApplicationContext context: Context,
+    ): ProviderInstallCoordinator = ProviderInstallCoordinator(
+        downloader = downloader,
+        verifier = verifier,
+        installerBridge = bridge,
+        downloadDir = File(context.cacheDir, "provider-installs"),
+        externalScope = CoroutineScope(SupervisorJob() + Dispatchers.IO),
+    )
+
+    @Provides
+    @Singleton
+    fun provideProviderCenterController(
+        registryClient: ProviderRegistryClient,
+        scanner: ProviderPackageScanner,
+        contractClient: ProviderContractClient,
+        installCoordinator: ProviderInstallCoordinator,
+        packageOperations: ProviderPackageOperations,
+        vault: ProviderCredentialVault,
+        profileManager: ProfileManager,
+        validator: ProviderContractValidator,
+    ): ProviderCenterController = ProviderCenterController(
+        registryClient = registryClient,
+        packageScanner = scanner,
+        contractClient = contractClient,
+        installCoordinator = installCoordinator,
+        packageOperations = packageOperations,
+        credentialVault = vault,
+        activeProfileProvider = profileManager.asActiveProfileProvider(),
+        contractValidator = validator,
+        externalScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate),
+    )
 }

@@ -2,7 +2,7 @@ package com.nuvio.tv.core.media.provider.host
 
 /** Pure validation at the package, registry and Messenger trust boundary. */
 class ProviderContractValidator(
-    private val hostVersionCode: Int,
+    val hostVersionCode: Int,
     private val supportedCapabilities: Map<String, Int> = SUPPORTED_CAPABILITIES,
 ) {
     fun validatePreflight(
