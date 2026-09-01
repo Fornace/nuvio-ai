@@ -113,9 +113,21 @@ class ProviderCenterController(
             installCoordinator.state.collect { state ->
                 val busyProvider = (mutableOperation.value as? ProviderCenterOperationState.Busy)?.providerId
                 if (busyProvider != null) {
-                    mutableOperation.value = ProviderCenterOperationState.Busy(busyProvider, state)
                     if (state is ProviderInstallState.Failed || state is ProviderInstallState.Installed) {
                         refreshInstalledState()
+                        mutableOperation.value = when (state) {
+                            is ProviderInstallState.Installed -> ProviderCenterOperationState.Done(
+                                busyProvider,
+                                ProviderCenterCompletion.Installed(state.packageName, state.versionName),
+                            )
+                            is ProviderInstallState.Failed -> ProviderCenterOperationState.Done(
+                                busyProvider,
+                                ProviderCenterCompletion.Failed(ProviderContractFailure.PROVIDER_REPORTED_ERROR),
+                            )
+                            else -> ProviderCenterOperationState.Busy(busyProvider, state)
+                        }
+                    } else {
+                        mutableOperation.value = ProviderCenterOperationState.Busy(busyProvider, state)
                     }
                 }
             }

@@ -54,7 +54,14 @@ class ProviderCenterViewModel @Inject constructor(
         }
         viewModelScope.launch {
             controller.operation.collect { operation ->
-                _uiState.value = _uiState.value.copy(operation = operation)
+                _uiState.value = if (operation is ProviderCenterOperationState.Done) {
+                    _uiState.value.copy(
+                        operation = operation,
+                        lastMessage = operation.message,
+                    )
+                } else {
+                    _uiState.value.copy(operation = operation)
+                }
             }
         }
         viewModelScope.launch {
