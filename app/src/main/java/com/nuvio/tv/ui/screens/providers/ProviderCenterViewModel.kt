@@ -145,4 +145,12 @@ class ProviderCenterViewModel @Inject constructor(
     fun clearMessage() {
         _uiState.value = _uiState.value.copy(lastMessage = null)
     }
+
+    /** Re-query install permission after returning from system settings. */
+    fun onScreenResumed() {
+        val now = controller.canRequestInstalls()
+        if (now != _uiState.value.canRequestInstalls) {
+            _uiState.value = _uiState.value.copy(canRequestInstalls = now)
+        }
+    }
 }

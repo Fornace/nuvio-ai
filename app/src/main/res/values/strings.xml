@@ -3135,6 +3135,13 @@
     <string name="provider_center_update_subtitle">New version available: %1$s</string>
     <string name="provider_center_verify">Verify</string>
     <string name="provider_center_verify_subtitle">Check the installed provider against the trusted registry</string>
+    <string name="provider_center_msg_installed">Installed %1$s %2$s. You can add the API key next.</string>
+    <string name="provider_center_msg_credential_saved">API key saved for the active profile</string>
+    <string name="provider_center_msg_credential_deleted">API key removed</string>
+    <string name="provider_center_msg_verified">Verification passed: %1$s engine %2$s</string>
+    <string name="provider_center_msg_verification_opened">The system install permission screen opened. Switch on Allow from this source, then come back.</string>
+    <string name="provider_center_msg_uninstall_opened">The system uninstall screen opened</string>
+    <string name="provider_center_msg_failed">Operation failed: %1$s. Retry, or uninstall and install the provider again.</string>
     <string name="provider_center_uninstall">Uninstall</string>
     <string name="provider_center_host_too_old">This provider requires a newer NuvioTV version</string>
     <string name="provider_center_not_installable">This provider is not available for installation yet</string>

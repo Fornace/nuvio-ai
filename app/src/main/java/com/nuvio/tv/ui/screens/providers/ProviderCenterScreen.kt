@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Key
 import androidx.compose.material.icons.filled.Refresh
@@ -49,6 +50,17 @@ fun ProviderCenterScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
+    androidx.compose.runtime.DisposableEffect(lifecycleOwner) {
+        val observer = androidx.lifecycle.LifecycleEventObserver { _, event ->
+            if (event == androidx.lifecycle.Lifecycle.Event.ON_RESUME) {
+                viewModel.onScreenResumed()
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -63,6 +75,10 @@ fun ProviderCenterScreen(
             title = stringResource(R.string.provider_center_title),
             subtitle = stringResource(R.string.provider_center_subtitle),
         )
+
+        uiState.lastMessage?.let { message ->
+            CompletionMessageRow(message = message, onDismiss = viewModel::clearMessage)
+        }
 
         if (!uiState.canRequestInstalls) {
             UnknownSourcesCard(onOpenSettings = viewModel::openUnknownSources)
@@ -221,6 +237,38 @@ private fun ProviderCard(
                 leadingIcon = Icons.Default.Delete,
             )
         }
+    }
+}
+
+@Composable
+private fun CompletionMessageRow(message: ProviderCenterCompletion, onDismiss: () -> Unit) {
+    val text = when (message) {
+        is ProviderCenterCompletion.Installed ->
+            stringResource(R.string.provider_center_msg_installed, message.packageName, message.versionName)
+        ProviderCenterCompletion.CredentialSaved ->
+            stringResource(R.string.provider_center_msg_credential_saved)
+        ProviderCenterCompletion.CredentialDeleted ->
+            stringResource(R.string.provider_center_msg_credential_deleted)
+        is ProviderCenterCompletion.ContractVerified ->
+            stringResource(
+                R.string.provider_center_msg_verified,
+                message.contract.capability,
+                message.contract.engineStatus,
+            )
+        ProviderCenterCompletion.VerificationOpened ->
+            stringResource(R.string.provider_center_msg_verification_opened)
+        ProviderCenterCompletion.UninstallOpened ->
+            stringResource(R.string.provider_center_msg_uninstall_opened)
+        is ProviderCenterCompletion.Failed ->
+            stringResource(R.string.provider_center_msg_failed, message.reason.name)
+    }
+    SettingsGroupCard(modifier = Modifier.fillMaxWidth()) {
+        SettingsActionRow(
+            title = text,
+            subtitle = null,
+            onClick = onDismiss,
+            leadingIcon = Icons.Default.CheckCircle,
+        )
     }
 }
 
