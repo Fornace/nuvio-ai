@@ -45,7 +45,7 @@ class ProviderContractService : Service() {
             }
         }
         val replyTo = msg.replyTo ?: return true
-        val response = Message.obtain(null, msg.what, payload)
+        val response = Message.obtain(null, msg.what).apply { data = payload }
         try {
             replyTo.send(response)
         } catch (_: RemoteException) {
