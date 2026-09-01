@@ -111,13 +111,19 @@ class ProviderInstallCoordinatorTest {
     @Test
     fun `installer rejection maps to InstallerRejected and still cleans up`() = runTest {
         val (coordinator, _, bridge) = harness(
-            installerResult = ProviderInstallerResult.Rejected
+            installerResult = ProviderInstallerResult.Rejected(
+                ProviderInstallerRejectionReason.USER_CANCELLED
+            )
         )
 
         val finalState = coordinator.install(request())
 
         assertEquals(
-            ProviderInstallState.Failed(ProviderInstallFailureReason.InstallerRejected),
+            ProviderInstallState.Failed(
+                ProviderInstallFailureReason.InstallerRejected(
+                    ProviderInstallerRejectionReason.USER_CANCELLED
+                )
+            ),
             finalState
         )
         assertEquals(1, bridge.installCount)

@@ -16,13 +16,25 @@ import java.util.UUID
 
 sealed interface ProviderInstallerResult {
     data class Installed(val packageName: String) : ProviderInstallerResult
-    data object Rejected : ProviderInstallerResult
+    data class Rejected(val reason: ProviderInstallerRejectionReason) : ProviderInstallerResult
+}
+
+enum class ProviderInstallerRejectionReason {
+    UNKNOWN_SOURCES_PERMISSION_REQUIRED,
+    SIGNATURE_CONFLICT,
+    USER_CANCELLED,
+    INVALID_APK,
+    STORAGE,
+    TIMEOUT,
+    SECURITY,
+    IO,
+    OTHER,
 }
 
 sealed interface ProviderInstallerEvent {
     data object AwaitingUserConfirmation : ProviderInstallerEvent
     data object Accepted : ProviderInstallerEvent
-    data object Rejected : ProviderInstallerEvent
+    data class Rejected(val reason: ProviderInstallerRejectionReason) : ProviderInstallerEvent
 }
 
 fun interface ProviderInstallerStatusListener {
@@ -52,6 +64,18 @@ class AndroidPackageInstallerBridge(
         packageName: String?,
         statusListener: ProviderInstallerStatusListener?
     ): ProviderInstallerResult {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
+            !context.packageManager.canRequestPackageInstalls()
+        ) {
+            statusListener?.onEvent(
+                ProviderInstallerEvent.Rejected(
+                    ProviderInstallerRejectionReason.UNKNOWN_SOURCES_PERMISSION_REQUIRED
+                )
+            )
+            return ProviderInstallerResult.Rejected(
+                ProviderInstallerRejectionReason.UNKNOWN_SOURCES_PERMISSION_REQUIRED
+            )
+        }
         val installer = context.packageManager.packageInstaller
         val sessionId = installer.createSession(
             PackageInstaller.SessionParams(PackageInstaller.SessionParams.MODE_FULL_INSTALL)
@@ -89,14 +113,14 @@ class AndroidPackageInstallerBridge(
             return when (val status = withTimeout(confirmationTimeoutMs) { completion.await() }) {
                 PackageInstaller.STATUS_SUCCESS ->
                     ProviderInstallerResult.Installed(receiver.finalPackageName ?: "")
-                else -> ProviderInstallerResult.Rejected
+                else -> ProviderInstallerResult.Rejected(receiver.rejectionReason)
             }
         } catch (_: TimeoutCancellationException) {
-            return ProviderInstallerResult.Rejected
+            return ProviderInstallerResult.Rejected(ProviderInstallerRejectionReason.TIMEOUT)
         } catch (_: IOException) {
-            return ProviderInstallerResult.Rejected
+            return ProviderInstallerResult.Rejected(ProviderInstallerRejectionReason.IO)
         } catch (_: SecurityException) {
-            return ProviderInstallerResult.Rejected
+            return ProviderInstallerResult.Rejected(ProviderInstallerRejectionReason.SECURITY)
         } finally {
             runCatching { context.unregisterReceiver(receiver) }
             runCatching { installer.abandonSession(sessionId) }
@@ -109,6 +133,9 @@ class AndroidPackageInstallerBridge(
         private val statusListener: ProviderInstallerStatusListener?,
         private val completion: CompletableDeferred<Int>
     ) : BroadcastReceiver() {
+        var rejectionReason: ProviderInstallerRejectionReason = ProviderInstallerRejectionReason.OTHER
+            private set
+
         var finalPackageName: String? = null
             private set
 
@@ -135,13 +162,26 @@ class AndroidPackageInstallerBridge(
                     statusListener?.onEvent(ProviderInstallerEvent.Accepted)
                     completion.complete(PackageInstaller.STATUS_SUCCESS)
                 }
-                else -> completeAsRejected()
+                else -> completeAsRejected(mapRejectionReason(status))
             }
         }
 
-        private fun completeAsRejected() {
-            statusListener?.onEvent(ProviderInstallerEvent.Rejected)
+        private fun completeAsRejected(
+            reason: ProviderInstallerRejectionReason = ProviderInstallerRejectionReason.OTHER
+        ) {
+            rejectionReason = reason
+            statusListener?.onEvent(ProviderInstallerEvent.Rejected(reason))
             completion.complete(PackageInstaller.STATUS_FAILURE)
+        }
+
+        private fun mapRejectionReason(status: Int): ProviderInstallerRejectionReason = when (status) {
+            PackageInstaller.STATUS_FAILURE_CONFLICT -> ProviderInstallerRejectionReason.SIGNATURE_CONFLICT
+            PackageInstaller.STATUS_FAILURE_INVALID -> ProviderInstallerRejectionReason.INVALID_APK
+            PackageInstaller.STATUS_FAILURE_STORAGE -> ProviderInstallerRejectionReason.STORAGE
+            PackageInstaller.STATUS_FAILURE_ABORTED -> ProviderInstallerRejectionReason.USER_CANCELLED
+            PackageInstaller.STATUS_FAILURE_BLOCKED ->
+                ProviderInstallerRejectionReason.UNKNOWN_SOURCES_PERMISSION_REQUIRED
+            else -> ProviderInstallerRejectionReason.OTHER
         }
     }
 

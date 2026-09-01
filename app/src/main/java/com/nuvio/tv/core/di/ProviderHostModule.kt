@@ -1,9 +1,15 @@
 package com.nuvio.tv.core.di
 
 import android.content.Context
+import com.nuvio.tv.BuildConfig
 import com.nuvio.tv.core.media.provider.host.AndroidPackageInstallerBridge
+import com.nuvio.tv.core.media.provider.host.AndroidProviderContractClient
+import com.nuvio.tv.core.media.provider.host.AndroidProviderPackageOperations
 import com.nuvio.tv.core.media.provider.host.OkHttpProviderApkDownloader
 import com.nuvio.tv.core.media.provider.host.PackageInstallerBridge
+import com.nuvio.tv.core.media.provider.host.ProviderContractClient
+import com.nuvio.tv.core.media.provider.host.ProviderContractValidator
+import com.nuvio.tv.core.media.provider.host.ProviderPackageOperations
 import com.nuvio.tv.core.media.provider.host.PackageManagerProviderPackageScanner
 import com.nuvio.tv.core.media.provider.host.ProviderApkDownloader
 import com.nuvio.tv.core.media.provider.host.ProviderArtifactVerifier
@@ -105,6 +111,25 @@ object ProviderHostModule {
     fun provideProviderPackageScanner(
         @ApplicationContext context: Context,
     ): ProviderPackageScanner = PackageManagerProviderPackageScanner(context.packageManager)
+
+    @Provides
+    @Singleton
+    fun provideProviderContractValidator(): ProviderContractValidator =
+        ProviderContractValidator(BuildConfig.VERSION_CODE)
+
+    @Provides
+    @Singleton
+    fun provideProviderContractClient(
+        @ApplicationContext context: Context,
+        scanner: ProviderPackageScanner,
+        validator: ProviderContractValidator,
+    ): ProviderContractClient = AndroidProviderContractClient(context, scanner, validator)
+
+    @Provides
+    @Singleton
+    fun provideProviderPackageOperations(
+        @ApplicationContext context: Context,
+    ): ProviderPackageOperations = AndroidProviderPackageOperations(context)
 
     @Provides
     @Singleton

@@ -21,7 +21,7 @@ sealed interface ProviderInstallState {
 sealed interface ProviderInstallFailureReason {
     data class Network(val causeType: String) : ProviderInstallFailureReason
     data object DigestMismatch : ProviderInstallFailureReason
-    data object InstallerRejected : ProviderInstallFailureReason
+    data class InstallerRejected(val reason: ProviderInstallerRejectionReason) : ProviderInstallFailureReason
     data object Cancelled : ProviderInstallFailureReason
 }
 
@@ -109,8 +109,8 @@ class ProviderInstallCoordinator(
                     mutableState.value = installed
                     return installed
                 }
-                ProviderInstallerResult.Rejected ->
-                    return fail(ProviderInstallFailureReason.InstallerRejected)
+                is ProviderInstallerResult.Rejected ->
+                    return fail(ProviderInstallFailureReason.InstallerRejected(result.reason))
             }
         } catch (error: CancellationException) {
             mutableState.value = ProviderInstallState.Failed(ProviderInstallFailureReason.Cancelled)
