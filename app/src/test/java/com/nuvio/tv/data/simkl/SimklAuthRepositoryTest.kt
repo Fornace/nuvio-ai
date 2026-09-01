@@ -267,7 +267,7 @@ class SimklAuthRepositoryTest {
             return true
         }
 
-        override fun removeProfile(profileId: Int) {
+        override suspend fun removeProfile(profileId: Int) {
             profiles.remove(profileId)
             if (profileId == activeProfileId) {
                 generation += 1L
@@ -276,7 +276,7 @@ class SimklAuthRepositoryTest {
             }
         }
 
-        override fun clearAllProfiles() {
+        override suspend fun clearAllProfiles() {
             profiles.clear()
             generation += 1L
             profiles[activeProfileId] = StoredProfile()

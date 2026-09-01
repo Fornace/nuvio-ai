@@ -76,6 +76,7 @@ class ProviderCredentialVaultTest {
             harness.profileGenerations.peekGeneration(3),
             record.profileGenerationId,
         )
+        assertTrue(harness.keystore.hasKey(ProviderCredentialVault.keyAliasFor(meta, record.profileGenerationId)))
         // Nothing persisted (ciphertext, metadata, toString) contains plaintext.
         val persistedText = String(record.ciphertext, Charsets.ISO_8859_1) + record.toString()
         assertFalse(persistedText.contains(SECRET))
@@ -128,7 +129,7 @@ class ProviderCredentialVaultTest {
             harness.vault.use(meta) { fail("must not reach the operation") }
             fail("Expected CredentialDecryptionException")
         } catch (expected: CredentialDecryptionException) {
-            assertTrue(expected.hasAeadTagFailureInChain())
+            assertTrue(expected.cause is IllegalStateException)
             assertNotEquals(generationBefore, harness.profileGenerations.peekGeneration(3))
         }
     }
@@ -166,7 +167,7 @@ class ProviderCredentialVaultTest {
             harness.vault.use(victim) { fail("must not reach the operation") }
             fail("Expected CredentialDecryptionException")
         } catch (expected: CredentialDecryptionException) {
-            assertTrue(expected.hasAeadTagFailureInChain())
+            assertTrue(expected.cause is IllegalStateException)
         }
     }
 
@@ -201,7 +202,9 @@ class ProviderCredentialVaultTest {
     @Test
     fun missingKeystoreKeyFailsClosed() = runBlocking {
         storeSecret()
-        assertTrue(harness.keystore.deleteKey(ProviderCredentialVault.keyAliasFor(meta)))
+        val record = harness.cipherStore.records[storageKey()]!!
+        val alias = ProviderCredentialVault.keyAliasFor(meta, record.profileGenerationId)
+        assertTrue(harness.keystore.deleteKey(alias))
 
         try {
             harness.vault.use(meta) { fail("must not reach the operation") }
@@ -258,9 +261,120 @@ class ProviderCredentialVaultTest {
     }
 
     @Test
+    fun deleteProfileRemovesOnlyMatchingCredentialsThenInvalidatesGeneration() = runBlocking {
+        val profileThreePrimary = meta
+        val profileThreeSecondary = CredentialRecordMeta(3, "deepgram", "secondary")
+        val profileFour = CredentialRecordMeta(4, "openai", "primary")
+        listOf(profileThreePrimary, profileThreeSecondary, profileFour).forEach { record ->
+            harness.vault.store(record, ProviderSecret.copyOf(SECRET.toByteArray(Charsets.UTF_8)))
+        }
+        val profileThreeAliases = listOf(profileThreePrimary, profileThreeSecondary).map { record ->
+            val stored = harness.cipherStore.records[ProviderCredentialVault.storageKeyFor(record)]!!
+            ProviderCredentialVault.keyAliasFor(record, stored.profileGenerationId)
+        }
+        val profileFourStored = harness.cipherStore.records[ProviderCredentialVault.storageKeyFor(profileFour)]!!
+        val profileFourAlias = ProviderCredentialVault.keyAliasFor(
+            profileFour,
+            profileFourStored.profileGenerationId,
+        )
+
+        assertTrue(harness.vault.deleteProfile(3))
+
+        assertFalse(harness.profileGenerations.hasGeneration(3))
+        assertFalse(harness.vault.contains(profileThreePrimary))
+        assertFalse(harness.vault.contains(profileThreeSecondary))
+        profileThreeAliases.forEach { alias -> assertFalse(harness.keystore.hasKey(alias)) }
+        assertTrue(harness.profileGenerations.hasGeneration(4))
+        assertTrue(harness.vault.contains(profileFour))
+        assertTrue(harness.keystore.hasKey(profileFourAlias))
+    }
+
+    @Test
+    fun profileCleanupFailureLeavesCiphertextAndGenerationForRetry() = runBlocking {
+        storeSecret()
+        val stored = harness.cipherStore.records[storageKey()]!!
+        val alias = ProviderCredentialVault.keyAliasFor(meta, stored.profileGenerationId)
+        harness.keystore.deleteFailures += alias
+
+        try {
+            harness.vault.deleteProfile(meta.profileId)
+            fail("Expected cleanup failure")
+        } catch (_: IllegalStateException) {
+            assertTrue(harness.vault.contains(meta))
+            assertTrue(harness.profileGenerations.hasGeneration(meta.profileId))
+        }
+
+        harness.keystore.deleteFailures -= alias
+        assertTrue(harness.vault.deleteProfile(meta.profileId))
+        assertFalse(harness.vault.contains(meta))
+        assertFalse(harness.profileGenerations.hasGeneration(meta.profileId))
+    }
+
+    @Test
+    fun deleteAllProfilesRemovesCredentialsKeysAndGenerationOnlyEntries() = runBlocking {
+        val profileFour = CredentialRecordMeta(4, "deepgram", "secondary")
+        harness.vault.store(meta, ProviderSecret.copyOf(SECRET.toByteArray(Charsets.UTF_8)))
+        harness.vault.store(profileFour, ProviderSecret.copyOf(OTHER_SECRET.toByteArray(Charsets.UTF_8)))
+        harness.profileGenerations.generationOf(5)
+        harness.cipherStore.corruptEntryCount = 1
+        harness.keystore.encrypt(
+            "${ProviderCredentialVault.STORAGE_KEY_PREFIX}.orphaned",
+            byteArrayOf(1),
+            byteArrayOf(2),
+        )
+        val aliases = harness.cipherStore.records.values.map { stored ->
+            val record = CredentialRecordMeta(stored.profileId, stored.providerId, stored.recordId)
+            ProviderCredentialVault.keyAliasFor(record, stored.profileGenerationId)
+        }
+
+        assertTrue(harness.vault.deleteAllProfiles())
+
+        assertTrue(harness.cipherStore.records.isEmpty())
+        assertEquals(0, harness.cipherStore.corruptEntryCount)
+        aliases.forEach { alias -> assertFalse(harness.keystore.hasKey(alias)) }
+        assertTrue(harness.keystore.aliases("${ProviderCredentialVault.STORAGE_KEY_PREFIX}.").isEmpty())
+        listOf(3, 4, 5).forEach { profileId ->
+            assertFalse(harness.profileGenerations.hasGeneration(profileId))
+        }
+    }
+
+    @Test
+    fun recreatedVaultUsesPersistedIdentityGenerationAndCiphertext() = runBlocking {
+        storeSecret()
+        val recreated = ProviderCredentialVault(
+            keystoreBridge = harness.keystore,
+            cipherTextStore = harness.cipherStore,
+            installIdentity = InstallIdentity(harness.installationStorage),
+            profileGenerationStore = ProfileGenerationStore(harness.profileGenerationStorage),
+        )
+
+        val digest = recreated.use(meta) { secret -> secret.use(::sha256Hex) }
+
+        assertEquals(sha256Hex(SECRET.toByteArray(Charsets.UTF_8)), digest)
+    }
+
+    @Test
+    fun storageAndAadAddressesDoNotCollideForDelimiterBearingIds() {
+        val left = CredentialRecordMeta(3, "a|b", "c")
+        val right = CredentialRecordMeta(3, "a", "b|c")
+
+        assertNotEquals(
+            ProviderCredentialVault.storageKeyFor(left),
+            ProviderCredentialVault.storageKeyFor(right),
+        )
+        assertFalse(
+            VaultAad.forRecord("install", "generation", left.providerId, left.recordId)
+                .contentEquals(
+                    VaultAad.forRecord("install", "generation", right.providerId, right.recordId),
+                ),
+        )
+    }
+
+    @Test
     fun deleteRemovesCiphertextMetadataAndKeystoreKey() = runBlocking {
         storeSecret()
-        val alias = ProviderCredentialVault.keyAliasFor(meta)
+        val stored = harness.cipherStore.records[storageKey()]!!
+        val alias = ProviderCredentialVault.keyAliasFor(meta, stored.profileGenerationId)
         assertTrue(harness.keystore.hasKey(alias))
         assertTrue(harness.vault.contains(meta))
 

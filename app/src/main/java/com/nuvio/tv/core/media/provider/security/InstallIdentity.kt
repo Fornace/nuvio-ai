@@ -2,19 +2,14 @@ package com.nuvio.tv.core.media.provider.security
 
 import java.util.UUID
 
-/**
- * Injectable persistence for the installation UUID. A DataStore-backed
- * implementation is the wiring point for a later lane; semantics required from
- * any implementation: [load] returns the previously persisted id or null, and
- * [persist] durably stores it exactly as given.
- */
+/** Injectable durable persistence for the installation UUID. */
 interface InstallationIdStorage {
     fun load(): String?
 
     fun persist(installationId: String)
 }
 
-/** Process-local default used until DataStore wiring lands. */
+/** Process-local implementation for unit tests. */
 class InMemoryInstallationIdStorage(initial: String? = null) : InstallationIdStorage {
     @Volatile
     private var value: String? = initial

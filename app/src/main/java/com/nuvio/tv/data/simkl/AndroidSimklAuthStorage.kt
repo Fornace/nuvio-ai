@@ -131,7 +131,7 @@ class AndroidSimklAuthStorage @Inject constructor(
         true
     }
 
-    override fun removeProfile(profileId: Int) {
+    override suspend fun removeProfile(profileId: Int) {
         preferences.edit()
             .remove(profileKey(METADATA_KEY, profileId))
             .remove(profileKey(TOKEN_KEY, profileId))
@@ -145,7 +145,7 @@ class AndroidSimklAuthStorage @Inject constructor(
         }
     }
 
-    override fun clearAllProfiles() {
+    override suspend fun clearAllProfiles() {
         preferences.edit().clear().apply()
         synchronized(stateLock) {
             val current = activeCredentials

@@ -36,11 +36,11 @@ private fun CredentialRecordMeta.describe() =
     "credential record (profileId=$profileId, providerId=$providerId, recordId=$recordId)"
 
 /**
- * Profile-local BYOK credential vault (round 1: in-memory ciphertext store).
+ * Profile-local BYOK credential vault.
  *
  * Properties:
  *  - secrets are encrypted with AES-256-GCM through an injectable
- *    [KeystoreBridge], one Keystore key per provider + record;
+ *    [KeystoreBridge], one Keystore key per profile generation + provider + record;
  *  - the GCM AAD binds installation UUID + profile generation UUID + provider
  *    id + record id, so ciphertext swapped between installs, profile
  *    generations, providers or records fails authentication (fail closed);
@@ -71,8 +71,9 @@ class ProviderCredentialVault(
             providerId = record.providerId,
             recordId = record.recordId,
         )
+        val keyAlias = keyAliasFor(record, generation)
         val payload = secret.use { plaintext ->
-            keystoreBridge.encrypt(keyAliasFor(record), plaintext, aad)
+            keystoreBridge.encrypt(keyAlias, plaintext, aad)
         }
         cipherTextStore.put(
             storageKeyFor(record),
@@ -102,10 +103,19 @@ class ProviderCredentialVault(
         val stored = cipherTextStore.get(storageKeyFor(record))
             ?: throw CredentialNotFoundException(record)
         val plaintext = try {
+            val currentGeneration = profileGenerationStore.generationOf(record.profileId)
+            if (stored.profileGenerationId != currentGeneration) {
+                throw IllegalStateException("Stored credential belongs to a stale profile generation")
+            }
             keystoreBridge.decrypt(
-                keyAlias = keyAliasFor(record),
+                keyAlias = keyAliasFor(record, stored.profileGenerationId),
                 payload = EncryptedPayload(stored.iv, stored.ciphertext),
-                aad = currentAadFor(record),
+                aad = VaultAad.forRecord(
+                    installationId = installIdentity.installationId(),
+                    profileGenerationId = currentGeneration,
+                    providerId = record.providerId,
+                    recordId = record.recordId,
+                ),
             )
         } catch (cause: Exception) {
             throw CredentialDecryptionException(record, cause)
@@ -119,40 +129,91 @@ class ProviderCredentialVault(
 
     /** Removes ciphertext, metadata and the Keystore key for this address. */
     suspend fun delete(record: CredentialRecordMeta): Boolean {
+        val stored = cipherTextStore.get(storageKeyFor(record))
+        val generation = stored?.profileGenerationId
+            ?: profileGenerationStore.peekGeneration(record.profileId)
+        val alias = generation?.let { keyAliasFor(record, it) }
+        var removedKey = false
+        if (alias != null && keystoreBridge.hasKey(alias)) {
+            check(keystoreBridge.deleteKey(alias)) { "Could not delete provider credential key" }
+            removedKey = true
+        }
         val removedCiphertext = cipherTextStore.remove(storageKeyFor(record))
-        val removedKey = keystoreBridge.deleteKey(keyAliasFor(record))
         return removedCiphertext || removedKey
+    }
+
+    /** Removes every ciphertext/key belonging to [profileId], then invalidates its generation. */
+    suspend fun deleteProfile(profileId: Int): Boolean {
+        val matching = cipherTextStore.all().values.filter { it.profileId == profileId }
+        var removed = false
+        matching.forEach { stored ->
+            val record = stored.meta()
+            val alias = keyAliasFor(record, stored.profileGenerationId)
+            if (keystoreBridge.hasKey(alias)) {
+                check(keystoreBridge.deleteKey(alias)) { "Could not delete provider credential key" }
+                removed = true
+            }
+            removed = cipherTextStore.remove(storageKeyFor(record)) || removed
+        }
+        return profileGenerationStore.onProfileDeleted(profileId) || removed
+    }
+
+    /** Removes all provider credentials and profile generations known to this installation. */
+    suspend fun deleteAllProfiles(): Boolean {
+        val all = cipherTextStore.all().values
+        var removed = false
+        all.forEach { stored ->
+            val record = stored.meta()
+            val alias = keyAliasFor(record, stored.profileGenerationId)
+            if (keystoreBridge.hasKey(alias)) {
+                check(keystoreBridge.deleteKey(alias)) { "Could not delete provider credential key" }
+                removed = true
+            }
+            removed = cipherTextStore.remove(storageKeyFor(record)) || removed
+        }
+        keystoreBridge.aliases(KEY_ALIAS_PREFIX).forEach { alias ->
+            check(keystoreBridge.deleteKey(alias)) { "Could not delete orphaned provider credential key" }
+            removed = true
+        }
+        removed = cipherTextStore.removeCorruptEntries() > 0 || removed
+        removed = profileGenerationStore.clearAll() || removed
+        return removed
     }
 
     suspend fun contains(record: CredentialRecordMeta): Boolean =
         cipherTextStore.contains(storageKeyFor(record))
 
-    private suspend fun currentAadFor(record: CredentialRecordMeta): ByteArray = VaultAad.forRecord(
-        installationId = installIdentity.installationId(),
-        profileGenerationId = profileGenerationStore.generationOf(record.profileId),
-        providerId = record.providerId,
-        recordId = record.recordId,
-    )
-
     companion object {
         internal const val STORAGE_KEY_PREFIX = "nuvio_byok_v1"
+        private const val KEY_ALIAS_PREFIX = "$STORAGE_KEY_PREFIX."
 
-        /** Stable storage address; independent of the Keystore alias scheme. */
+        /** Stable, collision-resistant storage address independent of the Keystore alias scheme. */
         internal fun storageKeyFor(record: CredentialRecordMeta): String =
-            "$STORAGE_KEY_PREFIX|p${record.profileId}|${record.providerId}|${record.recordId}"
+            "$STORAGE_KEY_PREFIX|p${record.profileId}|${record.providerId.aliasDigest()}|${record.recordId.aliasDigest()}"
 
-        /** One Keystore key per provider + record (ids sanitized for alias rules). */
+        /** One Keystore key per profile generation + provider + record. */
+        internal fun keyAliasFor(record: CredentialRecordMeta, profileGenerationId: String): String =
+            "$STORAGE_KEY_PREFIX.${profileGenerationId.aliasDigest()}.${record.providerId.aliasDigest()}.${record.recordId.aliasDigest()}"
+
+        /** Compatibility helper for tests that only need deterministic addressing. */
         internal fun keyAliasFor(record: CredentialRecordMeta): String =
-            "$STORAGE_KEY_PREFIX.${record.providerId.sanitizeAliasPart()}.${record.recordId.sanitizeAliasPart()}"
+            "$STORAGE_KEY_PREFIX.legacy.${record.providerId.aliasDigest()}.${record.recordId.aliasDigest()}"
 
-        private fun String.sanitizeAliasPart(): String =
-            map { ch -> if (ch.isLetterOrDigit() || ch == '_') ch else '_' }
-                .joinToString("")
-                .take(MAX_ALIAS_PART_LENGTH)
+        private fun String.aliasDigest(): String =
+            java.security.MessageDigest.getInstance("SHA-256")
+                .digest(toByteArray(Charsets.UTF_8))
+                .take(ALIAS_DIGEST_BYTES)
+                .joinToString("") { byte -> "%02x".format(byte) }
 
-        private const val MAX_ALIAS_PART_LENGTH = 96
+        private const val ALIAS_DIGEST_BYTES = 12
     }
 }
+
+private fun EncryptedCredentialRecord.meta() = CredentialRecordMeta(
+    profileId = profileId,
+    providerId = providerId,
+    recordId = recordId,
+)
 
 /** Domain-separated AAD bytes bound into every GCM operation. */
 internal object VaultAad {
@@ -163,7 +224,15 @@ internal object VaultAad {
         profileGenerationId: String,
         providerId: String,
         recordId: String,
-    ): ByteArray =
-        "$FORMAT|$installationId|$profileGenerationId|$providerId|$recordId"
-            .toByteArray(Charsets.UTF_8)
+    ): ByteArray = java.io.ByteArrayOutputStream().use { bytes ->
+        java.io.DataOutputStream(bytes).use { output ->
+            listOf(FORMAT, installationId, profileGenerationId, providerId, recordId)
+                .forEach { value ->
+                    val encoded = value.toByteArray(Charsets.UTF_8)
+                    output.writeInt(encoded.size)
+                    output.write(encoded)
+                }
+        }
+        bytes.toByteArray()
+    }
 }

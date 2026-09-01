@@ -15,6 +15,7 @@ class FakeKeystoreBridge : KeystoreBridge {
 
     val deletedAliases = mutableListOf<String>()
     val encryptAliases = mutableListOf<String>()
+    val deleteFailures = mutableSetOf<String>()
 
     @Synchronized
     override fun encrypt(keyAlias: String, plaintext: ByteArray, aad: ByteArray): EncryptedPayload {
@@ -43,8 +44,14 @@ class FakeKeystoreBridge : KeystoreBridge {
     override fun hasKey(keyAlias: String): Boolean = keys.containsKey(keyAlias)
 
     @Synchronized
+    override fun aliases(prefix: String): Set<String> = keys.keys.filterTo(mutableSetOf()) {
+        it.startsWith(prefix)
+    }
+
+    @Synchronized
     override fun deleteKey(keyAlias: String): Boolean {
         deletedAliases += keyAlias
+        if (keyAlias in deleteFailures) return false
         return keys.remove(keyAlias) != null
     }
 
@@ -71,6 +78,14 @@ class RecordingCipherTextStore : CipherTextStore {
     override suspend fun remove(key: String): Boolean = records.remove(key) != null
 
     override suspend fun contains(key: String): Boolean = records.containsKey(key)
+
+    var corruptEntryCount: Int = 0
+
+    override suspend fun all(): Map<String, EncryptedCredentialRecord> = records.toMap()
+
+    override suspend fun removeCorruptEntries(): Int = corruptEntryCount.also {
+        corruptEntryCount = 0
+    }
 }
 
 /** [InstallationIdStorage] fake that records persist calls. */

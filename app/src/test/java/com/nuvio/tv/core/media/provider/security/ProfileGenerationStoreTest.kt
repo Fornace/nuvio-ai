@@ -113,6 +113,21 @@ class ProfileGenerationStoreTest {
     }
 
     @Test
+    fun `clear all removes every generation and survives reload`() {
+        val storage = InMemoryProfileGenerationStorage()
+        val store = ProfileGenerationStore(storage)
+        store.generationOf(2)
+        store.generationOf(3)
+
+        assertTrue(store.clearAll())
+        assertFalse(store.clearAll())
+
+        val reloaded = ProfileGenerationStore(storage)
+        assertFalse(reloaded.hasGeneration(2))
+        assertFalse(reloaded.hasGeneration(3))
+    }
+
+    @Test
     fun `concurrent assignment for one profile id yields a single generation`() {
         val store = ProfileGenerationStore(InMemoryProfileGenerationStorage())
         val threads = 8

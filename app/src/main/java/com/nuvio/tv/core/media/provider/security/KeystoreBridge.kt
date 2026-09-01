@@ -31,12 +31,15 @@ interface KeystoreBridge {
 
     fun hasKey(keyAlias: String): Boolean
 
+    /** Returns aliases under an owned prefix for cleanup reconciliation. */
+    fun aliases(prefix: String): Set<String>
+
     fun deleteKey(keyAlias: String): Boolean
 }
 
 /**
  * Production bridge over the Android Keystore. One AES-256-GCM key is created
- * per provider + record pair (key alias) and never leaves the Keystore.
+ * per profile generation + provider + record key alias and never leaves the Keystore.
  *
  * This class is intentionally thin: the Android Keystore cannot be exercised in
  * JVM unit tests, so every decision that matters (AAD binding, address
@@ -50,14 +53,21 @@ class AndroidKeystoreBridge : KeystoreBridge {
 
     @Synchronized
     override fun encrypt(keyAlias: String, plaintext: ByteArray, aad: ByteArray): EncryptedPayload {
-        val cipher = Cipher.getInstance(TRANSFORMATION)
-        // Randomized encryption is required on the key, so no explicit IV is
-        // passed here; the Keystore generates a fresh one per encryption.
-        cipher.init(Cipher.ENCRYPT_MODE, secretKey(keyAlias))
-        cipher.updateAAD(aad)
-        val ciphertext = cipher.doFinal(plaintext)
-        val iv = cipher.iv ?: error("Android Keystore produced no IV for $keyAlias")
-        return EncryptedPayload(iv, ciphertext)
+        val keyExisted = keyStore.containsAlias(keyAlias)
+        val key = secretKey(keyAlias)
+        return try {
+            val cipher = Cipher.getInstance(TRANSFORMATION)
+            // Randomized encryption is required on the key, so no explicit IV is
+            // passed here; the Keystore generates a fresh one per encryption.
+            cipher.init(Cipher.ENCRYPT_MODE, key)
+            cipher.updateAAD(aad)
+            val ciphertext = cipher.doFinal(plaintext)
+            val iv = cipher.iv ?: error("Android Keystore produced no IV for $keyAlias")
+            EncryptedPayload(iv, ciphertext)
+        } catch (cause: Exception) {
+            if (!keyExisted) runCatching { keyStore.deleteEntry(keyAlias) }
+            throw cause
+        }
     }
 
     @Synchronized
@@ -65,7 +75,7 @@ class AndroidKeystoreBridge : KeystoreBridge {
         val cipher = Cipher.getInstance(TRANSFORMATION)
         cipher.init(
             Cipher.DECRYPT_MODE,
-            secretKey(keyAlias),
+            existingSecretKey(keyAlias),
             GCMParameterSpec(GCM_TAG_LENGTH_BITS, payload.iv),
         )
         cipher.updateAAD(aad)
@@ -74,6 +84,14 @@ class AndroidKeystoreBridge : KeystoreBridge {
 
     @Synchronized
     override fun hasKey(keyAlias: String): Boolean = keyStore.containsAlias(keyAlias)
+
+    @Synchronized
+    override fun aliases(prefix: String): Set<String> = buildSet {
+        val entries = keyStore.aliases()
+        while (entries.hasMoreElements()) {
+            entries.nextElement().takeIf { it.startsWith(prefix) }?.let(::add)
+        }
+    }
 
     @Synchronized
     override fun deleteKey(keyAlias: String): Boolean {
@@ -89,6 +107,17 @@ class AndroidKeystoreBridge : KeystoreBridge {
             return (entry as? KeyStore.SecretKeyEntry)?.secretKey
                 ?: throw IllegalStateException("Keystore alias $keyAlias is not a secret key")
         }
+        return createSecretKey(keyAlias)
+    }
+
+    private fun existingSecretKey(keyAlias: String): SecretKey {
+        val entry = keyStore.getEntry(keyAlias, null)
+            ?: throw IllegalStateException("No Android Keystore key for $keyAlias")
+        return (entry as? KeyStore.SecretKeyEntry)?.secretKey
+            ?: throw IllegalStateException("Keystore alias $keyAlias is not a secret key")
+    }
+
+    private fun createSecretKey(keyAlias: String): SecretKey {
         val generator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, ANDROID_KEYSTORE)
         generator.init(
             KeyGenParameterSpec.Builder(
@@ -102,7 +131,7 @@ class AndroidKeystoreBridge : KeystoreBridge {
                 .build()
         )
         generator.generateKey()
-        return (keyStore.getEntry(keyAlias, null) as KeyStore.SecretKeyEntry).secretKey
+        return existingSecretKey(keyAlias)
     }
 
     companion object {

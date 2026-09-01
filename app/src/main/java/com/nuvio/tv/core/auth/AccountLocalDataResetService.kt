@@ -34,7 +34,9 @@ class AccountLocalDataResetService @Inject constructor(
             .onFailure { Log.w(ACCOUNT_RESET_TAG, "Failed to clear profile metadata", it) }
         runCatching { profileLockStateDataStore.clearAll() }
             .onFailure { Log.w(ACCOUNT_RESET_TAG, "Failed to clear profile lock states", it) }
-        runCatching { credentialStores.forEach(ProfileScopedCredentialStore::clearAllProfiles) }
+        runCatching {
+            credentialStores.forEach { store -> store.clearAllProfiles() }
+        }
             .onFailure { Log.w(ACCOUNT_RESET_TAG, "Failed to clear profile credentials", it) }
         runCatching { clearAccountFiles() }
             .onFailure { Log.w(ACCOUNT_RESET_TAG, "Failed to clear account files", it) }

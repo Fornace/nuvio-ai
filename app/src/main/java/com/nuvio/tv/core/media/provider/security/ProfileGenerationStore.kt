@@ -2,19 +2,14 @@ package com.nuvio.tv.core.media.provider.security
 
 import java.util.UUID
 
-/**
- * Injectable persistence for profile generations. Semantics required from any
- * implementation: [loadAll] returns the currently persisted id -> generation
- * map; [persistAll] atomically replaces it. A DataStore-backed implementation
- * is the wiring point for a later lane.
- */
+/** Injectable durable persistence for profile generation identifiers. */
 interface ProfileGenerationStorage {
     fun loadAll(): Map<Int, String>
 
     fun persistAll(generations: Map<Int, String>)
 }
 
-/** Process-local default used until DataStore wiring lands. */
+/** Process-local implementation for unit tests. */
 class InMemoryProfileGenerationStorage : ProfileGenerationStorage {
     private val lock = Any()
 
@@ -39,15 +34,11 @@ class InMemoryProfileGenerationStorage : ProfileGenerationStorage {
  * vault binds this UUID into AAD, which is what makes old ciphertext unreadable
  * after id reuse.
  *
- * Integration point (deliberately not wired in this round — the callers live
- * outside this lane's ownership): `ProfileManager.createProfile` /
- * `ProfileDataStore.upsertProfile` may pre-assign a generation via
- * [generationOf]; `ProfileManager.deleteProfileDataAsync` /
- * `ProfileDataStore.deleteProfile` must call [onProfileDeleted] alongside the
- * existing per-profile file cleanup.
+ * ProfileManager pre-assigns a generation when creating a profile and clears it
+ * after the vault has removed all profile credentials during profile deletion.
  */
 class ProfileGenerationStore(
-    private val storage: ProfileGenerationStorage = InMemoryProfileGenerationStorage(),
+    private val storage: ProfileGenerationStorage,
     private val generator: () -> String = { UUID.randomUUID().toString() },
 ) {
     private val lock = Any()
@@ -86,6 +77,16 @@ class ProfileGenerationStore(
                 persistSnapshot()
             }
             return removed
+        }
+    }
+
+    /** Clears every generation. Used only after all matching ciphertext and keys are removed. */
+    fun clearAll(): Boolean {
+        synchronized(lock) {
+            if (generations.isEmpty()) return false
+            generations.clear()
+            persistSnapshot()
+            return true
         }
     }
 

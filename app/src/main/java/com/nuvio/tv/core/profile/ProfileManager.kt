@@ -2,6 +2,7 @@ package com.nuvio.tv.core.profile
 
 import android.content.Context
 import com.nuvio.tv.R
+import com.nuvio.tv.core.media.provider.security.ProfileGenerationStore
 import com.nuvio.tv.data.local.ProfileDataStore
 import com.nuvio.tv.data.local.ProfileDataStoreFactory
 import com.nuvio.tv.domain.model.UserProfile
@@ -23,7 +24,8 @@ class ProfileManager @Inject constructor(
     private val profileDataStore: ProfileDataStore,
     private val factory: ProfileDataStoreFactory,
     private val credentialStores: Set<@JvmSuppressWildcards ProfileScopedCredentialStore>,
-    @ApplicationContext private val context: Context
+    private val profileGenerationStore: ProfileGenerationStore,
+    @param:ApplicationContext private val context: Context
 ) {
     companion object {
         const val MAX_PROFILES = 6
@@ -98,6 +100,9 @@ class ProfileManager @Inject constructor(
             avatarId = avatarId
         )
         factory.markProfileCreated(nextId)
+        withContext(Dispatchers.IO) {
+            profileGenerationStore.generationOf(nextId)
+        }
         profileDataStore.upsertProfile(profile)
         return true
     }
@@ -105,7 +110,9 @@ class ProfileManager @Inject constructor(
     suspend fun deleteProfile(id: Int): Boolean {
         if (id == 1) return false
         if (profiles.value.none { it.id == id }) return false
-        credentialStores.forEach { store -> store.removeProfile(id) }
+        withContext(Dispatchers.IO) {
+            credentialStores.forEach { store -> store.removeProfile(id) }
+        }
         deleteProfileDataAsync(id)
         profileDataStore.deleteProfile(id)
         return true

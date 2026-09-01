@@ -40,6 +40,6 @@ interface SimklAuthStorage {
         scope: SimklAuthScope = currentScope(),
         expectedAccessToken: String? = null
     ): Boolean
-    fun removeProfile(profileId: Int)
-    fun clearAllProfiles()
+    suspend fun removeProfile(profileId: Int)
+    suspend fun clearAllProfiles()
 }
