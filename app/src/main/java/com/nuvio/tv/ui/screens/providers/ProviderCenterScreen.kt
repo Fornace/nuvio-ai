@@ -61,24 +61,27 @@ fun ProviderCenterScreen(
         onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(
-                horizontal = NuvioTheme.spacing.xxl,
-                vertical = NuvioTheme.spacing.xl,
-            ),
-        verticalArrangement = Arrangement.spacedBy(NuvioTheme.spacing.md),
-    ) {
+    androidx.compose.runtime.LaunchedEffect(uiState.lastMessage) {
+        val message = uiState.lastMessage ?: return@LaunchedEffect
+        kotlinx.coroutines.delay(6_000)
+        viewModel.clearMessage()
+    }
+
+    androidx.compose.foundation.layout.Box(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(
+                    horizontal = NuvioTheme.spacing.xxl,
+                    vertical = NuvioTheme.spacing.xl,
+                ),
+            verticalArrangement = Arrangement.spacedBy(NuvioTheme.spacing.md),
+        ) {
         SettingsDetailHeader(
             title = stringResource(R.string.provider_center_title),
             subtitle = stringResource(R.string.provider_center_subtitle),
         )
-
-        uiState.lastMessage?.let { message ->
-            CompletionMessageRow(message = message, onDismiss = viewModel::clearMessage)
-        }
 
         if (!uiState.canRequestInstalls) {
             UnknownSourcesCard(onOpenSettings = viewModel::openUnknownSources)
@@ -126,6 +129,17 @@ fun ProviderCenterScreen(
                 onUninstall = viewModel::uninstall,
                 onOpenCredentials = viewModel::openCredentialDialog,
                 onDeleteCredential = viewModel::deleteCredential,
+            )
+        }
+        }
+
+        uiState.lastMessage?.let { message ->
+            CompletionMessageRow(
+                message = message,
+                onDismiss = viewModel::clearMessage,
+                modifier = Modifier
+                    .align(androidx.compose.ui.Alignment.BottomCenter)
+                    .padding(bottom = NuvioTheme.spacing.xl),
             )
         }
     }
@@ -241,7 +255,11 @@ private fun ProviderCard(
 }
 
 @Composable
-private fun CompletionMessageRow(message: ProviderCenterCompletion, onDismiss: () -> Unit) {
+private fun CompletionMessageRow(
+    message: ProviderCenterCompletion,
+    onDismiss: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     val text = when (message) {
         is ProviderCenterCompletion.Installed ->
             stringResource(R.string.provider_center_msg_installed, message.packageName, message.versionName)
@@ -262,7 +280,7 @@ private fun CompletionMessageRow(message: ProviderCenterCompletion, onDismiss: (
         is ProviderCenterCompletion.Failed ->
             stringResource(R.string.provider_center_msg_failed, message.reason.name)
     }
-    SettingsGroupCard(modifier = Modifier.fillMaxWidth()) {
+    SettingsGroupCard(modifier = modifier.fillMaxWidth()) {
         SettingsActionRow(
             title = text,
             subtitle = null,
