@@ -34,8 +34,8 @@ android {
         applicationId = "com.nuvio.tv.provider.voice"
         minSdk = 24
         targetSdk = 36
-        versionCode = 2
-        versionName = "0.1.0-preview2"
+        versionCode = 3
+        versionName = "0.1.0-preview3"
     }
 
     signingConfigs {

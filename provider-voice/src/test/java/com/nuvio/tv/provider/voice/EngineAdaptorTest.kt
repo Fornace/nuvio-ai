@@ -67,7 +67,7 @@ class EngineAdaptorTest {
     }
 
     @Test
-    fun `gemini appends key as query parameter without duplicating separator`() {
+    fun `gemini keeps api key out of loggable url`() {
         val result = EngineAdaptors.byId("gemini-live-translate")!!.buildSpec(
             EngineConfig(
                 adaptorId = "gemini-live-translate",
@@ -79,8 +79,10 @@ class EngineAdaptorTest {
         )
         val spec = (result as EngineAdaptorResult.Spec).spec
         assertEquals(
-            "wss://generativelanguage.googleapis.com/ws/bidi?model=gemini-3.5-live-translate-preview&key=sk_test",
+            "wss://generativelanguage.googleapis.com/ws/bidi?model=gemini-3.5-live-translate-preview",
             spec.url,
         )
+        assertEquals(mapOf("key" to "sk_test"), spec.sensitiveQueryParameters)
+        assertTrue(!spec.url.contains("sk_test"))
     }
 }

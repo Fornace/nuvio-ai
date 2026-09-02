@@ -33,6 +33,8 @@ data class EngineCredential(
 data class EngineSessionSpec(
     val url: String,
     val headers: Map<String, String>,
+    /** Authentication query fields the transport must append without logging. */
+    val sensitiveQueryParameters: Map<String, String> = emptyMap(),
 )
 
 sealed interface EngineAdaptorResult {
@@ -95,21 +97,18 @@ object OpenAiRealtimeTranslateAdaptor : EngineAdaptor {
     )
 }
 
-/** Gemini Live API bidirectional websocket; key travels as a query parameter. */
+/** Gemini Live API bidirectional websocket; transport appends the key without logging it. */
 object GeminiLiveTranslateAdaptor : EngineAdaptor {
     override val id = "gemini-live-translate"
 
     override fun buildSpec(
         config: EngineConfig,
         credential: EngineCredential,
-    ): EngineAdaptorResult {
-        val base = config.apiBase.replace("{model}", config.model)
-        val url = if (base.contains('?')) "$base&key=${credential.apiKey}" else "$base?key=${credential.apiKey}"
-        return EngineAdaptorResult.Spec(
-            EngineSessionSpec(
-                url = url,
-                headers = emptyMap(),
-            ),
-        )
-    }
+    ): EngineAdaptorResult = EngineAdaptorResult.Spec(
+        EngineSessionSpec(
+            url = config.apiBase.replace("{model}", config.model),
+            headers = emptyMap(),
+            sensitiveQueryParameters = mapOf("key" to credential.apiKey),
+        ),
+    )
 }
