@@ -7,7 +7,7 @@
     running on the TV you already own. Bring your own sources, bring your own keys.
   </p>
 
-  [Provider registry](https://nuvio-extensions.fornace.net) · [Install guide](https://nuvio-extensions.fornace.net/install.html) · [Upstream project](https://github.com/NuvioMedia/NuvioTV)
+  [Android TV developer preview](https://github.com/Fornace/nuvio-ai/releases/tag/ai-dev-2026.09.03) · [Provider registry](https://nuvio-extensions.fornace.net) · [Install guide](https://nuvio-extensions.fornace.net/install.html) · [Upstream project](https://github.com/NuvioMedia/NuvioTV)
 
 </div>
 
@@ -42,7 +42,7 @@ need your own account and key for each provider you enable.
 
 Install the host app first, then the providers from inside the app:
 
-1. Install the Nuvio AI host APK (arm64 full debug build from this repository).
+1. Download the arm64 host APK from the [Nuvio AI Android TV developer preview](https://github.com/Fornace/nuvio-ai/releases/tag/ai-dev-2026.09.03) and install it first.
 2. Open Settings, Content discovery, AI Media Providers.
 3. Allow installs from unknown sources for Nuvio when prompted.
 4. Install each provider; download, hash, and signature are verified automatically.
@@ -50,6 +50,13 @@ Install the host app first, then the providers from inside the app:
 
 The full walkthrough with troubleshooting lives at
 [nuvio-extensions.fornace.net/install.html](https://nuvio-extensions.fornace.net/install.html).
+
+## Apple development
+
+The AI provider host currently ships on Android TV. Native iOS and macOS integration is tracked in
+[Fornace/nuvio-mobile#1](https://github.com/Fornace/nuvio-mobile/issues/1). The existing iOS client
+can run on Apple Silicon as Designed for iPad/iPhone, but Android provider APKs do not run on Apple
+platforms; Apple adaptors will ship inside the signed host, followed by a native macOS target.
 
 ## Build from source
 
