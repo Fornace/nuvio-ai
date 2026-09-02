@@ -12,7 +12,7 @@ import org.junit.Test
 class ProviderContractTest {
 
     private val packageName = "com.nuvio.tv.provider.subtitles"
-    private val versionName = "0.1.0-preview2"
+    private val versionName = "0.1.0-preview3"
 
     @Test
     fun negotiationBuilderProducesExactContractFields() {
@@ -82,6 +82,6 @@ class ProviderContractTest {
 
     @Test
     fun fallbackVersionMatchesPreviewVersion() {
-        assertEquals("0.1.0-preview2", ProviderContract.VERSION_NAME)
+        assertEquals("0.1.0-preview3", ProviderContract.VERSION_NAME)
     }
 }

@@ -37,7 +37,7 @@ object ProviderContract {
     const val HOST_MIN_VERSION_CODE: Int = 1
 
     /** Mirrors versionName in build.gradle.kts; used when PackageManager fails. */
-    const val VERSION_NAME: String = "0.1.0-preview1"
+    const val VERSION_NAME: String = "0.1.0-preview2"
 
     /** Exactly one capability in this preview: dubbed artifact exchange, v1. */
     val CAPABILITIES: List<String> = listOf("DUB_ARTIFACT_V1@1")
